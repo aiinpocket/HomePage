@@ -20,6 +20,12 @@ from .website_generator import website_generator
 from .zip_builder import zip_builder
 from .email_service import email_service
 from .usage_tracker import usage_tracker
+from .auth_service import auth_service
+from .usage_tracker_pg import usage_tracker_pg
+from .database import get_db
+from .models import User, Project
+from sqlalchemy.orm import Session
+from fastapi import Depends
 
 # 設定日誌
 logging.basicConfig(level=logging.INFO)
@@ -102,6 +108,51 @@ class ChatPreviewResponse(BaseModel):
     usage_count: int
     remaining: int
     timestamp: str
+
+
+class SendOTPRequest(BaseModel):
+    """發送 OTP 請求模型"""
+    email: str
+
+
+class SendOTPResponse(BaseModel):
+    """發送 OTP 回應模型"""
+    success: bool
+    message: str
+
+
+class VerifyOTPRequest(BaseModel):
+    """驗證 OTP 請求模型"""
+    email: str
+    otp_code: str
+
+
+class VerifyOTPResponse(BaseModel):
+    """驗證 OTP 回應模型"""
+    success: bool
+    message: str
+    user_id: Optional[str] = None
+    session_token: Optional[str] = None
+    user_info: Optional[Dict] = None
+
+
+class SaveProjectRequest(BaseModel):
+    """儲存專案請求模型"""
+    user_id: str
+    project_name: str
+    template_id: str
+    form_data: Dict
+    site_id: Optional[str] = None
+    preview_url: Optional[str] = None
+    download_url: Optional[str] = None
+
+
+class UpdateProjectRequest(BaseModel):
+    """更新專案請求模型"""
+    project_name: Optional[str] = None
+    template_id: Optional[str] = None
+    form_data: Optional[Dict] = None
+    status: Optional[str] = None
 
 
 # ========================================
@@ -246,6 +297,498 @@ async def list_sessions():
         "total_sessions": len(sessions),
         "session_ids": list(sessions.keys())
     }
+
+
+# ========================================
+# 認證 API
+# ========================================
+
+@app.post("/api/auth/send-otp", response_model=SendOTPResponse, tags=["Authentication"])
+async def send_otp(request: SendOTPRequest, db: Session = Depends(get_db)):
+    """
+    發送 OTP 到使用者 email
+
+    Args:
+        request: 包含 email 的請求
+        db: 資料庫 session
+
+    Returns:
+        SendOTPResponse: 發送結果
+    """
+    try:
+        logger.info(f"Sending OTP to email: {request.email}")
+
+        success, message = await auth_service.send_otp(db, request.email)
+
+        return SendOTPResponse(
+            success=success,
+            message=message
+        )
+
+    except Exception as e:
+        logger.error(f"Error sending OTP: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"發送驗證碼時發生錯誤：{str(e)}"
+        )
+
+
+@app.post("/api/auth/verify-otp", response_model=VerifyOTPResponse, tags=["Authentication"])
+async def verify_otp(request: VerifyOTPRequest, db: Session = Depends(get_db)):
+    """
+    驗證 OTP 並登入
+
+    Args:
+        request: 包含 email 和 otp_code 的請求
+        db: 資料庫 session
+
+    Returns:
+        VerifyOTPResponse: 驗證結果和 session token
+    """
+    try:
+        logger.info(f"Verifying OTP for email: {request.email}")
+
+        success, user_id, message = auth_service.verify_otp(
+            db, request.email, request.otp_code
+        )
+
+        if not success:
+            return VerifyOTPResponse(
+                success=False,
+                message=message
+            )
+
+        # 生成 session token
+        session_token = auth_service.create_session_token(user_id)
+
+        # 獲取使用者資訊
+        user = db.query(User).filter(User.id == user_id).first()
+        user_info = {
+            "user_id": user.id,
+            "email": user.email,
+            "vip_level": user.vip_level,
+            "max_projects": user.max_projects,
+            "remaining_projects": user.get_remaining_projects(db)
+        }
+
+        logger.info(f"User logged in: {user.email}")
+
+        return VerifyOTPResponse(
+            success=True,
+            message="登入成功",
+            user_id=user_id,
+            session_token=session_token,
+            user_info=user_info
+        )
+
+    except Exception as e:
+        logger.error(f"Error verifying OTP: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"驗證時發生錯誤：{str(e)}"
+        )
+
+
+@app.post("/api/auth/logout", tags=["Authentication"])
+async def logout():
+    """
+    登出（前端清除 session token）
+    """
+    return {"success": True, "message": "登出成功"}
+
+
+# ========================================
+# 專案管理 API
+# ========================================
+
+@app.get("/api/projects", tags=["Projects"])
+async def list_projects(user_id: str, db: Session = Depends(get_db)):
+    """
+    列出使用者的所有專案
+
+    Args:
+        user_id: 使用者 ID
+        db: 資料庫 session
+
+    Returns:
+        專案列表
+    """
+    try:
+        logger.info(f"Listing projects for user: {user_id}")
+
+        projects = db.query(Project).filter(
+            Project.user_id == user_id,
+            Project.is_deleted == False
+        ).order_by(Project.updated_at.desc()).all()
+
+        project_list = [
+            {
+                "id": p.id,
+                "project_name": p.project_name,
+                "template_id": p.template_id,
+                "site_id": p.site_id,
+                "preview_url": p.preview_url,
+                "download_url": p.download_url,
+                "status": p.status,
+                "created_at": p.created_at.isoformat(),
+                "updated_at": p.updated_at.isoformat()
+            }
+            for p in projects
+        ]
+
+        return {
+            "success": True,
+            "projects": project_list,
+            "total": len(project_list)
+        }
+
+    except Exception as e:
+        logger.error(f"Error listing projects: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"獲取專案列表時發生錯誤：{str(e)}"
+        )
+
+
+@app.get("/api/projects/{project_id}", tags=["Projects"])
+async def get_project(project_id: str, user_id: str, db: Session = Depends(get_db)):
+    """
+    獲取專案詳細資料（用於編輯）
+
+    Args:
+        project_id: 專案 ID
+        user_id: 使用者 ID
+        db: 資料庫 session
+
+    Returns:
+        專案完整資料（包含 form_data）
+    """
+    try:
+        logger.info(f"Getting project: {project_id} for user: {user_id}")
+
+        project = db.query(Project).filter(
+            Project.id == project_id,
+            Project.user_id == user_id,
+            Project.is_deleted == False
+        ).first()
+
+        if not project:
+            raise HTTPException(status_code=404, detail="專案不存在")
+
+        import json
+
+        return {
+            "success": True,
+            "project": {
+                "id": project.id,
+                "project_name": project.project_name,
+                "template_id": project.template_id,
+                "form_data": json.loads(project.form_data),
+                "site_id": project.site_id,
+                "preview_url": project.preview_url,
+                "download_url": project.download_url,
+                "status": project.status,
+                "created_at": project.created_at.isoformat(),
+                "updated_at": project.updated_at.isoformat()
+            }
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting project: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"獲取專案時發生錯誤：{str(e)}"
+        )
+
+
+@app.post("/api/projects", tags=["Projects"])
+async def save_project(request: SaveProjectRequest, db: Session = Depends(get_db)):
+    """
+    儲存新專案
+
+    Args:
+        request: 專案資料
+        db: 資料庫 session
+
+    Returns:
+        儲存結果
+    """
+    try:
+        logger.info(f"Saving project for user: {request.user_id}")
+
+        # 檢查使用者是否存在
+        user = db.query(User).filter(User.id == request.user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="使用者不存在")
+
+        # 檢查專案數量限制
+        if not user.can_create_project(db):
+            raise HTTPException(
+                status_code=403,
+                detail=f"已達專案數量上限（{user.max_projects}個）。請刪除舊專案或升級 VIP。"
+            )
+
+        # 建立專案
+        import json
+
+        new_project = Project(
+            user_id=request.user_id,
+            project_name=request.project_name,
+            template_id=request.template_id,
+            form_data=json.dumps(request.form_data, ensure_ascii=False),
+            site_id=request.site_id,
+            preview_url=request.preview_url,
+            download_url=request.download_url,
+            status="draft"
+        )
+
+        db.add(new_project)
+        user.total_projects_created += 1
+        db.commit()
+        db.refresh(new_project)
+
+        logger.info(f"Project saved: {new_project.id}")
+
+        return {
+            "success": True,
+            "message": "專案已儲存",
+            "project_id": new_project.id
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving project: {e}", exc_info=True)
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"儲存專案時發生錯誤：{str(e)}"
+        )
+
+
+@app.put("/api/projects/{project_id}", tags=["Projects"])
+async def update_project(
+    project_id: str,
+    request: UpdateProjectRequest,
+    user_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    更新專案
+
+    Args:
+        project_id: 專案 ID
+        request: 更新資料
+        user_id: 使用者 ID
+        db: 資料庫 session
+
+    Returns:
+        更新結果
+    """
+    try:
+        logger.info(f"Updating project: {project_id}")
+
+        project = db.query(Project).filter(
+            Project.id == project_id,
+            Project.user_id == user_id,
+            Project.is_deleted == False
+        ).first()
+
+        if not project:
+            raise HTTPException(status_code=404, detail="專案不存在")
+
+        # 更新欄位
+        if request.project_name is not None:
+            project.project_name = request.project_name
+        if request.template_id is not None:
+            project.template_id = request.template_id
+        if request.form_data is not None:
+            import json
+            project.form_data = json.dumps(request.form_data, ensure_ascii=False)
+        if request.status is not None:
+            project.status = request.status
+
+        db.commit()
+
+        logger.info(f"Project updated: {project_id}")
+
+        return {
+            "success": True,
+            "message": "專案已更新"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating project: {e}", exc_info=True)
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"更新專案時發生錯誤：{str(e)}"
+        )
+
+
+@app.delete("/api/projects/{project_id}", tags=["Projects"])
+async def delete_project(project_id: str, user_id: str, db: Session = Depends(get_db)):
+    """
+    刪除專案（軟刪除）
+
+    Args:
+        project_id: 專案 ID
+        user_id: 使用者 ID
+        db: 資料庫 session
+
+    Returns:
+        刪除結果
+    """
+    try:
+        logger.info(f"Deleting project: {project_id}")
+
+        project = db.query(Project).filter(
+            Project.id == project_id,
+            Project.user_id == user_id,
+            Project.is_deleted == False
+        ).first()
+
+        if not project:
+            raise HTTPException(status_code=404, detail="專案不存在")
+
+        # 軟刪除
+        project.is_deleted = True
+        db.commit()
+
+        logger.info(f"Project deleted: {project_id}")
+
+        return {
+            "success": True,
+            "message": "專案已刪除"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting project: {e}", exc_info=True)
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"刪除專案時發生錯誤：{str(e)}"
+        )
+
+
+@app.post("/api/projects/{project_id}/regenerate", tags=["Projects"])
+async def regenerate_project(
+    project_id: str,
+    user_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    重新生成專案
+
+    Args:
+        project_id: 專案 ID
+        user_id: 使用者 ID
+        db: 資料庫 session
+
+    Returns:
+        生成結果
+    """
+    try:
+        logger.info(f"Regenerating project: {project_id}")
+
+        # 獲取專案
+        project = db.query(Project).filter(
+            Project.id == project_id,
+            Project.user_id == user_id,
+            Project.is_deleted == False
+        ).first()
+
+        if not project:
+            raise HTTPException(status_code=404, detail="專案不存在")
+
+        # 解析 form_data
+        import json
+        form_data = json.loads(project.form_data)
+
+        # 重新生成網站
+        html_content = await website_generator.generate_website(
+            template_id=project.template_id,
+            user_data=form_data
+        )
+
+        # 生成新的 site_id
+        new_site_id = str(uuid.uuid4())
+
+        # 建立 ZIP 檔案
+        preview_zip = zip_builder.create_website_package(
+            site_id=new_site_id,
+            html_content=html_content,
+            user_data=form_data,
+            with_api_key=False
+        )
+
+        download_zip = zip_builder.create_website_package(
+            site_id=f"{new_site_id}_full",
+            html_content=html_content,
+            user_data=form_data,
+            with_api_key=True
+        )
+
+        # 更新專案
+        project.site_id = new_site_id
+        project.preview_url = f"{settings.SITE_URL}/api/preview/{new_site_id}"
+        project.download_url = f"{settings.SITE_URL}/api/download/{new_site_id}"
+        project.status = "completed"
+        project.generated_at = datetime.now()
+
+        db.commit()
+
+        logger.info(f"Project regenerated: {project_id} -> {new_site_id}")
+
+        return {
+            "success": True,
+            "message": "專案已重新生成",
+            "site_id": new_site_id,
+            "preview_url": project.preview_url,
+            "download_url": project.download_url
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error regenerating project: {e}", exc_info=True)
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"重新生成專案時發生錯誤：{str(e)}"
+        )
+
+
+@app.get("/api/usage/{site_id}", tags=["Usage"])
+async def get_usage_stats(site_id: str, db: Session = Depends(get_db)):
+    """
+    獲取網站使用統計
+
+    Args:
+        site_id: 網站 ID
+        db: 資料庫 session
+
+    Returns:
+        使用統計
+    """
+    try:
+        stats = usage_tracker_pg.get_usage_stats(db, site_id)
+        return {
+            "success": True,
+            "stats": stats
+        }
+    except Exception as e:
+        logger.error(f"Error getting usage stats: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"獲取使用統計時發生錯誤：{str(e)}"
+        )
 
 
 # ========================================

@@ -835,6 +835,13 @@
                 <li><a href="about.html">關於我們</a></li>
                 <li><a href="contact.html">聯絡我們</a></li>
                 <li><a href="generator.html" class="active nav-cta">網站生成器</a></li>
+                <li id="user-menu-item" style="display: none;">
+                    <a href="#" id="my-projects-btn">我的作品</a>
+                </li>
+                <li>
+                    <a href="#" id="login-btn" class="nav-cta">登入</a>
+                    <a href="#" id="user-email-display" style="display: none;"></a>
+                </li>
             </ul>
             <div class="nav-toggle" id="nav-toggle">
                 <span></span>
@@ -2069,6 +2076,377 @@
             // 滾動到頂部
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // ========================================
+        // 使用者認證系統
+        // ========================================
+
+        // Session 管理
+        const UserSession = {
+            get() {
+                const session = localStorage.getItem('user_session');
+                return session ? JSON.parse(session) : null;
+            },
+            set(userData) {
+                localStorage.setItem('user_session', JSON.stringify(userData));
+            },
+            clear() {
+                localStorage.removeItem('user_session');
+            },
+            isLoggedIn() {
+                return this.get() !== null;
+            }
+        };
+
+        // 登入 Modal
+        function showLoginModal() {
+            const modal = document.getElementById('login-modal');
+            modal.style.display = 'flex';
+        }
+
+        function hideLoginModal() {
+            const modal = document.getElementById('login-modal');
+            modal.style.display = 'none';
+            document.getElementById('login-email').value = '';
+            document.getElementById('otp-code').value = '';
+            document.getElementById('email-step').style.display = 'block';
+            document.getElementById('otp-step').style.display = 'none';
+        }
+
+        // 發送 OTP
+        async function sendOTP() {
+            const email = document.getElementById('login-email').value.trim();
+            if (!email) {
+                alert('請輸入 Email');
+                return;
+            }
+
+            const sendBtn = document.getElementById('send-otp-btn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = '發送中...';
+
+            try {
+                const response = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById('email-step').style.display = 'none';
+                    document.getElementById('otp-step').style.display = 'block';
+                } else {
+                    alert('發送失敗：' + data.message);
+                }
+            } catch (error) {
+                alert('發送失敗，請檢查網路連線');
+                console.error('Send OTP error:', error);
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = '發送驗證碼';
+            }
+        }
+
+        // 驗證 OTP 並登入
+        async function verifyOTP() {
+            const email = document.getElementById('login-email').value.trim();
+            const otpCode = document.getElementById('otp-code').value.trim();
+
+            if (!otpCode) {
+                alert('請輸入驗證碼');
+                return;
+            }
+
+            const verifyBtn = document.getElementById('verify-otp-btn');
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = '驗證中...';
+
+            try {
+                const response = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp_code: otpCode })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // 儲存 session
+                    UserSession.set({
+                        user_id: data.user_id,
+                        session_token: data.session_token,
+                        email: data.user_info.email,
+                        vip_level: data.user_info.vip_level,
+                        max_projects: data.user_info.max_projects,
+                        remaining_projects: data.user_info.remaining_projects
+                    });
+
+                    alert('登入成功！');
+                    hideLoginModal();
+                    updateUIForLoggedInUser();
+                } else {
+                    alert('驗證失敗：' + data.message);
+                }
+            } catch (error) {
+                alert('驗證失敗，請檢查網路連線');
+                console.error('Verify OTP error:', error);
+            } finally {
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = '驗證並登入';
+            }
+        }
+
+        // 登出
+        function logout() {
+            if (confirm('確定要登出嗎？')) {
+                UserSession.clear();
+                updateUIForLoggedOutUser();
+                alert('已登出');
+            }
+        }
+
+        // 更新 UI（已登入）
+        function updateUIForLoggedInUser() {
+            const session = UserSession.get();
+            if (!session) return;
+
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('user-email-display').style.display = 'inline-block';
+            document.getElementById('user-email-display').textContent = session.email;
+            document.getElementById('user-menu-item').style.display = 'inline-block';
+
+            // 添加登出功能
+            document.getElementById('user-email-display').onclick = logout;
+        }
+
+        // 更新 UI（未登入）
+        function updateUIForLoggedOutUser() {
+            document.getElementById('login-btn').style.display = 'inline-block';
+            document.getElementById('user-email-display').style.display = 'none';
+            document.getElementById('user-menu-item').style.display = 'none';
+        }
+
+        // 專案管理 Modal
+        function showProjectsModal() {
+            if (!UserSession.isLoggedIn()) {
+                alert('請先登入');
+                showLoginModal();
+                return;
+            }
+
+            const modal = document.getElementById('projects-modal');
+            modal.style.display = 'flex';
+            loadProjects();
+        }
+
+        function hideProjectsModal() {
+            const modal = document.getElementById('projects-modal');
+            modal.style.display = 'none';
+        }
+
+        // 載入專案列表
+        async function loadProjects() {
+            const session = UserSession.get();
+            if (!session) return;
+
+            const projectsGrid = document.getElementById('projects-grid');
+            projectsGrid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #87CEEB;">載入中...</div>';
+
+            try {
+                const response = await fetch(`/api/projects?user_id=${session.user_id}`);
+                const data = await response.json();
+
+                if (data.success && data.projects.length > 0) {
+                    projectsGrid.innerHTML = data.projects.map(project => `
+                        <div class="project-card" data-project-id="${project.id}">
+                            <h3>${project.project_name}</h3>
+                            <p>模板：${project.template_id}</p>
+                            <p>狀態：${project.status}</p>
+                            <p>建立時間：${new Date(project.created_at).toLocaleDateString()}</p>
+                            <div class="project-actions">
+                                <button onclick="loadProject('${project.id}')" class="btn btn-primary btn-small">載入</button>
+                                <button onclick="deleteProject('${project.id}')" class="btn btn-secondary btn-small">刪除</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    projectsGrid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #87CEEB;">尚無專案</div>';
+                }
+            } catch (error) {
+                console.error('Load projects error:', error);
+                projectsGrid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ff6b6b;">載入失敗</div>';
+            }
+        }
+
+        // 載入專案（填入表單）
+        async function loadProject(projectId) {
+            const session = UserSession.get();
+            if (!session) return;
+
+            try {
+                const response = await fetch(`/api/projects/${projectId}?user_id=${session.user_id}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const formData = data.project.form_data;
+
+                    // 填入表單
+                    document.getElementById('company-name').value = formData.company_name || '';
+                    document.getElementById('slogan').value = formData.tagline || '';
+                    document.getElementById('company-description').value = formData.description || '';
+                    document.getElementById('contact-phone').value = formData.contact_phone || '';
+                    document.getElementById('contact-email').value = session.email;
+
+                    // TODO: 填入服務和作品集資料
+
+                    hideProjectsModal();
+                    alert('專案已載入！');
+
+                    // 跳到步驟 2
+                    goToStep(2);
+                } else {
+                    alert('載入失敗');
+                }
+            } catch (error) {
+                console.error('Load project error:', error);
+                alert('載入失敗');
+            }
+        }
+
+        // 刪除專案
+        async function deleteProject(projectId) {
+            if (!confirm('確定要刪除此專案嗎？')) return;
+
+            const session = UserSession.get();
+            if (!session) return;
+
+            try {
+                const response = await fetch(`/api/projects/${projectId}?user_id=${session.user_id}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('專案已刪除');
+                    loadProjects(); // 重新載入列表
+                } else {
+                    alert('刪除失敗');
+                }
+            } catch (error) {
+                console.error('Delete project error:', error);
+                alert('刪除失敗');
+            }
+        }
+
+        // 初始化認證系統
+        document.addEventListener('DOMContentLoaded', function() {
+            // 檢查登入狀態
+            if (UserSession.isLoggedIn()) {
+                updateUIForLoggedInUser();
+            } else {
+                updateUIForLoggedOutUser();
+            }
+
+            // 綁定事件
+            document.getElementById('login-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                showLoginModal();
+            });
+
+            document.getElementById('my-projects-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                showProjectsModal();
+            });
+        });
     </script>
+
+    <!-- 登入 Modal -->
+    <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, #0a0e27, #1a1f3a); border: 2px solid #87CEEB; border-radius: 20px; padding: 3rem; max-width: 500px; width: 90%;">
+            <h2 style="color: #7FFF00; margin-bottom: 2rem; text-align: center;">登入</h2>
+
+            <!-- Email 步驟 -->
+            <div id="email-step">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: #87CEEB; display: block; margin-bottom: 0.5rem;">Email</label>
+                    <input type="email" id="login-email" placeholder="請輸入您的 Email" style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(135, 206, 235, 0.3); background: rgba(135, 206, 235, 0.05); color: white; font-size: 1rem;">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button onclick="sendOTP()" id="send-otp-btn" class="btn btn-primary" style="flex: 1;">發送驗證碼</button>
+                    <button onclick="hideLoginModal()" class="btn btn-secondary">取消</button>
+                </div>
+            </div>
+
+            <!-- OTP 步驟 -->
+            <div id="otp-step" style="display: none;">
+                <p style="color: #87CEEB; margin-bottom: 1.5rem;">驗證碼已發送到您的信箱，請在 10 分鐘內輸入：</p>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: #87CEEB; display: block; margin-bottom: 0.5rem;">驗證碼</label>
+                    <input type="text" id="otp-code" placeholder="請輸入 6 位數驗證碼" maxlength="6" style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(135, 206, 235, 0.3); background: rgba(135, 206, 235, 0.05); color: white; font-size: 1.5rem; text-align: center; letter-spacing: 0.5rem;">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button onclick="verifyOTP()" id="verify-otp-btn" class="btn btn-primary" style="flex: 1;">驗證並登入</button>
+                    <button onclick="hideLoginModal()" class="btn btn-secondary">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 專案管理 Modal -->
+    <div id="projects-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 1000; align-items: center; justify-content: center; overflow-y: auto;">
+        <div style="background: linear-gradient(135deg, #0a0e27, #1a1f3a); border: 2px solid #87CEEB; border-radius: 20px; padding: 3rem; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="color: #7FFF00; margin: 0;">我的作品</h2>
+                <button onclick="hideProjectsModal()" style="background: none; border: none; color: #87CEEB; font-size: 2rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <div id="projects-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+                <!-- 專案卡片將動態生成 -->
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .project-card {
+            background: rgba(135, 206, 235, 0.05);
+            border: 2px solid rgba(135, 206, 235, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            border-color: #7FFF00;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(127, 255, 0, 0.2);
+        }
+
+        .project-card h3 {
+            color: #7FFF00;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .project-card p {
+            color: #87CEEB;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
 </body>
 </html>
