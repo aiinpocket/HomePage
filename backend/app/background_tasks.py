@@ -224,18 +224,6 @@ async def send_completion_email(project: Project, db: Session):
                     </a>
                 </div>
 
-                <div style="background: linear-gradient(135deg, #7FFF00, #32CD32); border-radius: 12px; padding: 25px; margin: 30px 0; text-align: center; box-shadow: 0 4px 15px rgba(127, 255, 0, 0.3);">
-                    <h3 style="margin-top: 0; color: white; font-size: 1.3em;">🔑 您的下載密碼</h3>
-                    <div style="background: white; border-radius: 8px; padding: 20px; margin: 15px 0;">
-                        <div style="font-size: 2.5em; font-weight: bold; color: #7FFF00; letter-spacing: 0.3em; font-family: 'Courier New', monospace;">
-                            {download_password}
-                        </div>
-                    </div>
-                    <p style="margin: 10px 0 0 0; color: white; font-size: 0.95em;">
-                        ⚠️ 此密碼僅可使用一次，請妥善保管
-                    </p>
-                </div>
-
                 <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0;">
                     <h3 style="margin-top: 0; color: #155724;">📥 如何下載您的網站</h3>
                     <ol style="margin: 10px 0; padding-left: 20px; color: #155724;">
