@@ -10,6 +10,84 @@ from .config import settings
 class EmailService:
     """Email 發送服務"""
 
+    async def send_otp_email(
+        self,
+        recipient_email: str,
+        otp_code: str,
+        expires_minutes: int = 10
+    ):
+        """發送一次性密碼（OTP）郵件"""
+
+        subject = "🔐 AiInPocket 登入驗證碼"
+
+        html_body = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+        .header {{ background: linear-gradient(135deg, #87CEEB, #7FFF00); color: #0a0e27; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+        .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+        .otp-code {{ background: #0a0e27; color: #7FFF00; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding: 20px; text-align: center; border-radius: 10px; margin: 30px 0; font-family: 'Courier New', monospace; }}
+        .warning {{ background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }}
+        .info-box {{ background: white; padding: 20px; border-left: 4px solid #87CEEB; margin: 20px 0; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 登入驗證碼</h1>
+            <p>AiInPocket 口袋智慧</p>
+        </div>
+        <div class="content">
+            <h2>您好！</h2>
+            <p>您正在嘗試登入 AiInPocket 網站生成器。請使用以下驗證碼完成登入：</p>
+
+            <div class="otp-code">
+                {otp_code}
+            </div>
+
+            <div class="warning">
+                <strong>⏰ 重要提示：</strong>
+                <ul style="margin: 10px 0;">
+                    <li>此驗證碼將在 <strong>{expires_minutes} 分鐘</strong>後失效</li>
+                    <li>此驗證碼 <strong>僅能使用一次</strong></li>
+                    <li>請勿分享此驗證碼給任何人</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>🛡️ 安全性說明</h3>
+                <p>我們使用一次性密碼（OTP）來保護您的帳號安全：</p>
+                <ul>
+                    <li>每次登入都需要新的驗證碼</li>
+                    <li>驗證碼使用後立即失效</li>
+                    <li>保護您的作品不被他人竊取</li>
+                </ul>
+            </div>
+
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+            <p><strong>如果您沒有嘗試登入，請忽略此郵件。</strong></p>
+
+            <p style="margin-top: 30px;">
+                <strong>需要協助？</strong><br>
+                Email: support@aiinpocket.com<br>
+                網站: https://aiinpocket.com
+            </p>
+
+            <p style="color: #666; font-size: 14px; margin-top: 30px;">
+                © 2025 AiInPocket. 讓智慧觸手可及。
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+        await self._send_email(recipient_email, subject, html_body)
+
     async def send_generation_complete_email(
         self,
         recipient_email: str,
