@@ -12,6 +12,8 @@ class EasterEggSystem {
             'b', 'a'
         ];
         this.konamiSequence = [];
+        this.logoClickCount = 0;
+        this.logoClickTimer = null;
 
         this.init();
     }
@@ -37,10 +39,120 @@ class EasterEggSystem {
                 secretInfo.classList.remove('show');
             });
 
-            // 點擊 logo 也可以觸發
+            // 點擊 logo - 點擊 10 次觸發彩蛋
             logo.addEventListener('click', () => {
                 secretInfo.classList.toggle('show');
+
+                // 增加點擊計數
+                this.logoClickCount++;
+
+                // 清除之前的計時器
+                if (this.logoClickTimer) {
+                    clearTimeout(this.logoClickTimer);
+                }
+
+                // 3 秒內沒有點擊則重置
+                this.logoClickTimer = setTimeout(() => {
+                    this.logoClickCount = 0;
+                }, 3000);
+
+                // 達到 10 次點擊
+                if (this.logoClickCount === 10) {
+                    this.triggerLogoClickEasterEgg();
+                    this.logoClickCount = 0;
+                }
             });
+        }
+    }
+
+    // 觸發 Logo 點擊彩蛋
+    async triggerLogoClickEasterEgg() {
+        try {
+            const response = await fetch('/api/easter-egg/click_logo_10', {
+                method: 'POST'
+            });
+            const data = await response.json();
+
+            // 創建驚喜動畫
+            const announcement = document.createElement('div');
+            announcement.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(10, 14, 39, 0.95);
+                    border: 2px solid #87CEEB;
+                    border-radius: 20px;
+                    padding: 3rem;
+                    text-align: center;
+                    z-index: 10000;
+                    box-shadow: 0 0 50px rgba(135, 206, 235, 0.6);
+                    animation: bounceIn 0.5s ease-out;
+                ">
+                    <h2 style="color: #87CEEB; font-size: 2.5rem; margin-bottom: 1rem;">
+                        你發現了 Logo 彩蛋！
+                    </h2>
+                    <p style="color: #7FFF00; font-size: 1.2rem;">
+                        恭喜你的好奇心得到了獎勵！
+                    </p>
+                    <div style="
+                        background: linear-gradient(135deg, rgba(135, 206, 235, 0.1), rgba(127, 255, 0, 0.1));
+                        border: 1px solid #87CEEB;
+                        border-radius: 10px;
+                        padding: 1.5rem;
+                        margin: 2rem 0;
+                    ">
+                        <p style="color: #7FFF00; font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">
+                            獲得優惠碼！
+                        </p>
+                        <p style="color: #87CEEB; font-size: 2rem; font-family: monospace; letter-spacing: 3px;">
+                            ${data.promo_code}
+                        </p>
+                        <p style="color: #A0D8EF; font-size: 1rem; margin-top: 0.5rem;">
+                            ${data.discount}% OFF - AI 網頁生成服務
+                        </p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        padding: 0.8rem 2rem;
+                        background: linear-gradient(135deg, #87CEEB, #7FFF00);
+                        border: none;
+                        border-radius: 25px;
+                        color: #0a0e27;
+                        font-weight: bold;
+                        cursor: pointer;
+                        font-size: 1rem;
+                    ">
+                        太棒了！
+                    </button>
+                </div>
+            `;
+
+            // 添加彈跳動畫
+            if (!document.getElementById('bounce-animation')) {
+                const style = document.createElement('style');
+                style.id = 'bounce-animation';
+                style.textContent = `
+                    @keyframes bounceIn {
+                        0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+                        50% { transform: translate(-50%, -50%) scale(1.05); }
+                        70% { transform: translate(-50%, -50%) scale(0.9); }
+                        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            document.body.appendChild(announcement);
+
+            // 儲存優惠碼到 localStorage
+            localStorage.setItem('promo_code', data.promo_code);
+
+            // 播放音效
+            this.playSound();
+
+        } catch (error) {
+            console.error('Failed to get promo code:', error);
         }
     }
 
@@ -208,48 +320,88 @@ class EasterEggSystem {
     }
 
     // 觸發 Konami Code 彩蛋
-    triggerKonamiEasterEgg() {
+    async triggerKonamiEasterEgg() {
         console.log('Konami Code Activated!');
 
         // 開啟矩陣效果
         this.matrixEffect();
 
-        // 顯示特殊訊息
-        const announcement = document.createElement('div');
-        announcement.innerHTML = `
-            <div style="
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(10, 14, 39, 0.95);
-                border: 2px solid #7FFF00;
-                border-radius: 20px;
-                padding: 3rem;
-                text-align: center;
-                z-index: 10000;
-                box-shadow: 0 0 50px rgba(127, 255, 0, 0.6);
-            ">
-                <h2 style="color: #7FFF00; font-size: 2.5rem; margin-bottom: 1rem;">
-                    開發者模式已啟動
-                </h2>
-                <p style="color: #87CEEB; font-size: 1.2rem;">
-                    你發現了隱藏的開發者彩蛋！<br>
-                    歡迎來到 AiInPocket 的秘密世界
-                </p>
-                <p style="color: #A0D8EF; margin-top: 2rem; font-family: monospace;">
-                    System Status: <span style="color: #7FFF00;">ONLINE</span><br>
-                    Access Level: <span style="color: #7FFF00;">DEVELOPER</span><br>
-                    Matrix Mode: <span style="color: #7FFF00;">ACTIVATED</span>
-                </p>
-            </div>
-        `;
+        // 調用 API 獲取優惠碼
+        try {
+            const response = await fetch('/api/easter-egg/konami', {
+                method: 'POST'
+            });
+            const data = await response.json();
 
-        document.body.appendChild(announcement);
+            // 顯示特殊訊息（含優惠碼）
+            const announcement = document.createElement('div');
+            announcement.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(10, 14, 39, 0.95);
+                    border: 2px solid #7FFF00;
+                    border-radius: 20px;
+                    padding: 3rem;
+                    text-align: center;
+                    z-index: 10000;
+                    box-shadow: 0 0 50px rgba(127, 255, 0, 0.6);
+                ">
+                    <h2 style="color: #7FFF00; font-size: 2.5rem; margin-bottom: 1rem;">
+                        開發者模式已啟動
+                    </h2>
+                    <p style="color: #87CEEB; font-size: 1.2rem;">
+                        你發現了隱藏的開發者彩蛋！<br>
+                        歡迎來到 AiInPocket 的秘密世界
+                    </p>
+                    <div style="
+                        background: linear-gradient(135deg, rgba(135, 206, 235, 0.1), rgba(127, 255, 0, 0.1));
+                        border: 1px solid #7FFF00;
+                        border-radius: 10px;
+                        padding: 1.5rem;
+                        margin: 2rem 0;
+                    ">
+                        <p style="color: #7FFF00; font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">
+                            獲得優惠碼！
+                        </p>
+                        <p style="color: #87CEEB; font-size: 2rem; font-family: monospace; letter-spacing: 3px;">
+                            ${data.promo_code}
+                        </p>
+                        <p style="color: #A0D8EF; font-size: 1rem; margin-top: 0.5rem;">
+                            ${data.discount}% OFF - AI 網頁生成服務
+                        </p>
+                    </div>
+                    <p style="color: #A0D8EF; margin-top: 2rem; font-family: monospace;">
+                        System Status: <span style="color: #7FFF00;">ONLINE</span><br>
+                        Access Level: <span style="color: #7FFF00;">DEVELOPER</span><br>
+                        Matrix Mode: <span style="color: #7FFF00;">ACTIVATED</span>
+                    </p>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        margin-top: 2rem;
+                        padding: 0.8rem 2rem;
+                        background: linear-gradient(135deg, #87CEEB, #7FFF00);
+                        border: none;
+                        border-radius: 25px;
+                        color: #0a0e27;
+                        font-weight: bold;
+                        cursor: pointer;
+                        font-size: 1rem;
+                    ">
+                        關閉
+                    </button>
+                </div>
+            `;
 
-        setTimeout(() => {
-            announcement.remove();
-        }, 5000);
+            document.body.appendChild(announcement);
+
+            // 儲存優惠碼到 localStorage
+            localStorage.setItem('promo_code', data.promo_code);
+
+        } catch (error) {
+            console.error('Failed to get promo code:', error);
+        }
 
         // 播放音效序列
         this.playKonamiSound();

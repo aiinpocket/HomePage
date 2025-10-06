@@ -1,12 +1,13 @@
 """
 AI 對話處理模組
-整合 OpenAI API 或其他 LLM
+整合 OpenAI API 或其他 LLM + RAG 系統
 """
 import os
 from typing import Dict, Optional
 from openai import OpenAI
 from .config import settings
 from .actions import IntentClassifier
+from .database import SessionLocal
 
 
 class AIHandler:
@@ -72,7 +73,7 @@ class AIHandler:
         conversation_history: Optional[list] = None
     ) -> Dict:
         """
-        處理使用者訊息並生成回應
+        處理使用者訊息並生成回應（使用 RAG 系統）
 
         Args:
             message: 使用者訊息
@@ -82,22 +83,96 @@ class AIHandler:
         Returns:
             包含 reply 和 action 的字典
         """
-        # 首先使用意圖分類器判斷是否有明確動作
-        response_text, action = self.intent_classifier.generate_response_with_action(message)
+        # 使用 RAG 系統搜尋相關頁面
+        action = None
+        response_text = ""
 
-        # 如果有 OpenAI 客戶端且訊息比較複雜，使用 GPT 生成更好的回應
-        if self.client and len(message) > 20:
+        try:
+            from .rag_system import rag_system
+
+            db = SessionLocal()
             try:
-                response_text = await self._get_openai_response(message, conversation_history)
-            except Exception as e:
-                print(f"OpenAI API error: {e}")
-                # 發生錯誤時使用備用回應
-                pass
+                # 搜尋最相關的頁面
+                similar_pages = rag_system.search_similar_pages(message, db, limit=3)
+
+                if similar_pages:
+                    # 找到最相關的頁面
+                    best_match = similar_pages[0]
+
+                    # 生成動作
+                    action = {
+                        "type": "navigate",
+                        "target": best_match.url_path
+                    }
+
+                    # 生成回應文字
+                    if self.client and len(message) > 10:
+                        # 使用 GPT 生成個性化回應
+                        context = f"使用者問：{message}\n最相關的頁面是：{best_match.title}\n頁面描述：{best_match.description}"
+                        response_text = await self._get_openai_response_with_context(message, context, conversation_history)
+                    else:
+                        # 使用預設回應
+                        response_text = f"我找到了相關的頁面：{best_match.title}，讓我帶你過去看看！"
+
+                else:
+                    # 沒找到相關頁面，使用舊的意圖分類器
+                    response_text, action = self.intent_classifier.generate_response_with_action(message)
+
+            finally:
+                db.close()
+
+        except Exception as e:
+            print(f"RAG system error: {e}")
+            # RAG 失敗時使用備用方案
+            response_text, action = self.intent_classifier.generate_response_with_action(message)
 
         return {
             "reply": response_text,
             "action": action
         }
+
+    async def _get_openai_response_with_context(
+        self,
+        message: str,
+        context: str,
+        conversation_history: Optional[list] = None
+    ) -> str:
+        """
+        使用 OpenAI API 生成回應（帶有 RAG 上下文）
+
+        Args:
+            message: 使用者訊息
+            context: RAG 提供的上下文
+            conversation_history: 對話歷史
+
+        Returns:
+            AI 生成的回應
+        """
+        messages = [
+            {"role": "system", "content": self.system_prompt},
+            {"role": "system", "content": f"參考資訊：{context}"}
+        ]
+
+        # 添加歷史對話（最多保留最近 5 輪）
+        if conversation_history:
+            messages.extend(conversation_history[-10:])
+
+        # 添加當前訊息
+        messages.append({"role": "user", "content": message})
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                max_tokens=200,
+                temperature=0.7,
+            )
+
+            return response.choices[0].message.content.strip()
+
+        except Exception as e:
+            print(f"Error calling OpenAI API: {e}")
+            raise
 
     async def _get_openai_response(
         self,

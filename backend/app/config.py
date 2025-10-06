@@ -23,6 +23,32 @@ class Settings(BaseSettings):
     # Rate Limiting
     RATE_LIMIT_PER_MINUTE: int = 60
 
+    # PostgreSQL
+    DATABASE_URL: str = "postgresql://aiinpocket:aiinpocket_secure_password@postgres:5432/aiinpocket"
+
+    # 網站設定
+    SITE_URL: str = "https://aiinpocket.com"
+    FRONTEND_PATH: str = "/app/frontend"
+
+    # 彩蛋優惠碼設定
+    EASTER_EGG_PROMO_CODE: str = "AIINPOCKET2025"
+    EASTER_EGG_DISCOUNT: int = 20
+
+    # Email 設定
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = "AiInPocket <noreply@aiinpocket.com>"
+
+    # Redis 設定
+    REDIS_URL: str = "redis://redis:6379/0"
+
+    # 生成網站設定
+    PREVIEW_API_LIMIT: int = 30
+    GENERATED_SITES_PATH: str = "/app/generated_sites"
+    DOWNLOAD_BASE_URL: str = "https://aiinpocket.com/download"
+
     class Config:
         env_file = ".env"
         case_sensitive = True

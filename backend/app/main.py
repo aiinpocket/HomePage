@@ -11,6 +11,7 @@ from datetime import datetime
 
 from .config import settings
 from .ai_handler import ai_handler
+from .easter_eggs import easter_egg_system
 
 
 # ========================================
@@ -185,6 +186,43 @@ async def list_sessions():
 
 
 # ========================================
+# 彩蛋系統 API
+# ========================================
+
+@app.post("/api/easter-egg/{egg_type}", tags=["Easter Egg"])
+async def trigger_easter_egg(egg_type: str):
+    """
+    觸發彩蛋並獲取優惠碼
+
+    Args:
+        egg_type: 彩蛋類型 (konami, click_logo_10, secret_url, inspect_element)
+    """
+    result = easter_egg_system.validate_easter_egg(egg_type)
+
+    if result:
+        return result
+    else:
+        raise HTTPException(status_code=404, detail="彩蛋不存在")
+
+
+@app.get("/api/promo/{promo_code}", tags=["Easter Egg"])
+async def validate_promo_code(promo_code: str):
+    """驗證優惠碼"""
+    result = easter_egg_system.get_promo_info(promo_code)
+    return result
+
+
+@app.get("/secret-garden", tags=["Easter Egg"])
+async def secret_garden():
+    """隱藏彩蛋頁面"""
+    result = easter_egg_system.validate_easter_egg("secret_url")
+    return {
+        "message": "歡迎來到秘密花園",
+        "promo": result
+    }
+
+
+# ========================================
 # 啟動事件
 # ========================================
 
@@ -196,6 +234,33 @@ async def startup_event():
     print(f"[DEBUG] Debug mode: {settings.DEBUG}")
     print(f"[CORS] CORS origins: {settings.cors_origins_list}")
     print(f"[AI] AI handler initialized")
+    print("=" * 50)
+
+    # 初始化資料庫
+    try:
+        from .database import init_db
+        init_db()
+    except Exception as e:
+        print(f"[ERROR] Failed to initialize database: {e}")
+
+    # 建立 RAG 索引
+    try:
+        from .rag_system import rag_system
+        indexed_count = rag_system.index_all_pages()
+        print(f"[RAG] Indexed {indexed_count} pages")
+    except Exception as e:
+        print(f"[ERROR] Failed to build RAG index: {e}")
+
+    # 生成 sitemap.xml
+    try:
+        from .sitemap_generator import generate_sitemap
+        sitemap_path = generate_sitemap()
+        print(f"[SITEMAP] Generated: {sitemap_path}")
+    except Exception as e:
+        print(f"[ERROR] Failed to generate sitemap: {e}")
+
+    print("=" * 50)
+    print("[START] Application startup complete!")
     print("=" * 50)
 
 
