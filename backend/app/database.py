@@ -18,7 +18,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 # 匯入模型（放在這裡避免循環匯入）
-from .models import Base, User, Project, OTPToken, PageContent
+from .models import Base, User, Project, OTPToken, SiteUsage, PageContent
 
 
 def get_db():

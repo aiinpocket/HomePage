@@ -18,6 +18,14 @@ class User(Base):
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String(255), unique=True, nullable=False, index=True)
+
+    # VIP 等級和限制
+    vip_level = Column(Integer, default=0)  # 0=免費, 1=基礎, 2=專業, 3=企業
+    max_projects = Column(Integer, default=5)  # 最大專案數量（可依 VIP 調整）
+
+    # 統計
+    total_projects_created = Column(Integer, default=0)  # 總共建立的專案數
+
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -25,8 +33,36 @@ class User(Base):
     projects = relationship("Project", back_populates="user", cascade="all, delete-orphan")
     otp_tokens = relationship("OTPToken", back_populates="user", cascade="all, delete-orphan")
 
+    def can_create_project(self, db_session) -> bool:
+        """檢查是否可以建立新專案"""
+        active_projects = db_session.query(Project).filter(
+            Project.user_id == self.id,
+            Project.is_deleted == False
+        ).count()
+        return active_projects < self.max_projects
+
+    def get_remaining_projects(self, db_session) -> int:
+        """取得剩餘可建立的專案數"""
+        active_projects = db_session.query(Project).filter(
+            Project.user_id == self.id,
+            Project.is_deleted == False
+        ).count()
+        return max(0, self.max_projects - active_projects)
+
+    def upgrade_vip(self, level: int):
+        """升級 VIP 等級並調整專案限制"""
+        self.vip_level = level
+        # 根據 VIP 等級設定專案數量
+        vip_limits = {
+            0: 5,    # 免費：5 個
+            1: 15,   # 基礎：15 個
+            2: 50,   # 專業：50 個
+            3: 999   # 企業：無限制（用 999 表示）
+        }
+        self.max_projects = vip_limits.get(level, 5)
+
     def __repr__(self):
-        return f"<User {self.email}>"
+        return f"<User {self.email} (VIP {self.vip_level})>"
 
 
 class Project(Base):
@@ -106,6 +142,39 @@ class OTPToken(Base):
 
     def __repr__(self):
         return f"<OTPToken {self.token} (used={self.is_used})>"
+
+
+class SiteUsage(Base):
+    """網站試用次數追蹤（綁定 site_id，持久化到 PostgreSQL）"""
+    __tablename__ = "site_usage"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    site_id = Column(String(36), unique=True, nullable=False, index=True)  # 生成的網站 ID
+
+    # 使用統計
+    api_calls_count = Column(Integer, default=0)  # API 呼叫次數
+    max_api_calls = Column(Integer, default=30)   # 最大呼叫次數（預設 30）
+
+    # 時間戳
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_used_at = Column(DateTime, default=datetime.utcnow)
+
+    def increment_usage(self) -> int:
+        """增加使用次數並返回新的次數"""
+        self.api_calls_count += 1
+        self.last_used_at = datetime.utcnow()
+        return self.api_calls_count
+
+    def is_quota_exceeded(self) -> bool:
+        """檢查是否超過配額"""
+        return self.api_calls_count >= self.max_api_calls
+
+    def get_remaining_calls(self) -> int:
+        """取得剩餘呼叫次數"""
+        return max(0, self.max_api_calls - self.api_calls_count)
+
+    def __repr__(self):
+        return f"<SiteUsage {self.site_id} ({self.api_calls_count}/{self.max_api_calls})>"
 
 
 class PageContent(Base):
