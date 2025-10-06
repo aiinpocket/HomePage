@@ -557,6 +557,38 @@
             font-weight: 600;
         }
 
+        /* 作品集圖片上傳樣式 */
+        .portfolio-image-upload {
+            border: 2px dashed rgba(135, 206, 235, 0.4);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(135, 206, 235, 0.02);
+        }
+
+        .portfolio-image-upload:hover {
+            border-color: var(--primary-blue);
+            background: rgba(135, 206, 235, 0.05);
+        }
+
+        .upload-placeholder {
+            width: 100%;
+        }
+
+        .portfolio-image-preview {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: var(--radius-sm);
+            object-fit: contain;
+        }
+
         /* 導航按鈕 */
         .navigation-buttons {
             display: flex;
@@ -1484,6 +1516,129 @@
         }
 
         // ========================================
+        // 作品集圖片處理（自動壓縮與調整大小）
+        // ========================================
+        async function handlePortfolioImageUpload(input, itemId) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // 檢查檔案類型
+            if (!file.type.startsWith('image/')) {
+                alert('請上傳圖片檔案');
+                input.value = '';
+                return;
+            }
+
+            // 檢查檔案大小（10MB）
+            if (file.size > 10 * 1024 * 1024) {
+                alert('圖片大小不能超過 10MB');
+                input.value = '';
+                return;
+            }
+
+            // 顯示處理中提示
+            const placeholder = document.getElementById(`placeholder-${itemId}`);
+            const preview = document.getElementById(`preview-${itemId}`);
+            placeholder.innerHTML = '<div class="upload-icon">⏳</div><div class="upload-text">處理中...</div>';
+
+            try {
+                // 壓縮並調整圖片大小
+                const optimizedImage = await optimizeImage(file);
+
+                // 顯示預覽
+                preview.src = optimizedImage;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+
+                // 儲存 base64 資料
+                document.getElementById(`portfolio-image-data-${itemId}`).value = optimizedImage;
+
+            } catch (error) {
+                console.error('圖片處理失敗:', error);
+                alert('圖片處理失敗，請重試或選擇其他圖片');
+                placeholder.innerHTML = `
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">點擊上傳作品圖片</div>
+                    <div class="upload-hint">支援 JPG, PNG, WebP（最大 10MB，自動優化）</div>
+                `;
+                input.value = '';
+            }
+        }
+
+        /**
+         * 優化圖片 - 自動調整大小和壓縮
+         * @param {File} file - 原始圖片檔案
+         * @returns {Promise<string>} - Base64 編碼的優化圖片
+         */
+        async function optimizeImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const img = new Image();
+
+                    img.onload = () => {
+                        // 設定最大尺寸限制（避免排版跑掉）
+                        const MAX_WIDTH = 1200;   // 最大寬度
+                        const MAX_HEIGHT = 800;   // 最大高度
+                        const QUALITY = 0.85;     // 壓縮品質 (0.85 = 85%)
+
+                        let width = img.width;
+                        let height = img.height;
+
+                        // 計算縮放比例
+                        if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                            const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+                            width = Math.floor(width * ratio);
+                            height = Math.floor(height * ratio);
+                        }
+
+                        // 建立 Canvas 進行壓縮
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+
+                        // 使用更好的圖片縮放演算法
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+
+                        // 繪製圖片
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // 轉換為 Base64（使用 JPEG 格式以獲得更好的壓縮率）
+                        const optimizedBase64 = canvas.toBlob((blob) => {
+                            const reader2 = new FileReader();
+                            reader2.onloadend = () => {
+                                const result = reader2.result;
+
+                                // 檢查壓縮後的大小
+                                const sizeInKB = Math.round((result.length * 3 / 4) / 1024);
+                                console.log(`圖片優化完成: ${img.width}x${img.height} -> ${width}x${height}, ${sizeInKB}KB`);
+
+                                resolve(result);
+                            };
+                            reader2.readAsDataURL(blob);
+                        }, 'image/jpeg', QUALITY);
+                    };
+
+                    img.onerror = () => {
+                        reject(new Error('無法載入圖片'));
+                    };
+
+                    img.src = e.target.result;
+                };
+
+                reader.onerror = () => {
+                    reject(new Error('無法讀取檔案'));
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ========================================
         // 圖片分析（呼叫後端 API）
         // ========================================
         async function analyzeImage(imageData) {
@@ -1702,6 +1857,8 @@
             const list = document.getElementById('portfolio-list');
             const item = document.createElement('div');
             item.className = 'portfolio-item-block';
+            const itemId = `portfolio-item-${portfolioItemCount}`;
+            item.setAttribute('data-item-id', portfolioItemCount);
             item.innerHTML = `
                 <div class="portfolio-item-header">
                     <div class="portfolio-item-title">作品 #${portfolioItemCount}</div>
@@ -1714,6 +1871,28 @@
                 <div class="form-field">
                     <label>作品描述</label>
                     <textarea name="portfolio-description[]" placeholder="簡述作品特色與成果..." rows="3"></textarea>
+                </div>
+                <div class="form-field">
+                    <label>
+                        作品圖片
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">（選填，圖片會自動優化至適當大小）</span>
+                    </label>
+                    <div class="portfolio-image-upload" onclick="document.getElementById('portfolio-image-${portfolioItemCount}').click()">
+                        <div class="upload-placeholder" id="placeholder-${portfolioItemCount}">
+                            <div class="upload-icon">📸</div>
+                            <div class="upload-text">點擊上傳作品圖片</div>
+                            <div class="upload-hint">支援 JPG, PNG, WebP（最大 10MB，自動優化）</div>
+                        </div>
+                        <img class="portfolio-image-preview" id="preview-${portfolioItemCount}" style="display: none;" alt="Preview">
+                        <input
+                            type="file"
+                            id="portfolio-image-${portfolioItemCount}"
+                            accept="image/*"
+                            style="display: none;"
+                            onchange="handlePortfolioImageUpload(this, ${portfolioItemCount})"
+                        >
+                    </div>
+                    <input type="hidden" name="portfolio-image[]" id="portfolio-image-data-${portfolioItemCount}">
                 </div>
                 <div class="form-row">
                     <div class="form-field">
@@ -1800,14 +1979,22 @@
             if (needPortfolio) {
                 const portfolioNames = document.querySelectorAll('input[name="portfolio-name[]"]');
                 const portfolioDescriptions = document.querySelectorAll('textarea[name="portfolio-description[]"]');
+                const portfolioImages = document.querySelectorAll('input[name="portfolio-image[]"]');
                 const portfolioTechs = document.querySelectorAll('input[name="portfolio-tech[]"]');
                 const portfolioDates = document.querySelectorAll('input[name="portfolio-date[]"]');
 
                 for (let i = 0; i < portfolioNames.length; i++) {
-                    portfolio.push({
+                    const item = {
                         title: portfolioNames[i].value,
                         description: portfolioDescriptions[i].value
-                    });
+                    };
+
+                    // 添加圖片（如果有上傳）
+                    if (portfolioImages[i] && portfolioImages[i].value) {
+                        item.image = portfolioImages[i].value; // Base64 格式
+                    }
+
+                    portfolio.push(item);
                 }
             }
 
