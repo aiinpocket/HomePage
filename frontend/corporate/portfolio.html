@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>作品集 | AiInPocket</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../shared/css/styles.css">
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
@@ -17,11 +17,12 @@
                 <span class="logo-subtext">口袋智慧</span>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">首頁</a></li>
-                <li><a href="portfolio.html" class="active">作品集</a></li>
-                <li><a href="tech-stack.html">技術棧</a></li>
-                <li><a href="about.html">關於我們</a></li>
-                <li><a href="contact.html" class="nav-cta">聯絡我們</a></li>
+                <li><a href="index.html" data-i18n="nav.home">首頁</a></li>
+                <li><a href="portfolio.html" class="active" data-i18n="nav.portfolio">作品集</a></li>
+                <li><a href="tech-stack.html" data-i18n="nav.techStack">技術棧</a></li>
+                <li><a href="about.html" data-i18n="nav.about">關於我們</a></li>
+                <li><a href="contact.html" data-i18n="nav.contact">聯絡我們</a></li>
+                <li><a href="../generator/index.html" class="nav-cta" data-i18n="nav.generator">AI 生成器</a></li>
             </ul>
             <div class="nav-toggle" id="nav-toggle">
                 <span></span>
@@ -33,7 +34,7 @@
 
     <div class="secret-info" id="secret-info">
         <div class="secret-content">
-            <h3>🔐 委託資訊</h3>
+            <h3>[機密] 委託資訊</h3>
             <p><strong>專案代號:</strong> POCKET-AI-2024</p>
             <p><strong>技術棧:</strong> Next-Gen AI | Cloud Native | DevOps</p>
             <p><strong>狀態:</strong> <span class="status-active">ACTIVE</span></p>
@@ -49,9 +50,9 @@
             <div class="container">
                 <h1 class="page-title">
                     <span class="title-number">02</span>
-                    作品集
+                    <span data-i18n="portfolio.header.title">作品集</span>
                 </h1>
-                <p class="page-subtitle">我們引以為傲的專案成果</p>
+                <p class="page-subtitle" data-i18n="portfolio.header.subtitle">我們引以為傲的專案成果</p>
             </div>
         </section>
 
@@ -59,10 +60,10 @@
         <section class="portfolio-filters">
             <div class="container">
                 <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">全部</button>
-                    <button class="filter-btn" data-filter="ai">AI 解決方案</button>
-                    <button class="filter-btn" data-filter="cloud">雲端架構</button>
-                    <button class="filter-btn" data-filter="devops">DevOps</button>
+                    <button class="filter-btn active" data-filter="all" data-i18n="portfolio.filters.all">全部</button>
+                    <button class="filter-btn" data-filter="ai" data-i18n="portfolio.filters.ai">AI 解決方案</button>
+                    <button class="filter-btn" data-filter="cloud" data-i18n="portfolio.filters.cloud">雲端架構</button>
+                    <button class="filter-btn" data-filter="devops" data-i18n="portfolio.filters.devops">DevOps</button>
                 </div>
             </div>
         </section>
@@ -76,20 +77,20 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">🤖</span>
+                                    <span class="placeholder-icon">[AI]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
-                                <div class="project-tag">AI 解決方案</div>
-                                <h3 class="project-title">智能客服系統</h3>
-                                <p class="project-description">
+                                <div class="project-tag" data-i18n="portfolio.project1.tag">AI 解決方案</div>
+                                <h3 class="project-title" data-i18n="portfolio.project1.title">智能客服系統</h3>
+                                <p class="project-description" data-i18n="portfolio.project1.desc">
                                     為大型電商平台打造的 AI 客服系統，結合 GPT-4 與客製化知識庫，
                                     大幅提升客戶滿意度並降低 60% 人力成本。
                                 </p>
                                 <div class="project-stats">
-                                    <span><strong>60%</strong> 成本降低</span>
-                                    <span><strong>95%</strong> 準確率</span>
-                                    <span><strong>24/7</strong> 全天候服務</span>
+                                    <span data-i18n="portfolio.project1.stat1"><strong>60%</strong> 成本降低</span>
+                                    <span data-i18n="portfolio.project1.stat2"><strong>95%</strong> 準確率</span>
+                                    <span data-i18n="portfolio.project1.stat3"><strong>24/7</strong> 全天候服務</span>
                                 </div>
                                 <div class="project-tech">
                                     <span>Python</span>
@@ -106,26 +107,25 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">☁️</span>
+                                    <span class="placeholder-icon">[Cloud]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
-                                <div class="project-tag">雲端架構</div>
-                                <h3 class="project-title">微服務架構遷移</h3>
-                                <p class="project-description">
+                                <div class="project-tag" data-i18n="portfolio.project2.tag">雲端架構</div>
+                                <h3 class="project-title" data-i18n="portfolio.project2.title">微服務架構遷移</h3>
+                                <p class="project-description" data-i18n="portfolio.project2.desc">
                                     協助金融科技公司從單體架構遷移至 Kubernetes 微服務架構，
                                     實現高可用性與彈性擴展。
                                 </p>
                                 <div class="project-stats">
-                                    <span><strong>99.9%</strong> 可用性</span>
-                                    <span><strong>3x</strong> 性能提升</span>
-                                    <span><strong>50%</strong> 成本優化</span>
+                                    <span data-i18n="portfolio.project2.stat1"><strong>99.9%</strong> 可用性</span>
+                                    <span data-i18n="portfolio.project2.stat2"><strong>3x</strong> 性能提升</span>
+                                    <span data-i18n="portfolio.project2.stat3"><strong>50%</strong> 成本優化</span>
                                 </div>
                                 <div class="project-tech">
                                     <span>Kubernetes</span>
                                     <span>Docker</span>
                                     <span>AWS</span>
-                                    <span>Terraform</span>
                                 </div>
                             </div>
                         </div>
@@ -136,20 +136,20 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">⚡</span>
+                                    <span class="placeholder-icon">[Fast]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
-                                <div class="project-tag">DevOps</div>
-                                <h3 class="project-title">CI/CD 自動化流程</h3>
-                                <p class="project-description">
+                                <div class="project-tag" data-i18n="portfolio.project3.tag">DevOps</div>
+                                <h3 class="project-title" data-i18n="portfolio.project3.title">CI/CD 自動化流程</h3>
+                                <p class="project-description" data-i18n="portfolio.project3.desc">
                                     建立完整的自動化部署管道，從代碼提交到生產環境部署，
                                     縮短發布週期至每日多次部署。
                                 </p>
                                 <div class="project-stats">
-                                    <span><strong>10x</strong> 部署頻率</span>
-                                    <span><strong>80%</strong> 時間節省</span>
-                                    <span><strong>0</strong> 停機部署</span>
+                                    <span data-i18n="portfolio.project3.stat1"><strong>10x</strong> 部署頻率</span>
+                                    <span data-i18n="portfolio.project3.stat2"><strong>80%</strong> 時間節省</span>
+                                    <span data-i18n="portfolio.project3.stat3"><strong>0</strong> 停機部署</span>
                                 </div>
                                 <div class="project-tech">
                                     <span>Jenkins</span>
@@ -162,54 +162,24 @@
                     </div>
 
                     <!-- 專案 4 -->
-                    <div class="portfolio-item" data-category="ai" id="project-4">
+                    <div class="portfolio-item" data-category="cloud" id="project-4">
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">📊</span>
+                                    <span class="placeholder-icon">[Web]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
-                                <div class="project-tag">AI 解決方案</div>
-                                <h3 class="project-title">預測性維護系統</h3>
-                                <p class="project-description">
-                                    運用機器學習預測製造業設備故障，提前進行維護，
-                                    避免非計劃性停機，節省大量維修成本。
-                                </p>
-                                <div class="project-stats">
-                                    <span><strong>85%</strong> 預測準確率</span>
-                                    <span><strong>40%</strong> 停機減少</span>
-                                    <span><strong>$2M+</strong> 年度節省</span>
-                                </div>
-                                <div class="project-tech">
-                                    <span>Python</span>
-                                    <span>TensorFlow</span>
-                                    <span>Time Series</span>
-                                    <span>IoT</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 專案 5 -->
-                    <div class="portfolio-item" data-category="cloud" id="project-5">
-                        <div class="portfolio-card">
-                            <div class="portfolio-image">
-                                <div class="project-placeholder">
-                                    <span class="placeholder-icon">🌐</span>
-                                </div>
-                            </div>
-                            <div class="portfolio-content">
-                                <div class="project-tag">雲端架構</div>
-                                <h3 class="project-title">全球 CDN 部署</h3>
-                                <p class="project-description">
+                                <div class="project-tag" data-i18n="portfolio.project4.tag">雲端架構</div>
+                                <h3 class="project-title" data-i18n="portfolio.project4.title">全球 CDN 部署</h3>
+                                <p class="project-description" data-i18n="portfolio.project4.desc">
                                     為跨國媒體平台設計全球內容分發網路，
                                     優化全球用戶訪問速度與體驗。
                                 </p>
                                 <div class="project-stats">
-                                    <span><strong>70%</strong> 延遲降低</span>
-                                    <span><strong>150+</strong> 節點</span>
-                                    <span><strong>5大洲</strong> 覆蓋</span>
+                                    <span data-i18n="portfolio.project4.stat1"><strong>70%</strong> 延遲降低</span>
+                                    <span data-i18n="portfolio.project4.stat2"><strong>150+</strong> 節點</span>
+                                    <span data-i18n="portfolio.project4.stat3"><strong>5大洲</strong> 覆蓋</span>
                                 </div>
                                 <div class="project-tech">
                                     <span>CloudFront</span>
@@ -221,25 +191,25 @@
                         </div>
                     </div>
 
-                    <!-- 專案 6 -->
-                    <div class="portfolio-item" data-category="devops" id="project-6">
+                    <!-- 專案 5 -->
+                    <div class="portfolio-item" data-category="devops" id="project-5">
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">🔒</span>
+                                    <span class="placeholder-icon">[Secure]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
-                                <div class="project-tag">DevOps</div>
-                                <h3 class="project-title">安全性自動化掃描</h3>
-                                <p class="project-description">
+                                <div class="project-tag" data-i18n="portfolio.project5.tag">DevOps</div>
+                                <h3 class="project-title" data-i18n="portfolio.project5.title">安全性自動化掃描</h3>
+                                <p class="project-description" data-i18n="portfolio.project5.desc">
                                     整合多種安全掃描工具至 CI/CD 流程，
                                     自動化漏洞檢測與合規性檢查。
                                 </p>
                                 <div class="project-stats">
-                                    <span><strong>100%</strong> 代碼掃描</span>
-                                    <span><strong>90%</strong> 漏洞減少</span>
-                                    <span><strong>自動化</strong> 修復建議</span>
+                                    <span data-i18n="portfolio.project5.stat1"><strong>100%</strong> 代碼掃描</span>
+                                    <span data-i18n="portfolio.project5.stat2"><strong>90%</strong> 漏洞減少</span>
+                                    <span data-i18n="portfolio.project5.stat3"><strong>自動化</strong> 修復建議</span>
                                 </div>
                                 <div class="project-tech">
                                     <span>SonarQube</span>
@@ -257,10 +227,10 @@
         <!-- CTA -->
         <section class="cta-section">
             <div class="container">
-                <h2 class="cta-title">想要看到您的專案在這裡嗎？</h2>
-                <p class="cta-description">讓我們一起打造下一個成功案例</p>
+                <h2 class="cta-title" data-i18n="portfolio.cta.title">想要看到您的專案在這裡嗎？</h2>
+                <p class="cta-description" data-i18n="portfolio.cta.desc">讓我們一起打造下一個成功案例</p>
                 <a href="contact.html" class="btn btn-primary btn-large">
-                    <span>開始合作</span>
+                    <span data-i18n="portfolio.cta.btn">開始合作</span>
                     <span class="btn-glow"></span>
                 </a>
             </div>
@@ -272,28 +242,30 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <h3>AiInPocket</h3>
-                    <p class="footer-tagline">讓智慧觸手可及</p>
+                    <p class="footer-tagline" data-i18n="footer.tagline">讓智慧觸手可及</p>
                 </div>
                 <div class="footer-links">
                     <div class="footer-column">
-                        <h4>服務</h4>
+                        <h4 data-i18n="footer.services">服務</h4>
                         <ul>
-                            <li><a href="portfolio.html">作品集</a></li>
-                            <li><a href="tech-stack.html">技術棧</a></li>
-                            <li><a href="about.html">關於我們</a></li>
+                            <li><a href="portfolio.html" data-i18n="nav.portfolio">作品集</a></li>
+                            <li><a href="tech-stack.html" data-i18n="nav.techStack">技術棧</a></li>
+                            <li><a href="about.html" data-i18n="nav.about">關於我們</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
-                        <h4>聯絡</h4>
+                        <h4 data-i18n="footer.contactUs">聯絡</h4>
                         <ul>
-                            <li><a href="contact.html">聯絡我們</a></li>
-                            <li><a href="mailto:help@aiinpocket.com">Email</a></li>
+                            <li><a href="contact.html" data-i18n="nav.contact">聯絡我們</a></li>
+                            <li><a href="privacy.html" data-i18n="footer.privacy">隱私權政策</a></li>
+                            <li><a href="mailto:help@aiinpocket.com" data-i18n="footer.email">Email</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 AiInPocket. All rights reserved.</p>
+                <p>&copy; <span id="current-year"></span> <span data-i18n="footer.copyright">AiInPocket. All rights reserved.</span></p>
+                <p class="footer-note" data-i18n="footer.poweredBy">/// Powered by AI & Innovation ///</p>
             </div>
         </div>
     </footer>
@@ -301,16 +273,20 @@
     <div id="easter-egg-modal" class="modal">
         <div class="modal-overlay" id="modal-overlay"></div>
         <div class="modal-content">
-            <h2 class="modal-title">🎉 彩蛋觸發！</h2>
-            <p class="modal-text">你發現了隱藏的魔法咒語！</p>
-            <div class="magic-text">AI is in your pocket now! 🚀</div>
-            <button class="btn btn-primary modal-close" id="modal-close">關閉</button>
+            <h2 class="modal-title" data-i18n="easterEgg.title">[彩蛋觸發！]</h2>
+            <p class="modal-text" data-i18n="easterEgg.text">你發現了隱藏的魔法咒語！</p>
+            <div class="magic-text">AI is in your pocket now!</div>
+            <button class="btn btn-primary modal-close" id="modal-close" data-i18n="easterEgg.close">關閉</button>
         </div>
     </div>
 
-    <script src="js/particles.js"></script>
-    <script src="js/easter-eggs.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/ai-chat.js"></script>
+    <script src="../shared/js/devtools-guard.js"></script>
+    <script src="../shared/js/particles.js"></script>
+    <script src="../shared/js/i18n.js"></script>
+    <script src="../shared/js/lang-switcher.js"></script>
+    <script src="../shared/js/cookie-consent.js"></script>
+    <script src="../shared/js/easter-eggs.js"></script>
+    <script src="../shared/js/main.js"></script>
+    <script src="../shared/js/ai-chat.js"></script>
 </body>
 </html>

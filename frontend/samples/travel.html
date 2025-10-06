@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Awaits | 冒險旅程</title>
+    <meta name="description" content="探索世界的美好，讓每一次旅行都成為永恆的回憶">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ocean-blue: #0077BE;
+            --sunset-orange: #FF6B35;
+            --sand-beige: #F4E8C1;
+            --forest-green: #2D5016;
+            --sky-blue: #87CEEB;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: linear-gradient(180deg, var(--sky-blue) 0%, var(--sand-beige) 100%);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 導航列 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 119, 190, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h1 {
+            font-size: 1.8rem;
+            color: white;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: var(--sunset-orange);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 5% 3rem;
+            background:
+                linear-gradient(rgba(0, 119, 190, 0.7), rgba(0, 119, 190, 0.5)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%2387CEEB" width="1200" height="600"/><path fill="%230077BE" opacity="0.3" d="M0,300 Q300,200 600,300 T1200,300 L1200,600 L0,600 Z"/></svg>');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            color: white;
+        }
+
+        .hero h2 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: var(--sunset-orange);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.6);
+        }
+
+        /* 目的地展示 */
+        .destinations {
+            padding: 6rem 5%;
+            background: white;
+        }
+
+        .destinations h2 {
+            text-align: center;
+            font-size: 3.5rem;
+            margin-bottom: 4rem;
+            color: var(--ocean-blue);
+            font-weight: 700;
+        }
+
+        .dest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dest-card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .dest-card:hover {
+            transform: translateY(-15px);
+        }
+
+        .dest-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, var(--ocean-blue), var(--sky-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .dest-info {
+            padding: 2rem;
+            background: white;
+        }
+
+        .dest-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--ocean-blue);
+        }
+
+        .dest-info p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .dest-tag {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            background: var(--sunset-orange);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* 特色 */
+        .features {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, var(--ocean-blue), var(--sky-blue));
+            color: white;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 3.5rem;
+            margin-bottom: 4rem;
+            font-weight: 700;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item p {
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 3rem 5%;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        /* 響應式 */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .destinations h2,
+            .features h2 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <h1>Adventure Awaits</h1>
+            <ul>
+                <li><a href="#home">首頁</a></li>
+                <li><a href="#destinations">目的地</a></li>
+                <li><a href="#features">特色</a></li>
+                <li><a href="#contact">聯絡</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h2>探索無限可能</h2>
+            <p>讓我們帶您走遍世界的每一個角落，創造屬於您的冒險故事</p>
+            <a href="#destinations" class="btn">開始冒險</a>
+        </div>
+    </section>
+
+    <section class="destinations" id="destinations">
+        <h2>熱門目的地</h2>
+        <div class="dest-grid">
+            <div class="dest-card">
+                <div class="dest-image">[Island]</div>
+                <div class="dest-info">
+                    <h3>巴里島天堂</h3>
+                    <p>體驗熱帶島嶼的魅力，享受陽光、沙灘與海浪的完美結合</p>
+                    <span class="dest-tag">5天4夜</span>
+                </div>
+            </div>
+            <div class="dest-card">
+                <div class="dest-image">[Mountain]</div>
+                <div class="dest-info">
+                    <h3>阿爾卑斯山</h3>
+                    <p>征服壯麗的高山美景，感受大自然的震撼與純淨</p>
+                    <span class="dest-tag">7天6夜</span>
+                </div>
+            </div>
+            <div class="dest-card">
+                <div class="dest-image">[Monument]</div>
+                <div class="dest-info">
+                    <h3>希臘古文明</h3>
+                    <p>探索古老的歷史遺跡，品味地中海的浪漫與文化</p>
+                    <span class="dest-tag">8天7夜</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <h2>為什麼選擇我們</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="feature-icon">[Target]</div>
+                <h3>客製化行程</h3>
+                <p>根據您的喜好量身打造專屬旅程</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">[Value]</div>
+                <h3>最優價格</h3>
+                <p>透明價格，沒有任何隱藏費用</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">[Award]</div>
+                <h3>專業導遊</h3>
+                <p>經驗豐富的導遊團隊全程陪伴</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">[Safety]</div>
+                <h3>安全保障</h3>
+                <p>完善的保險與安全措施</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>© 2025 Adventure Awaits. All rights reserved.</p>
+        <p>聯絡我們：travel@adventure.com | +886-2-8765-4321</p>
+    </footer>
+
+    <script>
+        window.SAMPLE_TEMPLATE = {
+            id: 'travel',
+            name: '旅遊/探險 - 活力探索',
+            category: 'lifestyle',
+            colors: {
+                primary: '#0077BE',
+                secondary: '#FF6B35',
+                accent: '#87CEEB'
+            }
+        };
+    </script>
+</body>
+</html>

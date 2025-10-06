@@ -1,6 +1,44 @@
 version: '3.8'
 
 services:
+  # PostgreSQL 資料庫 + pgvector
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: aiinpocket-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aiinpocket
+      POSTGRES_USER: aiinpocket
+      POSTGRES_PASSWORD: aiinpocket_secure_password
+      TZ: Asia/Taipei
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - aiinpocket-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aiinpocket"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis - 使用量追蹤與快取
+  redis:
+    image: redis:7-alpine
+    container_name: aiinpocket-redis
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Taipei
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - aiinpocket-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # 後端 API 服務
   backend:
     build:
@@ -9,16 +47,26 @@ services:
     container_name: aiinpocket-backend
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       - PYTHONUNBUFFERED=1
+      - TZ=Asia/Taipei
     env_file:
       - backend/.env
     volumes:
       # 開發模式掛載（可選）
       - ./backend/app:/app/app
+      # 掛載前端檔案供 RAG 讀取（可寫入以生成 sitemap）
+      - ./frontend:/app/frontend
+      # 掛載生成的網站檔案目錄
+      - ./backend/generated_sites:/app/generated_sites
     networks:
       - aiinpocket-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 30s
@@ -33,8 +81,10 @@ services:
       dockerfile: docker/nginx/Dockerfile
     container_name: aiinpocket-frontend
     restart: unless-stopped
+    environment:
+      TZ: Asia/Taipei
     ports:
-      - "8001:80"
+      - "8000:80"
     depends_on:
       - backend
     volumes:
@@ -54,4 +104,6 @@ networks:
     driver: bridge
 
 volumes:
+  postgres-data:
+  redis-data:
   backend-data:

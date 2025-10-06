@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>聯絡我們 | AiInPocket</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../shared/css/styles.css">
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
@@ -16,11 +16,12 @@
                 <span class="logo-subtext">口袋智慧</span>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">首頁</a></li>
-                <li><a href="portfolio.html">作品集</a></li>
-                <li><a href="tech-stack.html">技術棧</a></li>
-                <li><a href="about.html">關於我們</a></li>
-                <li><a href="contact.html" class="nav-cta active">聯絡我們</a></li>
+                <li><a href="index.html" data-i18n="nav.home">首頁</a></li>
+                <li><a href="portfolio.html" data-i18n="nav.portfolio">作品集</a></li>
+                <li><a href="tech-stack.html" data-i18n="nav.techStack">技術棧</a></li>
+                <li><a href="about.html" data-i18n="nav.about">關於我們</a></li>
+                <li><a href="contact.html" class="active" data-i18n="nav.contact">聯絡我們</a></li>
+                <li><a href="../generator/index.html" class="nav-cta" data-i18n="nav.generator">AI 生成器</a></li>
             </ul>
             <div class="nav-toggle" id="nav-toggle">
                 <span></span>
@@ -32,7 +33,7 @@
 
     <div class="secret-info" id="secret-info">
         <div class="secret-content">
-            <h3>🔐 委託資訊</h3>
+            <h3>[機密] 委託資訊</h3>
             <p><strong>專案代號:</strong> POCKET-AI-2024</p>
             <p><strong>技術棧:</strong> Next-Gen AI | Cloud Native | DevOps</p>
             <p><strong>狀態:</strong> <span class="status-active">ACTIVE</span></p>
@@ -47,9 +48,9 @@
             <div class="container">
                 <h1 class="page-title">
                     <span class="title-number">05</span>
-                    聯絡我們
+                    <span data-i18n="contact.header.title">聯絡我們</span>
                 </h1>
-                <p class="page-subtitle">讓我們開始對話</p>
+                <p class="page-subtitle" data-i18n="contact.header.subtitle">讓我們開始對話</p>
             </div>
         </section>
 
@@ -61,85 +62,85 @@
                     <div class="contact-cards">
                         <div class="contact-card">
                             <div class="contact-icon">@</div>
-                            <h3>Email</h3>
+                            <h3 data-i18n="contact.info.email.title">Email</h3>
                             <p class="contact-value">
                                 <a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>
                             </p>
-                            <p class="contact-note">24 小時內回覆</p>
+                            <p class="contact-note" data-i18n="contact.info.email.note">24 小時內回覆</p>
                         </div>
 
                         <div class="contact-card">
                             <div class="contact-icon">Chat</div>
-                            <h3>即時對話</h3>
-                            <p class="contact-value">AI 助手</p>
-                            <p class="contact-note">點擊右下角聊天按鈕</p>
+                            <h3 data-i18n="contact.info.chat.title">即時對話</h3>
+                            <p class="contact-value" data-i18n="contact.info.chat.value">AI 助手</p>
+                            <p class="contact-note" data-i18n="contact.info.chat.note">點擊右下角聊天按鈕</p>
                         </div>
 
                         <div class="contact-card">
                             <div class="contact-icon">Web</div>
-                            <h3>社群媒體</h3>
+                            <h3 data-i18n="contact.info.social.title">社群媒體</h3>
                             <div class="social-links">
                                 <a href="#" class="social-link">LinkedIn</a>
                                 <a href="#" class="social-link">GitHub</a>
                                 <a href="#" class="social-link">Twitter</a>
                             </div>
-                            <p class="contact-note">關注我們的最新動態</p>
+                            <p class="contact-note" data-i18n="contact.info.social.note">關注我們的最新動態</p>
                         </div>
 
                         <div class="contact-card">
                             <div class="contact-icon">24/7</div>
-                            <h3>服務時間</h3>
-                            <p class="contact-value">全年無休</p>
-                            <p class="contact-note">7x24 技術支援</p>
+                            <h3 data-i18n="contact.info.hours.title">服務時間</h3>
+                            <p class="contact-value" data-i18n="contact.info.hours.value">全年無休</p>
+                            <p class="contact-note" data-i18n="contact.info.hours.note">7x24 技術支援</p>
                         </div>
                     </div>
 
                     <!-- 聯絡表單 -->
                     <div class="contact-form-wrapper">
-                        <h2 class="form-title">快速諮詢</h2>
+                        <h2 class="form-title" data-i18n="contact.form.title">快速諮詢</h2>
                         <form class="contact-form" id="contact-form">
                             <div class="form-group">
-                                <label for="name">姓名 *</label>
+                                <label for="name" data-i18n="contact.form.name">姓名 *</label>
                                 <input type="text" id="name" name="name" required
-                                       placeholder="您的姓名">
+                                       data-i18n-placeholder="contact.form.namePlaceholder" placeholder="您的姓名">
                             </div>
 
                             <div class="form-group">
-                                <label for="email">Email *</label>
+                                <label for="email" data-i18n="contact.form.email">Email *</label>
                                 <input type="email" id="email" name="email" required
-                                       placeholder="your@email.com">
+                                       data-i18n-placeholder="contact.form.emailPlaceholder" placeholder="your@email.com">
                             </div>
 
                             <div class="form-group">
-                                <label for="company">公司名稱</label>
+                                <label for="company" data-i18n="contact.form.company">公司名稱</label>
                                 <input type="text" id="company" name="company"
-                                       placeholder="您的公司（選填）">
+                                       data-i18n-placeholder="contact.form.companyPlaceholder" placeholder="您的公司（選填）">
                             </div>
 
                             <div class="form-group">
-                                <label for="service">感興趣的服務 *</label>
+                                <label for="service" data-i18n="contact.form.service">感興趣的服務 *</label>
                                 <select id="service" name="service" required>
-                                    <option value="">請選擇...</option>
-                                    <option value="ai">AI 解決方案</option>
-                                    <option value="cloud">雲端架構</option>
-                                    <option value="devops">DevOps 工程</option>
-                                    <option value="consulting">技術諮詢</option>
-                                    <option value="other">其他</option>
+                                    <option value="" data-i18n="contact.form.serviceOption0">請選擇...</option>
+                                    <option value="ai" data-i18n="contact.form.serviceOption1">AI 解決方案</option>
+                                    <option value="cloud" data-i18n="contact.form.serviceOption2">雲端架構</option>
+                                    <option value="devops" data-i18n="contact.form.serviceOption3">DevOps 工程</option>
+                                    <option value="consulting" data-i18n="contact.form.serviceOption4">技術諮詢</option>
+                                    <option value="other" data-i18n="contact.form.serviceOption5">其他</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="message">訊息 *</label>
+                                <label for="message" data-i18n="contact.form.message">訊息 *</label>
                                 <textarea id="message" name="message" rows="6" required
-                                          placeholder="請描述您的需求或想法..."></textarea>
+                                          data-i18n-placeholder="contact.form.messagePlaceholder" placeholder="請描述您的需求或想法..."></textarea>
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-large">
-                                <span>送出訊息</span>
+                                <span data-i18n="contact.form.submit">送出訊息</span>
                                 <span class="btn-glow"></span>
                             </button>
 
-                            <p class="form-note">
+                            <p class="form-note" data-i18n="contact.form.note">
                                 提交後，我們會在 24 小時內回覆您
                             </p>
                         </form>
@@ -147,8 +148,8 @@
                         <!-- 表單提交成功訊息 -->
                         <div class="form-success" id="form-success" style="display: none;">
                             <div class="success-icon">[成功]</div>
-                            <h3>訊息已送出！</h3>
-                            <p>感謝您的聯繫，我們會盡快回覆您。</p>
+                            <h3 data-i18n="contact.form.successTitle">訊息已送出！</h3>
+                            <p data-i18n="contact.form.successMessage">感謝您的聯繫，我們會盡快回覆您。</p>
                         </div>
                     </div>
                 </div>
@@ -158,51 +159,51 @@
         <!-- FAQ 區塊 -->
         <section class="faq-section">
             <div class="container">
-                <h2 class="section-title">常見問題</h2>
+                <h2 class="section-title" data-i18n="contact.faq.title">常見問題</h2>
                 <div class="faq-grid">
                     <div class="faq-item">
-                        <h3 class="faq-question">專案通常需要多久時間？</h3>
-                        <p class="faq-answer">
+                        <h3 class="faq-question" data-i18n="contact.faq.q1.question">專案通常需要多久時間？</h3>
+                        <p class="faq-answer" data-i18n="contact.faq.q1.answer">
                             依專案複雜度而定，一般的 AI 應用或雲端架構專案約需 2-8 週。
                             我們會在初步評估後提供詳細時程規劃。
                         </p>
                     </div>
 
                     <div class="faq-item">
-                        <h3 class="faq-question">如何收費？</h3>
-                        <p class="faq-answer">
+                        <h3 class="faq-question" data-i18n="contact.faq.q2.question">如何收費？</h3>
+                        <p class="faq-answer" data-i18n="contact.faq.q2.answer">
                             我們提供彈性的計費方式，包括專案制、時數制、或長期技術顧問合約。
                             會根據您的需求提供最適合的方案。
                         </p>
                     </div>
 
                     <div class="faq-item">
-                        <h3 class="faq-question">提供哪些技術支援？</h3>
-                        <p class="faq-answer">
+                        <h3 class="faq-question" data-i18n="contact.faq.q3.question">提供哪些技術支援？</h3>
+                        <p class="faq-answer" data-i18n="contact.faq.q3.answer">
                             我們提供 7x24 技術支援，包括系統監控、緊急修復、定期維護、
                             以及技術諮詢服務。
                         </p>
                     </div>
 
                     <div class="faq-item">
-                        <h3 class="faq-question">可以客製化解決方案嗎？</h3>
-                        <p class="faq-answer">
+                        <h3 class="faq-question" data-i18n="contact.faq.q4.question">可以客製化解決方案嗎？</h3>
+                        <p class="faq-answer" data-i18n="contact.faq.q4.answer">
                             當然！我們專注於提供量身訂製的解決方案，
                             會深入了解您的業務需求並設計最適合的技術架構。
                         </p>
                     </div>
 
                     <div class="faq-item">
-                        <h3 class="faq-question">是否提供教育訓練？</h3>
-                        <p class="faq-answer">
+                        <h3 class="faq-question" data-i18n="contact.faq.q5.question">是否提供教育訓練？</h3>
+                        <p class="faq-answer" data-i18n="contact.faq.q5.answer">
                             是的，我們會在專案交付時提供完整的文件與培訓，
                             確保您的團隊能夠順利接手維運。
                         </p>
                     </div>
 
                     <div class="faq-item">
-                        <h3 class="faq-question">如何開始合作？</h3>
-                        <p class="faq-answer">
+                        <h3 class="faq-question" data-i18n="contact.faq.q6.question">如何開始合作？</h3>
+                        <p class="faq-answer" data-i18n="contact.faq.q6.answer">
                             只需填寫上方表單或直接來信，我們會安排免費的初步諮詢，
                             了解您的需求並提供初步建議。
                         </p>
@@ -214,30 +215,30 @@
         <!-- 合作流程 -->
         <section class="process-section">
             <div class="container">
-                <h2 class="section-title">合作流程</h2>
+                <h2 class="section-title" data-i18n="contact.process.title">合作流程</h2>
                 <div class="process-steps">
                     <div class="process-step">
                         <div class="step-number">1</div>
-                        <h3>需求諮詢</h3>
-                        <p>深入了解您的需求與目標</p>
+                        <h3 data-i18n="contact.process.step1.title">需求諮詢</h3>
+                        <p data-i18n="contact.process.step1.desc">深入了解您的需求與目標</p>
                     </div>
                     <div class="process-arrow">→</div>
                     <div class="process-step">
                         <div class="step-number">2</div>
-                        <h3>方案規劃</h3>
-                        <p>設計技術架構與實施計畫</p>
+                        <h3 data-i18n="contact.process.step2.title">方案規劃</h3>
+                        <p data-i18n="contact.process.step2.desc">設計技術架構與實施計畫</p>
                     </div>
                     <div class="process-arrow">→</div>
                     <div class="process-step">
                         <div class="step-number">3</div>
-                        <h3>開發實作</h3>
-                        <p>敏捷開發，定期交付成果</p>
+                        <h3 data-i18n="contact.process.step3.title">開發實作</h3>
+                        <p data-i18n="contact.process.step3.desc">敏捷開發，定期交付成果</p>
                     </div>
                     <div class="process-arrow">→</div>
                     <div class="process-step">
                         <div class="step-number">4</div>
-                        <h3>部署上線</h3>
-                        <p>確保穩定運行並提供支援</p>
+                        <h3 data-i18n="contact.process.step4.title">部署上線</h3>
+                        <p data-i18n="contact.process.step4.desc">確保穩定運行並提供支援</p>
                     </div>
                 </div>
             </div>
@@ -249,28 +250,30 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <h3>AiInPocket</h3>
-                    <p class="footer-tagline">讓智慧觸手可及</p>
+                    <p class="footer-tagline" data-i18n="footer.tagline">讓智慧觸手可及</p>
                 </div>
                 <div class="footer-links">
                     <div class="footer-column">
-                        <h4>服務</h4>
+                        <h4 data-i18n="footer.services">服務</h4>
                         <ul>
-                            <li><a href="portfolio.html">作品集</a></li>
-                            <li><a href="tech-stack.html">技術棧</a></li>
-                            <li><a href="about.html">關於我們</a></li>
+                            <li><a href="portfolio.html" data-i18n="nav.portfolio">作品集</a></li>
+                            <li><a href="tech-stack.html" data-i18n="nav.techStack">技術棧</a></li>
+                            <li><a href="about.html" data-i18n="nav.about">關於我們</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
-                        <h4>聯絡</h4>
+                        <h4 data-i18n="footer.contactUs">聯絡</h4>
                         <ul>
-                            <li><a href="contact.html">聯絡我們</a></li>
-                            <li><a href="mailto:help@aiinpocket.com">Email</a></li>
+                            <li><a href="contact.html" data-i18n="nav.contact">聯絡我們</a></li>
+                            <li><a href="privacy.html" data-i18n="footer.privacy">隱私權政策</a></li>
+                            <li><a href="mailto:help@aiinpocket.com" data-i18n="footer.email">Email</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 AiInPocket. All rights reserved.</p>
+                <p>&copy; <span id="current-year"></span> <span data-i18n="footer.copyright">AiInPocket. All rights reserved.</span></p>
+                <p class="footer-note" data-i18n="footer.poweredBy">/// Powered by AI & Innovation ///</p>
             </div>
         </div>
     </footer>
@@ -278,16 +281,21 @@
     <div id="easter-egg-modal" class="modal">
         <div class="modal-overlay" id="modal-overlay"></div>
         <div class="modal-content">
-            <h2 class="modal-title">🎉 彩蛋觸發！</h2>
-            <p class="modal-text">你發現了隱藏的魔法咒語！</p>
-            <div class="magic-text">AI is in your pocket now! 🚀</div>
-            <button class="btn btn-primary modal-close" id="modal-close">關閉</button>
+            <h2 class="modal-title" data-i18n="easterEgg.title">[彩蛋觸發！]</h2>
+            <p class="modal-text" data-i18n="easterEgg.text">你發現了隱藏的魔法咒語！</p>
+            <div class="magic-text">AI is in your pocket now!</div>
+            <button class="btn btn-primary modal-close" id="modal-close" data-i18n="easterEgg.close">關閉</button>
         </div>
     </div>
 
-    <script src="js/particles.js"></script>
-    <script src="js/easter-eggs.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/ai-chat.js"></script>
+    <script src="../shared/js/devtools-guard.js"></script>
+    <script src="../shared/js/particles.js"></script>
+    <script src="../shared/js/i18n.js"></script>
+    <script src="../shared/js/lang-switcher.js"></script>
+    <script src="../shared/js/cookie-consent.js"></script>
+    <script src="../shared/js/contact-form.js"></script>
+    <script src="../shared/js/easter-eggs.js"></script>
+    <script src="../shared/js/main.js"></script>
+    <script src="../shared/js/ai-chat.js"></script>
 </body>
 </html>

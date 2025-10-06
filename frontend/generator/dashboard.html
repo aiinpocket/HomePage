@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的作品集 - AiInPocket</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #87CEEB;
+            --primary-green: #7FFF00;
+            --dark-bg: #0a0e27;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(135, 206, 235, 0.2);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        .user-info {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info .email {
+            color: var(--primary-green);
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: var(--dark-bg);
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(127, 255, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(135, 206, 235, 0.2);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .project-card:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(127, 255, 0, 0.2);
+        }
+
+        .project-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-completed {
+            background: rgba(127, 255, 0, 0.2);
+            color: var(--primary-green);
+        }
+
+        .status-generating {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+        }
+
+        .status-pending {
+            background: rgba(135, 206, 235, 0.2);
+            color: var(--primary-blue);
+        }
+
+        .status-failed {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6b6b;
+        }
+
+        .project-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        .project-template {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-date {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state h2 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 2rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.2rem;
+            color: var(--primary-green);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary-green);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            color: #ff6b6b;
+            margin-top: 1rem;
+        }
+
+        /* 批量選擇相關樣式 */
+        .project-card.bulk-mode {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .project-card.bulk-mode .project-checkbox {
+            display: block !important;
+        }
+
+        .project-checkbox {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .project-card.selected-for-bulk {
+            border-color: var(--primary-green);
+            background: rgba(127, 255, 0, 0.1);
+        }
+
+        /* 密碼 Modal 樣式 */
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .password-modal-content {
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.95), rgba(20, 30, 60, 0.95));
+            border: 2px solid var(--primary-blue);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(135, 206, 235, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .password-modal-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .password-hint {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--primary-blue);
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 20px rgba(127, 255, 0, 0.3);
+        }
+
+        .password-error {
+            color: #ff4444;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .password-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .password-display {
+            background: rgba(127, 255, 0, 0.1);
+            border: 2px solid var(--primary-green);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .new-password {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-green);
+            letter-spacing: 0.5rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .password-warning {
+            color: #ffaa00;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .password-modal-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+
+            .password-actions {
+                flex-direction: column;
+            }
+
+            .password-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 我的作品集</h1>
+            <p class="subtitle">管理您的網站生成專案</p>
+        </header>
+
+        <div class="user-info">
+            <div>
+                <div class="email" id="user-email">loading...</div>
+                <div id="selection-info" style="display: none; margin-top: 0.5rem; color: var(--primary-green);">
+                    已選擇 <span id="selected-count">0</span> 個專案
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary" id="bulk-select-btn" onclick="toggleBulkSelect()" style="display: none;">
+                    批量選擇
+                </button>
+                <button class="btn btn-secondary" id="bulk-download-btn" onclick="bulkDownload()" style="display: none;">
+                    下載選中
+                </button>
+                <button class="btn btn-secondary" id="bulk-delete-btn" onclick="bulkDelete()" style="display: none;">
+                    刪除選中
+                </button>
+                <a href="index.html" class="btn btn-primary">+ 建立新網站</a>
+                <button class="btn btn-secondary" onclick="logout()">登出</button>
+            </div>
+        </div>
+
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>載入中...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下載密碼輸入 Modal -->
+    <div id="password-modal" class="password-modal" style="display: none;">
+        <div class="password-modal-content">
+            <h2>🔐 請輸入下載密碼</h2>
+            <p class="password-hint">密碼已透過郵件發送給您（6位數字）</p>
+
+            <input type="text" id="password-input" class="password-input" placeholder="請輸入6位數字密碼" maxlength="6" pattern="\d{6}">
+            <div id="password-error" class="password-error" style="display: none;"></div>
+
+            <div class="password-actions">
+                <button class="btn btn-primary" onclick="confirmPasswordDownload()">✅ 確認下載</button>
+                <button class="btn btn-secondary" onclick="regeneratePasswordModal()">🔄 重新取得密碼</button>
+                <button class="btn btn-secondary" onclick="closePasswordModal()">❌ 取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顯示密碼 Modal -->
+    <div id="show-password-modal" class="password-modal" style="display: none;">
+        <div class="password-modal-content">
+            <h2>✅ 新的下載密碼已生成</h2>
+            <div class="password-display">
+                <span id="new-password" class="new-password"></span>
+            </div>
+            <p class="password-warning">⚠️ 請妥善保管此密碼（僅可使用一次）</p>
+
+            <div class="password-actions">
+                <button class="btn btn-primary" onclick="downloadWithNewPassword()">📥 立即下載</button>
+                <button class="btn btn-secondary" onclick="closeShowPasswordModal()">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userId = null;
+        let userEmail = null;
+        let currentDownloadProject = null;
+
+        // 檢查登入狀態
+        async function checkAuth() {
+            const sessionToken = localStorage.getItem('session_token');
+            userId = localStorage.getItem('user_id');
+            userEmail = localStorage.getItem('user_email');
+
+            if (!sessionToken || !userId) {
+                // 未登入，導向登入頁面
+                window.location.href = 'index.html?login=required';
+                return false;
+            }
+
+            // 更新使用者資訊
+            document.getElementById('user-email').textContent = userEmail || userId;
+
+            return true;
+        }
+
+        // 載入專案列表
+        async function loadProjects() {
+            try {
+                const response = await fetch(`/api/projects?user_id=${userId}`);
+
+                if (!response.ok) {
+                    throw new Error('載入專案失敗');
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.projects.length > 0) {
+                    displayProjects(data.projects);
+                } else {
+                    displayEmptyState();
+                }
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                displayError(error.message);
+            }
+        }
+
+        // 顯示專案列表
+        function displayProjects(projects) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = `
+                <div class="projects-grid">
+                    ${projects.map(project => `
+                        <div class="project-card" data-project-id="${project.id}" data-project-status="${project.status}">
+                            <input type="checkbox" class="project-checkbox" onchange="handleCheckboxChange('${project.id}')">
+                            <span class="project-status status-${project.status}">
+                                ${getStatusText(project.status)}
+                            </span>
+                            <h3>${project.project_name}</h3>
+                            <div class="project-template">${getTemplateDisplayName(project.template_id)}</div>
+                            <div class="project-date">
+                                建立於 ${formatDate(project.created_at)}
+                            </div>
+                            <div class="project-actions">
+                                ${project.status === 'completed' ? `
+                                    <a href="/api/preview/${project.id}" target="_blank" class="btn btn-primary">
+                                        預覽
+                                    </a>
+                                    <a href="edit.html?id=${project.id}" class="btn btn-secondary">
+                                        編輯
+                                    </a>
+                                    <button class="btn btn-secondary" onclick="downloadWithPassword('${project.id}', '${project.project_name}')">
+                                        下載
+                                    </button>
+                                ` : project.status === 'generating' ? `
+                                    <button class="btn btn-secondary" disabled>
+                                        生成中...
+                                    </button>
+                                ` : project.status === 'pending' ? `
+                                    <button class="btn btn-secondary" disabled>
+                                        等待中...
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-secondary" disabled>
+                                        失敗
+                                    </button>
+                                `}
+                            </div>
+                            ${project.status === 'failed' && project.error_message ? `
+                                <div class="error-message">
+                                    錯誤：${project.error_message}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // 顯示批量操作按鈕（如果有至少一個專案）
+            if (projects.length > 0) {
+                document.getElementById('bulk-select-btn').style.display = 'inline-block';
+            }
+        }
+
+        // 顯示空狀態
+        function displayEmptyState() {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = `
+                <div class="empty-state">
+                    <h2>還沒有任何專案</h2>
+                    <p>開始建立您的第一個 AI 生成網站吧！</p>
+                    <a href="index.html" class="btn btn-primary">+ 建立新網站</a>
+                </div>
+            `;
+        }
+
+        // 顯示錯誤
+        function displayError(message) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = `
+                <div class="error-message">
+                    <strong>載入失敗：</strong> ${message}
+                    <br><br>
+                    <button class="btn btn-secondary" onclick="loadProjects()">重試</button>
+                </div>
+            `;
+        }
+
+        // 狀態文字
+        function getStatusText(status) {
+            const statusMap = {
+                'completed': '已完成',
+                'generating': '生成中',
+                'pending': '等待中',
+                'failed': '失敗',
+                'draft': '草稿'
+            };
+            return statusMap[status] || status;
+        }
+
+        // 模板顯示名稱
+        function getTemplateDisplayName(templateId) {
+            // 可以建立更完整的對應表
+            return templateId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('zh-TW', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // 登出
+        function logout() {
+            localStorage.removeItem('session_token');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user_email');
+            window.location.href = 'index.html';
+        }
+
+        // ========== 下載功能（使用 Modal） ==========
+        function downloadWithPassword(projectId, projectName) {
+            currentDownloadProject = { id: projectId, name: projectName };
+
+            // 顯示密碼輸入 Modal
+            document.getElementById('password-modal').style.display = 'flex';
+            document.getElementById('password-input').value = '';
+            document.getElementById('password-error').style.display = 'none';
+            document.getElementById('password-input').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('password-modal').style.display = 'none';
+            currentDownloadProject = null;
+        }
+
+        async function confirmPasswordDownload() {
+            const password = document.getElementById('password-input').value;
+            const errorDiv = document.getElementById('password-error');
+
+            if (!password) {
+                errorDiv.textContent = '請輸入密碼';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (!/^\d{6}$/.test(password)) {
+                errorDiv.textContent = '密碼格式錯誤！請輸入6位數字';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // 建立下載連結
+            const downloadUrl = `/api/download/${currentDownloadProject.id}?password=${encodeURIComponent(password)}`;
+
+            try {
+                // 使用 fetch 檢查密碼是否正確
+                const response = await fetch(downloadUrl, { method: 'HEAD' });
+
+                if (!response.ok) {
+                    errorDiv.textContent = '密碼錯誤或已使用過';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                // 密碼正確，關閉 Modal 並開始下載
+                closePasswordModal();
+
+                // 使用隱藏的 iframe 觸發下載
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = downloadUrl;
+                document.body.appendChild(iframe);
+
+                setTimeout(() => {
+                    if (iframe.parentNode) {
+                        document.body.removeChild(iframe);
+                    }
+                }, 3000);
+            } catch (error) {
+                errorDiv.textContent = '下載失敗，請稍後再試';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        async function regeneratePasswordModal() {
+            closePasswordModal();
+            await regeneratePassword(currentDownloadProject.id, currentDownloadProject.name);
+        }
+
+        async function regeneratePassword(projectId, projectName) {
+            try {
+                const response = await fetch(`/api/regenerate-download-password/${projectId}`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error('重新生成密碼失敗');
+                }
+
+                const data = await response.json();
+
+                // 顯示新密碼 Modal
+                currentDownloadProject = { id: projectId, name: projectName };
+                document.getElementById('new-password').textContent = data.password;
+                document.getElementById('show-password-modal').style.display = 'flex';
+
+            } catch (error) {
+                console.error('Error regenerating password:', error);
+                alert('重新生成密碼失敗，請稍後再試');
+            }
+        }
+
+        function closeShowPasswordModal() {
+            document.getElementById('show-password-modal').style.display = 'none';
+            currentDownloadProject = null;
+        }
+
+        async function downloadWithNewPassword() {
+            const password = document.getElementById('new-password').textContent;
+            const downloadUrl = `/api/download/${currentDownloadProject.id}?password=${encodeURIComponent(password)}`;
+
+            closeShowPasswordModal();
+
+            // 使用隱藏的 iframe 觸發下載
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = downloadUrl;
+            document.body.appendChild(iframe);
+
+            setTimeout(() => {
+                if (iframe.parentNode) {
+                    document.body.removeChild(iframe);
+                }
+            }, 3000);
+        }
+
+        // ========== 批量操作功能 ==========
+        let bulkSelectMode = false;
+        let selectedProjects = new Set();
+
+        function toggleBulkSelect() {
+            bulkSelectMode = !bulkSelectMode;
+            const cards = document.querySelectorAll('.project-card');
+            const btn = document.getElementById('bulk-select-btn');
+
+            if (bulkSelectMode) {
+                cards.forEach(card => card.classList.add('bulk-mode'));
+                btn.textContent = '取消選擇';
+                btn.classList.add('btn-primary');
+                btn.classList.remove('btn-secondary');
+                document.getElementById('selection-info').style.display = 'block';
+            } else {
+                cards.forEach(card => {
+                    card.classList.remove('bulk-mode', 'selected-for-bulk');
+                    const checkbox = card.querySelector('.project-checkbox');
+                    if (checkbox) checkbox.checked = false;
+                });
+                btn.textContent = '批量選擇';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                document.getElementById('selection-info').style.display = 'none';
+                document.getElementById('bulk-download-btn').style.display = 'none';
+                document.getElementById('bulk-delete-btn').style.display = 'none';
+                selectedProjects.clear();
+            }
+        }
+
+        function handleCheckboxChange(projectId) {
+            const card = document.querySelector(`[data-project-id="${projectId}"]`);
+            const checkbox = card.querySelector('.project-checkbox');
+
+            if (checkbox.checked) {
+                selectedProjects.add(projectId);
+                card.classList.add('selected-for-bulk');
+            } else {
+                selectedProjects.delete(projectId);
+                card.classList.remove('selected-for-bulk');
+            }
+
+            updateBulkActionButtons();
+        }
+
+        function updateBulkActionButtons() {
+            const count = selectedProjects.size;
+            document.getElementById('selected-count').textContent = count;
+
+            if (count > 0) {
+                document.getElementById('bulk-download-btn').style.display = 'inline-block';
+                document.getElementById('bulk-delete-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('bulk-download-btn').style.display = 'none';
+                document.getElementById('bulk-delete-btn').style.display = 'none';
+            }
+        }
+
+        async function bulkDownload() {
+            if (selectedProjects.size === 0) {
+                alert('請先選擇要下載的專案');
+                return;
+            }
+
+            alert(`批量下載功能需要為每個專案輸入密碼。\n\n您選中了 ${selectedProjects.size} 個專案，請依序輸入密碼。`);
+
+            let downloadCount = 0;
+
+            for (const projectId of selectedProjects) {
+                const card = document.querySelector(`[data-project-id="${projectId}"]`);
+                const status = card.getAttribute('data-project-status');
+                const projectName = card.querySelector('h3').textContent;
+
+                if (status === 'completed') {
+                    const password = prompt(`請輸入專案「${projectName}」的下載密碼（6位數字）：`);
+
+                    if (!password) {
+                        continue; // 跳過此專案
+                    }
+
+                    if (!/^\d{6}$/.test(password)) {
+                        alert(`專案「${projectName}」密碼格式錯誤，已跳過。`);
+                        continue;
+                    }
+
+                    // 使用隱藏的 iframe 觸發下載
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = `/api/download/${projectId}?password=${encodeURIComponent(password)}`;
+                    document.body.appendChild(iframe);
+
+                    downloadCount++;
+
+                    // 延遲以避免瀏覽器阻止多次下載
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+
+            alert(`批量下載完成！成功下載 ${downloadCount} 個專案。`);
+        }
+
+        async function bulkDelete() {
+            if (selectedProjects.size === 0) {
+                alert('請先選擇要刪除的專案');
+                return;
+            }
+
+            if (!confirm(`確定要刪除選中的 ${selectedProjects.size} 個專案嗎？此操作無法復原！`)) {
+                return;
+            }
+
+            try {
+                const deletePromises = Array.from(selectedProjects).map(projectId =>
+                    fetch(`/api/projects/${projectId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ user_id: userId })
+                    })
+                );
+
+                await Promise.all(deletePromises);
+
+                alert('刪除成功！');
+                selectedProjects.clear();
+                toggleBulkSelect(); // 退出批量模式
+                await loadProjects(); // 重新載入專案列表
+            } catch (error) {
+                console.error('Error deleting projects:', error);
+                alert('刪除失敗，請稍後再試');
+            }
+        }
+
+        // 初始化
+        async function init() {
+            const isAuth = await checkAuth();
+            if (isAuth) {
+                await loadProjects();
+
+                // 每 10 秒自動刷新（檢查生成狀態）
+                setInterval(async () => {
+                    const hasGenerating = document.querySelector('.status-generating, .status-pending');
+                    if (hasGenerating) {
+                        await loadProjects();
+                    }
+                }, 10000);
+            }
+        }
+
+        // 頁面載入時初始化
+        init();
+    </script>
+
+    <!-- DevTools Guard -->
+    <script src="../shared/js/devtools-guard.js"></script>
+</body>
+</html>

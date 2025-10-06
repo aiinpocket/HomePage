@@ -1,0 +1,27 @@
+# AiInPocket - Robots.txt
+# 允許所有搜尋引擎爬蟲
+
+User-agent: *
+Allow: /
+
+# 禁止索引的路徑
+Disallow: /api/
+Disallow: /admin/
+Disallow: /generated_sites/
+Disallow: /*.json$
+Disallow: /*.zip$
+
+# 特別允許 Google AdSense 爬蟲
+User-agent: Mediapartners-Google
+Allow: /
+
+# 允許 Google 圖片爬蟲
+User-agent: Googlebot-Image
+Allow: /
+
+# Sitemap 位置
+Sitemap: https://aiinpocket.com/sitemap.xml
+Sitemap: https://aiinpocket.com/corporate/sitemap.xml
+
+# 爬取延遲（秒）- 避免過度負載
+Crawl-delay: 1
