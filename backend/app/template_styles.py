@@ -81,21 +81,21 @@ TEMPLATE_STYLES = {
     },
     "photography": {
         "id": "photography",
-        "name": "攝影/工作室",
+        "name": "攝影藝術",
         "category": "creative",
-        "description": "視覺藝術的攝影網站，適合攝影師、工作室、藝術家",
+        "description": "注重視覺表現，讓作品成為焦點",
         "colors": {
             "primary": "#000000",
-            "secondary": "#FFFFFF",
-            "accent": "#FF6B6B",
-            "background": "#FAFAFA",
+            "secondary": "#ffffff",
+            "accent": "#f59e0b",
+            "background": "#fafafa",
             "text": "#333333"
         },
         "fonts": {
             "heading": "Montserrat, sans-serif",
             "body": "Open Sans, sans-serif"
         },
-        "style_keywords": ["簡約", "視覺", "藝術", "專業", "現代"]
+        "style_keywords": ["攝影", "藝術", "視覺"]
     },
 
     # 專業服務類 (6-10)
@@ -464,6 +464,440 @@ TEMPLATE_STYLES = {
             "body": "Open Sans, sans-serif"
         },
         "style_keywords": ["專業", "簡潔", "清晰", "現代", "正式"]
+    },
+
+    # 新增的 25 個模板 (from frontend generator)
+    "modern-tech": {
+        "id": "modern-tech",
+        "name": "現代科技",
+        "category": "business",
+        "description": "簡潔的設計搭配科技感配色，適合科技公司與新創團隊",
+        "colors": {
+            "primary": "#2563eb",
+            "secondary": "#3b82f6",
+            "accent": "#60a5fa",
+            "background": "#ffffff",
+            "text": "#1e293b"
+        },
+        "fonts": {
+            "heading": "Inter, sans-serif",
+            "body": "Inter, sans-serif"
+        },
+        "style_keywords": ["科技", "專業", "現代"]
+    },
+    "business-pro": {
+        "id": "business-pro",
+        "name": "商務專業",
+        "category": "business",
+        "description": "穩重大氣的企業風格，展現專業與可信度",
+        "colors": {
+            "primary": "#1e3a8a",
+            "secondary": "#1e40af",
+            "accent": "#3730a3",
+            "background": "#f8f9fa",
+            "text": "#1e293b"
+        },
+        "fonts": {
+            "heading": "Roboto, sans-serif",
+            "body": "Open Sans, sans-serif"
+        },
+        "style_keywords": ["商務", "企業", "專業"]
+    },
+    "creative-agency": {
+        "id": "creative-agency",
+        "name": "創意設計",
+        "category": "creative",
+        "description": "大膽活潑的色彩與排版，展現創意與活力",
+        "colors": {
+            "primary": "#ec4899",
+            "secondary": "#f97316",
+            "accent": "#f59e0b",
+            "background": "#ffffff",
+            "text": "#1a1a1a"
+        },
+        "fonts": {
+            "heading": "Bebas Neue, sans-serif",
+            "body": "Roboto, sans-serif"
+        },
+        "style_keywords": ["創意", "設計", "活潑"]
+    },
+    "minimal-clean": {
+        "id": "minimal-clean",
+        "name": "極簡主義",
+        "category": "creative",
+        "description": "純粹的留白美學，簡約而不簡單",
+        "colors": {
+            "primary": "#000000",
+            "secondary": "#ffffff",
+            "accent": "#6b7280",
+            "background": "#ffffff",
+            "text": "#000000"
+        },
+        "fonts": {
+            "heading": "Helvetica Neue, sans-serif",
+            "body": "Helvetica, sans-serif"
+        },
+        "style_keywords": ["極簡", "純淨", "優雅"]
+    },
+    "nature-eco": {
+        "id": "nature-eco",
+        "name": "自然環保",
+        "category": "lifestyle",
+        "description": "清新的綠色系，傳遞環保與健康理念",
+        "colors": {
+            "primary": "#059669",
+            "secondary": "#10b981",
+            "accent": "#34d399",
+            "background": "#f0fdf4",
+            "text": "#064e3b"
+        },
+        "fonts": {
+            "heading": "Lato, sans-serif",
+            "body": "Open Sans, sans-serif"
+        },
+        "style_keywords": ["環保", "自然", "健康"]
+    },
+    "luxury-gold": {
+        "id": "luxury-gold",
+        "name": "奢華尊貴",
+        "category": "lifestyle",
+        "description": "金色與黑色的經典組合，展現高端品味",
+        "colors": {
+            "primary": "#d97706",
+            "secondary": "#b45309",
+            "accent": "#92400e",
+            "background": "#fffbeb",
+            "text": "#78350f"
+        },
+        "fonts": {
+            "heading": "Playfair Display, serif",
+            "body": "Lora, serif"
+        },
+        "style_keywords": ["奢華", "高端", "尊貴"]
+    },
+    "startup-bold": {
+        "id": "startup-bold",
+        "name": "新創活力",
+        "category": "business",
+        "description": "充滿動感的設計，彰顯創新與突破精神",
+        "colors": {
+            "primary": "#7c3aed",
+            "secondary": "#8b5cf6",
+            "accent": "#a78bfa",
+            "background": "#faf5ff",
+            "text": "#4c1d95"
+        },
+        "fonts": {
+            "heading": "Montserrat, sans-serif",
+            "body": "Inter, sans-serif"
+        },
+        "style_keywords": ["新創", "創新", "活力"]
+    },
+    "medical-care": {
+        "id": "medical-care",
+        "name": "醫療健康",
+        "category": "professional",
+        "description": "清爽的藍白色調，傳遞專業與信任感",
+        "colors": {
+            "primary": "#0ea5e9",
+            "secondary": "#06b6d4",
+            "accent": "#22d3ee",
+            "background": "#ffffff",
+            "text": "#0c4a6e"
+        },
+        "fonts": {
+            "heading": "Lato, sans-serif",
+            "body": "Open Sans, sans-serif"
+        },
+        "style_keywords": ["醫療", "健康", "專業"]
+    },
+    "education-learn": {
+        "id": "education-learn",
+        "name": "教育學習",
+        "category": "service",
+        "description": "溫暖的配色與友善的設計，適合教育機構",
+        "colors": {
+            "primary": "#f59e0b",
+            "secondary": "#eab308",
+            "accent": "#facc15",
+            "background": "#fffbeb",
+            "text": "#78350f"
+        },
+        "fonts": {
+            "heading": "Nunito, sans-serif",
+            "body": "Open Sans, sans-serif"
+        },
+        "style_keywords": ["教育", "學習", "友善"]
+    },
+    "food-restaurant": {
+        "id": "food-restaurant",
+        "name": "餐飲美食",
+        "category": "lifestyle",
+        "description": "誘人的色調與視覺，激發食慾與興趣",
+        "colors": {
+            "primary": "#dc2626",
+            "secondary": "#ef4444",
+            "accent": "#f87171",
+            "background": "#fef2f2",
+            "text": "#7f1d1d"
+        },
+        "fonts": {
+            "heading": "Playfair Display, serif",
+            "body": "Lato, sans-serif"
+        },
+        "style_keywords": ["餐飲", "美食", "溫暖"]
+    },
+    "fashion-style": {
+        "id": "fashion-style",
+        "name": "時尚潮流",
+        "category": "creative",
+        "description": "前衛的設計語言，展現時尚品味",
+        "colors": {
+            "primary": "#db2777",
+            "secondary": "#e11d48",
+            "accent": "#f43f5e",
+            "background": "#fdf2f8",
+            "text": "#831843"
+        },
+        "fonts": {
+            "heading": "Playfair Display, serif",
+            "body": "Raleway, sans-serif"
+        },
+        "style_keywords": ["時尚", "潮流", "前衛"]
+    },
+    "finance-trust": {
+        "id": "finance-trust",
+        "name": "金融理財",
+        "category": "professional",
+        "description": "穩定可靠的視覺設計，建立信任感",
+        "colors": {
+            "primary": "#065f46",
+            "secondary": "#047857",
+            "accent": "#059669",
+            "background": "#f0fdf4",
+            "text": "#064e3b"
+        },
+        "fonts": {
+            "heading": "Times New Roman, serif",
+            "body": "Arial, sans-serif"
+        },
+        "style_keywords": ["金融", "信任", "穩定"]
+    },
+    "sports-fitness": {
+        "id": "sports-fitness",
+        "name": "運動健身",
+        "category": "lifestyle",
+        "description": "充滿活力的設計，激發運動熱情",
+        "colors": {
+            "primary": "#ea580c",
+            "secondary": "#f97316",
+            "accent": "#fb923c",
+            "background": "#fff7ed",
+            "text": "#7c2d12"
+        },
+        "fonts": {
+            "heading": "Impact, sans-serif",
+            "body": "Arial, sans-serif"
+        },
+        "style_keywords": ["運動", "健身", "活力"]
+    },
+    "travel-adventure": {
+        "id": "travel-adventure",
+        "name": "旅遊探險",
+        "category": "lifestyle",
+        "description": "輕鬆愉悅的色調，喚起旅行慾望",
+        "colors": {
+            "primary": "#0284c7",
+            "secondary": "#0ea5e9",
+            "accent": "#38bdf8",
+            "background": "#f0f9ff",
+            "text": "#0c4a6e"
+        },
+        "fonts": {
+            "heading": "Arial, sans-serif",
+            "body": "Helvetica, sans-serif"
+        },
+        "style_keywords": ["旅遊", "探險", "自由"]
+    },
+    "real-estate": {
+        "id": "real-estate",
+        "name": "房地產",
+        "category": "professional",
+        "description": "大氣穩重的設計，展現實力與品質",
+        "colors": {
+            "primary": "#334155",
+            "secondary": "#475569",
+            "accent": "#64748b",
+            "background": "#f8fafc",
+            "text": "#1e293b"
+        },
+        "fonts": {
+            "heading": "Raleway, sans-serif",
+            "body": "Lato, sans-serif"
+        },
+        "style_keywords": ["房地產", "專業", "穩重"]
+    },
+    "automotive": {
+        "id": "automotive",
+        "name": "汽車產業",
+        "category": "business",
+        "description": "動感流線的設計，展現速度與科技",
+        "colors": {
+            "primary": "#1e293b",
+            "secondary": "#374151",
+            "accent": "#4b5563",
+            "background": "#f8fafc",
+            "text": "#0f172a"
+        },
+        "fonts": {
+            "heading": "Oswald, sans-serif",
+            "body": "Roboto, sans-serif"
+        },
+        "style_keywords": ["汽車", "動感", "科技"]
+    },
+    "beauty-spa": {
+        "id": "beauty-spa",
+        "name": "美容美體",
+        "category": "lifestyle",
+        "description": "柔和舒適的色調，營造放鬆氛圍",
+        "colors": {
+            "primary": "#f0abfc",
+            "secondary": "#e879f9",
+            "accent": "#d946ef",
+            "background": "#fdf4ff",
+            "text": "#701a75"
+        },
+        "fonts": {
+            "heading": "Playfair Display, serif",
+            "body": "Lato, sans-serif"
+        },
+        "style_keywords": ["美容", "放鬆", "舒適"]
+    },
+    "wedding-event": {
+        "id": "wedding-event",
+        "name": "婚禮活動",
+        "category": "creative",
+        "description": "浪漫優雅的設計，捕捉幸福時刻",
+        "colors": {
+            "primary": "#fda4af",
+            "secondary": "#fb7185",
+            "accent": "#f43f5e",
+            "background": "#fff1f2",
+            "text": "#881337"
+        },
+        "fonts": {
+            "heading": "Playfair Display, serif",
+            "body": "Raleway, sans-serif"
+        },
+        "style_keywords": ["婚禮", "浪漫", "優雅"]
+    },
+    "legal-law": {
+        "id": "legal-law",
+        "name": "法律服務",
+        "category": "professional",
+        "description": "莊重專業的視覺，展現權威與信任",
+        "colors": {
+            "primary": "#1e40af",
+            "secondary": "#1e3a8a",
+            "accent": "#1e293b",
+            "background": "#ffffff",
+            "text": "#0f172a"
+        },
+        "fonts": {
+            "heading": "Garamond, serif",
+            "body": "Georgia, serif"
+        },
+        "style_keywords": ["法律", "專業", "權威"]
+    },
+    "music-entertainment": {
+        "id": "music-entertainment",
+        "name": "音樂娛樂",
+        "category": "creative",
+        "description": "動感節奏的設計，展現音樂魅力",
+        "colors": {
+            "primary": "#8b5cf6",
+            "secondary": "#7c3aed",
+            "accent": "#6d28d9",
+            "background": "#faf5ff",
+            "text": "#4c1d95"
+        },
+        "fonts": {
+            "heading": "Oswald, sans-serif",
+            "body": "Montserrat, sans-serif"
+        },
+        "style_keywords": ["音樂", "娛樂", "動感"]
+    },
+    "nonprofit-charity": {
+        "id": "nonprofit-charity",
+        "name": "公益慈善",
+        "category": "business",
+        "description": "溫暖人心的設計，傳遞愛與關懷",
+        "colors": {
+            "primary": "#f87171",
+            "secondary": "#ef4444",
+            "accent": "#dc2626",
+            "background": "#fef2f2",
+            "text": "#7f1d1d"
+        },
+        "fonts": {
+            "heading": "Source Sans Pro, sans-serif",
+            "body": "Open Sans, sans-serif"
+        },
+        "style_keywords": ["公益", "慈善", "溫暖"]
+    },
+    "pet-animal": {
+        "id": "pet-animal",
+        "name": "寵物服務",
+        "category": "service",
+        "description": "可愛友善的設計，展現對寵物的愛",
+        "colors": {
+            "primary": "#fbbf24",
+            "secondary": "#f59e0b",
+            "accent": "#d97706",
+            "background": "#fffbeb",
+            "text": "#78350f"
+        },
+        "fonts": {
+            "heading": "Quicksand, sans-serif",
+            "body": "Nunito, sans-serif"
+        },
+        "style_keywords": ["寵物", "可愛", "友善"]
+    },
+    "kids-children": {
+        "id": "kids-children",
+        "name": "兒童產品",
+        "category": "service",
+        "description": "繽紛活潑的色彩，吸引兒童目光",
+        "colors": {
+            "primary": "#34d399",
+            "secondary": "#fbbf24",
+            "accent": "#f472b6",
+            "background": "#ffffff",
+            "text": "#1f2937"
+        },
+        "fonts": {
+            "heading": "Comic Sans MS, cursive",
+            "body": "Arial, sans-serif"
+        },
+        "style_keywords": ["兒童", "繽紛", "活潑"]
+    },
+    "cyber-security": {
+        "id": "cyber-security",
+        "name": "資安科技",
+        "category": "business",
+        "description": "科技感與安全感並重的視覺設計",
+        "colors": {
+            "primary": "#0f172a",
+            "secondary": "#1e293b",
+            "accent": "#0ea5e9",
+            "background": "#f8fafc",
+            "text": "#020617"
+        },
+        "fonts": {
+            "heading": "Roboto Mono, monospace",
+            "body": "Inter, sans-serif"
+        },
+        "style_keywords": ["資安", "科技", "安全"]
     },
 
     # 特殊選項

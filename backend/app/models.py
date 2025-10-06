@@ -70,7 +70,7 @@ class Project(Base):
     __tablename__ = "projects"
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String(36), ForeignKey("users.id"), nullable=False, index=True)
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=True, index=True)  # 允許匿名用戶
 
     # 專案基本資訊
     project_name = Column(String(255), nullable=False)  # 專案名稱（使用者可自訂）
@@ -79,13 +79,20 @@ class Project(Base):
     # 表單資料（JSON 格式儲存）
     form_data = Column(Text, nullable=False)  # 儲存完整的表單資料（JSON）
 
+    # 圖片資料（JSON 格式儲存 base64）
+    images_data = Column(Text, nullable=True)  # {"logo": "base64...", "portfolio1": "base64..."}
+
     # 生成結果
     site_id = Column(String(36), unique=True, index=True)  # 生成的網站 ID
+    html_content = Column(Text, nullable=True)  # 生成的 HTML 內容
     preview_url = Column(String(500))
     download_url = Column(String(500))
+    download_password = Column(String(6), nullable=True)  # 一次性下載密碼（6位數字）
+    download_password_used = Column(Boolean, default=False)  # 密碼是否已使用
 
     # 狀態
     status = Column(String(20), default="draft")  # draft, generating, completed, failed
+    error_message = Column(Text, nullable=True)  # 生成失敗時的錯誤訊息
     is_deleted = Column(Boolean, default=False)   # 軟刪除標記
 
     # 時間戳

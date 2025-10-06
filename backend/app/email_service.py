@@ -168,6 +168,41 @@ class EmailService:
 
         await self._send_email(recipient_email, subject, html_body)
 
+    async def send_email(self, to_email: str, subject: str, body: str):
+        """
+        通用的 Email 發送方法
+
+        Args:
+            to_email: 收件人 Email
+            subject: 郵件主旨
+            body: 郵件內容（純文字或 HTML）
+        """
+        # 如果 body 看起來像 HTML，直接使用，否則包裝成簡單的 HTML
+        if '<html' in body.lower() or '<body' in body.lower():
+            html_body = body
+        else:
+            # 簡單的文字包裝成 HTML
+            html_body = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+        .content {{ background: #f9f9f9; padding: 30px; border-radius: 10px; white-space: pre-wrap; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            {body}
+        </div>
+    </div>
+</body>
+</html>
+"""
+        await self._send_email(to_email, subject, html_body)
+
     async def _send_email(self, to_email: str, subject: str, html_body: str):
         """實際發送 email"""
 

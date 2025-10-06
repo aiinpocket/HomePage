@@ -95,24 +95,25 @@
 </head>
 <body>
     <div class="container">
-        <h1>AI Website Generator</h1>
-        <p>
-            Choose your destination:<br>
-            Visit the corporate website or start generating AI-powered websites.
+        <h1 data-i18n="landing.title">AI 網站生成器</h1>
+        <p data-i18n="landing.subtitle">
+            選擇您的目的地：<br>
+            訪問公司網站或開始生成 AI 驅動的網站。
         </p>
 
         <div class="buttons">
-            <a href="generator/index.html" class="btn btn-primary">
-                Start Generator
+            <a href="generator/index.html" class="btn btn-primary" data-i18n="landing.startGenerator">
+                開始生成
             </a>
-            <a href="corporate/index.html" class="btn btn-secondary">
-                Corporate Website
+            <a href="corporate/index.html" class="btn btn-secondary" data-i18n="landing.corporateWebsite">
+                公司網站
             </a>
         </div>
 
-        <div class="note">
-            For open-source deployment, you can safely remove the "corporate" directory.
-        </div>
     </div>
+
+    <script src="shared/js/devtools-guard.js"></script>
+    <script src="shared/js/i18n.js"></script>
+    <script src="shared/js/lang-switcher.js"></script>
 </body>
 </html>

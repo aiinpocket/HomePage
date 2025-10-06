@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     SMTP_FROM: str = "AiInPocket <noreply@aiinpocket.com>"
 
+    # Webhook 設定
+    WEBHOOK_URL: str = ""  # 聯絡表單提交後的 webhook URL
+
     # Redis 設定
     REDIS_URL: str = "redis://redis:6379/0"
 

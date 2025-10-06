@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯網站 - AiInPocket</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #87CEEB;
+            --primary-green: #7FFF00;
+            --dark-bg: #0a0e27;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(135, 206, 235, 0.2);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .project-name-display {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+
+        /* Main Layout - Split Screen */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+
+        .editor-panel {
+            width: 50%;
+            overflow-y: auto;
+            padding: 2rem;
+            background: var(--dark-bg);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .preview-panel {
+            width: 50%;
+            background: #1a1a2e;
+            position: relative;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section h2 {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Services List */
+        .services-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .service-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .service-item input {
+            margin-bottom: 0.5rem;
+        }
+
+        .remove-service {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.4);
+            color: #ff6b6b;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .remove-service:hover {
+            background: rgba(255, 0, 0, 0.3);
+        }
+
+        .add-service-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(127, 255, 0, 0.1);
+            border: 1px dashed var(--primary-green);
+            border-radius: 8px;
+            color: var(--primary-green);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
+
+        .add-service-btn:hover {
+            background: rgba(127, 255, 0, 0.2);
+        }
+
+        /* AI Instruction Section */
+        .ai-instruction {
+            background: linear-gradient(135deg, rgba(135, 206, 235, 0.1), rgba(127, 255, 0, 0.1));
+            border: 2px solid var(--primary-green);
+        }
+
+        .ai-instruction .hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-green);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: var(--dark-bg);
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(127, 255, 0, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(135, 206, 235, 0.2);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Preview iframe */
+        .preview-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .preview-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .preview-header h3 {
+            color: var(--primary-green);
+            font-size: 1.1rem;
+        }
+
+        #preview-iframe {
+            width: 100%;
+            height: calc(100% - 60px);
+            border: none;
+            background: white;
+        }
+
+        /* Loading & Status */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--primary-green);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary-green);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .message.success {
+            background: rgba(127, 255, 0, 0.1);
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .message.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+        }
+
+        .message.info {
+            background: rgba(135, 206, 235, 0.1);
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        /* Scrollbar Styling */
+        .editor-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .editor-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .editor-panel::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 4px;
+        }
+
+        .editor-panel::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-green);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .editor-panel,
+            .preview-panel {
+                width: 100%;
+                height: 50vh;
+            }
+
+            .preview-panel {
+                border-right: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .editor-panel {
+                padding: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <h1>編輯網站</h1>
+            <div class="project-name-display" id="project-name-display">載入中...</div>
+        </div>
+        <div class="header-actions">
+            <a href="dashboard.html" class="btn btn-secondary">返回作品集</a>
+        </div>
+    </div>
+
+    <!-- Main Split Screen -->
+    <div class="main-container">
+        <!-- Left Panel - Editor -->
+        <div class="editor-panel">
+            <div id="loading-state" class="loading">
+                <div class="spinner"></div>
+                <div>載入專案資料中...</div>
+            </div>
+
+            <div id="editor-form" style="display: none;">
+                <!-- Status Messages -->
+                <div id="message-container"></div>
+
+                <!-- Basic Info Section -->
+                <div class="form-section">
+                    <h2>基本資訊</h2>
+                    <div class="form-group">
+                        <label for="project-name">專案名稱</label>
+                        <input type="text" id="project-name" placeholder="例如：我的企業官網">
+                    </div>
+                    <div class="form-group">
+                        <label for="company-description">公司簡介</label>
+                        <textarea id="company-description" placeholder="描述您的公司或業務..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Services Section -->
+                <div class="form-section">
+                    <h2>服務項目</h2>
+                    <div id="services-container" class="services-list">
+                        <!-- Services will be dynamically added here -->
+                    </div>
+                    <button class="add-service-btn" onclick="addService()">+ 新增服務項目</button>
+                </div>
+
+                <!-- AI Instruction Section -->
+                <div class="form-section ai-instruction">
+                    <h2>AI 智能修改</h2>
+                    <div class="hint">
+                        描述您想要的修改，AI 將自動調整網站樣式和內容。<br>
+                        <strong>範例：</strong><br>
+                        • 把主色改成深藍色 #1a365d<br>
+                        • 增加一個新的服務區塊展示我們的產品<br>
+                        • 調整 Hero 區塊的標題文字大小為 48px<br>
+                        • 讓整體風格更現代化，使用漸層色
+                    </div>
+                    <div class="form-group">
+                        <label for="ai-instruction">修改指令（選填）</label>
+                        <textarea id="ai-instruction" placeholder="例如：把主色改成深藍色、增加一個新的服務區塊、調整 Hero 區塊的文字大小..." rows="5"></textarea>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="apply-btn" onclick="applyChanges()">
+                        套用修改
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetForm()">
+                        重置
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Preview -->
+        <div class="preview-panel">
+            <div class="preview-container">
+                <div class="preview-header">
+                    <h3>即時預覽</h3>
+                </div>
+                <iframe id="preview-iframe" src="about:blank"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let projectId = null;
+        let userId = null;
+        let projectData = null;
+        let originalData = null;
+
+        // Initialize
+        async function init() {
+            // Get project ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            projectId = urlParams.get('id');
+
+            if (!projectId) {
+                showMessage('錯誤：未指定專案 ID', 'error');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+                return;
+            }
+
+            // Check authentication
+            const sessionToken = localStorage.getItem('session_token');
+            userId = localStorage.getItem('user_id');
+
+            if (!sessionToken || !userId) {
+                window.location.href = 'index.html?login=required';
+                return;
+            }
+
+            // Load project data
+            await loadProject();
+        }
+
+        // Load project data from API
+        async function loadProject() {
+            try {
+                const response = await fetch(`/api/projects/${projectId}?user_id=${userId}`);
+
+                if (!response.ok) {
+                    throw new Error('載入專案失敗');
+                }
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error('專案資料載入失敗');
+                }
+
+                projectData = data.project;
+                originalData = JSON.parse(JSON.stringify(projectData)); // Deep clone
+
+                // Update UI
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('editor-form').style.display = 'block';
+
+                // Populate form
+                populateForm();
+
+                // Load preview
+                loadPreview();
+
+            } catch (error) {
+                console.error('Error loading project:', error);
+                document.getElementById('loading-state').innerHTML = `
+                    <div class="message error">
+                        載入失敗：${error.message}<br>
+                        <button class="btn btn-secondary" onclick="window.location.href='dashboard.html'" style="margin-top: 1rem;">
+                            返回作品集
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Populate form with project data
+        function populateForm() {
+            const formData = projectData.form_data || {};
+
+            // Project name
+            document.getElementById('project-name').value = projectData.project_name || '';
+            document.getElementById('project-name-display').textContent = projectData.project_name || '未命名專案';
+
+            // Company description
+            document.getElementById('company-description').value = formData.description || '';
+
+            // Services
+            const services = formData.services || [];
+            renderServices(services);
+        }
+
+        // Render services list
+        function renderServices(services) {
+            const container = document.getElementById('services-container');
+            container.innerHTML = '';
+
+            if (!services || services.length === 0) {
+                services = [{ title: '', description: '' }];
+            }
+
+            services.forEach((service, index) => {
+                const serviceItem = document.createElement('div');
+                serviceItem.className = 'service-item';
+                serviceItem.innerHTML = `
+                    <div class="form-group">
+                        <label>服務名稱 ${index + 1}</label>
+                        <input type="text" class="service-title" value="${service.title || ''}" placeholder="例如：網站開發">
+                    </div>
+                    <div class="form-group">
+                        <label>服務說明</label>
+                        <textarea class="service-description" placeholder="服務的詳細描述...">${service.description || ''}</textarea>
+                    </div>
+                    ${services.length > 1 ? `<button class="remove-service" onclick="removeService(${index})">移除</button>` : ''}
+                `;
+                container.appendChild(serviceItem);
+            });
+        }
+
+        // Add new service
+        function addService() {
+            const container = document.getElementById('services-container');
+            const services = getServicesFromForm();
+            services.push({ title: '', description: '' });
+            renderServices(services);
+        }
+
+        // Remove service
+        function removeService(index) {
+            const services = getServicesFromForm();
+            services.splice(index, 1);
+            renderServices(services);
+        }
+
+        // Get services from form
+        function getServicesFromForm() {
+            const services = [];
+            const serviceItems = document.querySelectorAll('.service-item');
+
+            serviceItems.forEach(item => {
+                const title = item.querySelector('.service-title').value;
+                const description = item.querySelector('.service-description').value;
+                services.push({ title, description });
+            });
+
+            return services;
+        }
+
+        // Load preview in iframe
+        function loadPreview() {
+            const iframe = document.getElementById('preview-iframe');
+            if (projectData.preview_url) {
+                iframe.src = projectData.preview_url;
+            } else if (projectData.site_id) {
+                iframe.src = `/api/preview/${projectData.site_id}`;
+            } else {
+                iframe.srcdoc = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:Arial;">預覽暫時無法使用</div>';
+            }
+        }
+
+        // Apply changes
+        async function applyChanges() {
+            const applyBtn = document.getElementById('apply-btn');
+            applyBtn.disabled = true;
+            applyBtn.textContent = '處理中...';
+
+            try {
+                // Gather form data
+                const projectName = document.getElementById('project-name').value;
+                const description = document.getElementById('company-description').value;
+                const services = getServicesFromForm();
+                const instruction = document.getElementById('ai-instruction').value;
+
+                // Validate
+                if (!projectName.trim()) {
+                    throw new Error('請輸入專案名稱');
+                }
+
+                // Prepare request
+                const requestData = {
+                    site_id: projectData.site_id || projectData.id,
+                    instruction: instruction.trim(),
+                    modifications: {
+                        company_name: projectName,
+                        description: description,
+                        services: services.filter(s => s.title.trim() || s.description.trim())
+                    }
+                };
+
+                // Call API
+                const response = await fetch('/api/update-website', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || '更新失敗');
+                }
+
+                const result = await response.json();
+
+                // Show success message
+                showMessage('修改成功！預覽已更新', 'success');
+
+                // Reload preview
+                setTimeout(() => {
+                    const iframe = document.getElementById('preview-iframe');
+                    iframe.src = iframe.src; // Force reload
+                }, 500);
+
+                // Update project data
+                projectData.project_name = projectName;
+                projectData.form_data.description = description;
+                projectData.form_data.services = services;
+
+                // Clear AI instruction
+                document.getElementById('ai-instruction').value = '';
+
+            } catch (error) {
+                console.error('Error applying changes:', error);
+                showMessage(`錯誤：${error.message}`, 'error');
+            } finally {
+                applyBtn.disabled = false;
+                applyBtn.textContent = '套用修改';
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            if (confirm('確定要重置所有變更嗎？')) {
+                projectData = JSON.parse(JSON.stringify(originalData));
+                populateForm();
+                document.getElementById('ai-instruction').value = '';
+                showMessage('已重置為原始資料', 'info');
+            }
+        }
+
+        // Show message
+        function showMessage(text, type = 'info') {
+            const container = document.getElementById('message-container');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            container.appendChild(message);
+
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+
+        // Initialize on page load
+        init();
+    </script>
+
+    <!-- DevTools Guard -->
+    <script src="../shared/js/devtools-guard.js"></script>
+</body>
+</html>

@@ -16,12 +16,12 @@
                 <span class="logo-subtext">口袋智慧</span>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">首頁</a></li>
-                <li><a href="portfolio.html">作品集</a></li>
-                <li><a href="tech-stack.html" class="active">技術棧</a></li>
-                <li><a href="about.html">關於我們</a></li>
-                <li><a href="contact.html">聯絡我們</a></li>
-                <li><a href="../generator/index.html" class="nav-cta">AI 生成器</a></li>
+                <li><a href="index.html" data-i18n="nav.home">首頁</a></li>
+                <li><a href="portfolio.html" data-i18n="nav.portfolio">作品集</a></li>
+                <li><a href="tech-stack.html" class="active" data-i18n="nav.techStack">技術棧</a></li>
+                <li><a href="about.html" data-i18n="nav.about">關於我們</a></li>
+                <li><a href="contact.html" data-i18n="nav.contact">聯絡我們</a></li>
+                <li><a href="../generator/index.html" class="nav-cta" data-i18n="nav.generator">AI 生成器</a></li>
             </ul>
             <div class="nav-toggle" id="nav-toggle">
                 <span></span>
@@ -48,9 +48,9 @@
             <div class="container">
                 <h1 class="page-title">
                     <span class="title-number">03</span>
-                    技術棧
+                    <span data-i18n="techStack.header.title">技術棧</span>
                 </h1>
-                <p class="page-subtitle">我們使用最前沿的技術工具</p>
+                <p class="page-subtitle" data-i18n="techStack.header.subtitle">我們使用最前沿的技術工具</p>
             </div>
         </section>
 
@@ -59,48 +59,43 @@
             <div class="container">
                 <h2 class="tech-category-title">
                     <span class="category-icon">[AI]</span>
-                    AI & Machine Learning
+                    <span data-i18n="techStack.ai.title">AI & Machine Learning</span>
                 </h2>
                 <div class="tech-grid">
                     <div class="tech-item">
                         <div class="tech-icon">[Py]</div>
                         <h3>Python</h3>
-                        <p>主要 AI 開發語言</p>
-                    </div>
-                    <div class="tech-item">
-                        <div class="tech-icon">[TF]</div>
-                        <h3>TensorFlow</h3>
-                        <p>深度學習框架</p>
-                    </div>
-                    <div class="tech-item">
-                        <div class="tech-icon">[PT]</div>
-                        <h3>PyTorch</h3>
-                        <p>研究與生產環境</p>
+                        <p data-i18n="techStack.ai.python">AI 整合與自動化</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[API]</div>
-                        <h3>OpenAI API</h3>
-                        <p>GPT-4, DALL-E</p>
+                        <h3>OpenAI</h3>
+                        <p data-i18n="techStack.ai.openai">GPT-4 API 串接</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Local]</div>
+                        <h3>Ollama</h3>
+                        <p data-i18n="techStack.ai.ollama">本地 LLM 部署</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Bot]</div>
+                        <h3>LINE Bot</h3>
+                        <p data-i18n="techStack.ai.linebot">聊天機器人開發</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[LC]</div>
                         <h3>LangChain</h3>
-                        <p>LLM 應用框架</p>
+                        <p data-i18n="techStack.ai.langchain">LLM 應用框架</p>
                     </div>
                     <div class="tech-item">
-                        <div class="tech-icon">[ML]</div>
-                        <h3>Scikit-learn</h3>
-                        <p>機器學習工具</p>
-                    </div>
-                    <div class="tech-item">
-                        <div class="tech-icon">[Data]</div>
-                        <h3>Pandas</h3>
-                        <p>數據處理分析</p>
+                        <div class="tech-icon">[PT]</div>
+                        <h3>PyTorch</h3>
+                        <p data-i18n="techStack.ai.pytorch">研究與生產環境</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[HF]</div>
                         <h3>Hugging Face</h3>
-                        <p>預訓練模型</p>
+                        <p data-i18n="techStack.ai.huggingface">預訓練模型</p>
                     </div>
                 </div>
             </div>
@@ -111,48 +106,38 @@
             <div class="container">
                 <h2 class="tech-category-title">
                     <span class="category-icon">[Cloud]</span>
-                    Cloud & Infrastructure
+                    <span data-i18n="techStack.cloud.title">Cloud & Infrastructure</span>
                 </h2>
                 <div class="tech-grid">
                     <div class="tech-item">
-                        <div class="tech-icon">[AWS]</div>
-                        <h3>AWS</h3>
-                        <p>EC2, S3, Lambda</p>
-                    </div>
-                    <div class="tech-item">
-                        <div class="tech-icon">[Azure]</div>
-                        <h3>Azure</h3>
-                        <p>企業級雲端</p>
+                        <div class="tech-icon">[OCP]</div>
+                        <h3>OpenShift (OCP)</h3>
+                        <p data-i18n="techStack.cloud.openshift">企業級容器平台</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[GCP]</div>
                         <h3>Google Cloud</h3>
-                        <p>AI/ML 專用</p>
+                        <p data-i18n="techStack.cloud.gcp">雲端服務</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[K8s]</div>
                         <h3>Kubernetes</h3>
-                        <p>容器編排</p>
+                        <p data-i18n="techStack.cloud.k8s">容器編排</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[Docker]</div>
                         <h3>Docker</h3>
-                        <p>容器化技術</p>
-                    </div>
-                    <div class="tech-item">
-                        <div class="tech-icon">[TF]</div>
-                        <h3>Terraform</h3>
-                        <p>基礎設施即代碼</p>
+                        <p data-i18n="techStack.cloud.docker">容器化技術</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[Config]</div>
                         <h3>Ansible</h3>
-                        <p>自動化配置</p>
+                        <p data-i18n="techStack.cloud.ansible">自動化配置</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[Serverless]</div>
                         <h3>Serverless</h3>
-                        <p>無伺服器架構</p>
+                        <p data-i18n="techStack.cloud.serverless">無伺服器架構</p>
                     </div>
                 </div>
             </div>
@@ -163,9 +148,24 @@
             <div class="container">
                 <h2 class="tech-category-title">
                     <span class="category-icon">[DevOps]</span>
-                    DevOps & CI/CD
+                    <span data-i18n="techStack.devops.title">DevOps & CI/CD</span>
                 </h2>
                 <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-icon">[GH]</div>
+                        <h3>GitHub Actions</h3>
+                        <p>CI/CD 自動化</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Sonar]</div>
+                        <h3>SonarQube</h3>
+                        <p>代碼質量檢測</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[PM]</div>
+                        <h3>Redmine</h3>
+                        <p>專案管理</p>
+                    </div>
                     <div class="tech-item">
                         <div class="tech-icon">[CI]</div>
                         <h3>Jenkins</h3>
@@ -175,11 +175,6 @@
                         <div class="tech-icon">[GitLab]</div>
                         <h3>GitLab CI/CD</h3>
                         <p>完整 DevOps 平台</p>
-                    </div>
-                    <div class="tech-item">
-                        <div class="tech-icon">[GH]</div>
-                        <h3>GitHub Actions</h3>
-                        <p>工作流程自動化</p>
                     </div>
                     <div class="tech-item">
                         <div class="tech-icon">[Monitor]</div>
@@ -192,19 +187,120 @@
                         <p>數據視覺化</p>
                     </div>
                     <div class="tech-item">
-                        <div class="tech-icon">[Log]</div>
-                        <h3>ELK Stack</h3>
-                        <p>日誌管理</p>
-                    </div>
-                    <div class="tech-item">
                         <div class="tech-icon">[Vault]</div>
                         <h3>Vault</h3>
                         <p>密鑰管理</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Programming Languages -->
+        <section class="tech-section" id="tech-languages">
+            <div class="container">
+                <h2 class="tech-category-title">
+                    <span class="category-icon">[Code]</span>
+                    <span data-i18n="techStack.languages.title">程式語言</span>
+                </h2>
+                <div class="tech-grid">
                     <div class="tech-item">
-                        <div class="tech-icon">[Sonar]</div>
-                        <h3>SonarQube</h3>
-                        <p>代碼質量</p>
+                        <div class="tech-icon">[Py]</div>
+                        <h3>Python</h3>
+                        <p>後端開發與自動化</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[C#]</div>
+                        <h3>C#</h3>
+                        <p>.NET 企業應用</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Java]</div>
+                        <h3>Java</h3>
+                        <p>企業級系統開發</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Operations -->
+        <section class="tech-section" id="tech-systems">
+            <div class="container">
+                <h2 class="tech-category-title">
+                    <span class="category-icon">[Sys]</span>
+                    <span data-i18n="techStack.systems.title">系統操作</span>
+                </h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-icon">[HV]</div>
+                        <h3>Hyper-V</h3>
+                        <p>虛擬化平台</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[PVE]</div>
+                        <h3>Proxmox VE</h3>
+                        <p>開源虛擬化</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[ESXi]</div>
+                        <h3>VMware ESXi</h3>
+                        <p>企業虛擬化</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[vSphere]</div>
+                        <h3>vSphere</h3>
+                        <p>雲端管理平台</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Linux]</div>
+                        <h3>Linux</h3>
+                        <p>伺服器作業系統</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Win]</div>
+                        <h3>Windows Server</h3>
+                        <p>2008-2025 系列</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Mac]</div>
+                        <h3>macOS</h3>
+                        <p>開發環境</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools & Platforms -->
+        <section class="tech-section" id="tech-tools">
+            <div class="container">
+                <h2 class="tech-category-title">
+                    <span class="category-icon">[Tools]</span>
+                    <span data-i18n="techStack.tools.title">工具與平台</span>
+                </h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-icon">[ELK]</div>
+                        <h3>ELK Stack</h3>
+                        <p>日誌分析系統</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[JMeter]</div>
+                        <h3>JMeter</h3>
+                        <p>性能測試工具</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Firebase]</div>
+                        <h3>Firebase</h3>
+                        <p>後端即服務</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[Local]</div>
+                        <h3>LocalStack</h3>
+                        <p>本地雲端模擬</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">[N8N]</div>
+                        <h3>N8N</h3>
+                        <p>工作流程自動化</p>
                     </div>
                 </div>
             </div>
@@ -215,7 +311,7 @@
             <div class="container">
                 <h2 class="tech-category-title">
                     <span class="category-icon">[Web]</span>
-                    Web & Backend
+                    <span data-i18n="techStack.web.title">Web & Backend</span>
                 </h2>
                 <div class="tech-grid">
                     <div class="tech-item">
@@ -229,32 +325,32 @@
                         <p>JavaScript 運行時</p>
                     </div>
                     <div class="tech-item">
-                        <div class="tech-icon">⚛️</div>
+                        <div class="tech-icon">[React]</div>
                         <h3>React</h3>
                         <p>前端框架</p>
                     </div>
                     <div class="tech-item">
-                        <div class="tech-icon">[React]</div>
+                        <div class="tech-icon">[Next]</div>
                         <h3>Next.js</h3>
                         <p>全棧框架</p>
                     </div>
                     <div class="tech-item">
-                        <div class="tech-icon">🗄️</div>
+                        <div class="tech-icon">[DB]</div>
                         <h3>PostgreSQL</h3>
                         <p>關聯式資料庫</p>
                     </div>
                     <div class="tech-item">
-                        <div class="tech-icon">🔴</div>
+                        <div class="tech-icon">[Redis]</div>
                         <h3>Redis</h3>
                         <p>快取與訊息佇列</p>
                     </div>
                     <div class="tech-item">
-                        <div class="tech-icon">🍃</div>
+                        <div class="tech-icon">[Mongo]</div>
                         <h3>MongoDB</h3>
                         <p>NoSQL 資料庫</p>
                     </div>
                     <div class="tech-item">
-                        <div class="tech-icon">[Serverless]</div>
+                        <div class="tech-icon">[GraphQL]</div>
                         <h3>GraphQL</h3>
                         <p>API 查詢語言</p>
                     </div>
@@ -265,23 +361,23 @@
         <!-- 技術理念 -->
         <section class="tech-philosophy">
             <div class="container">
-                <h2 class="section-title">我們的技術理念</h2>
+                <h2 class="section-title" data-i18n="techStack.philosophy.title">我們的技術理念</h2>
                 <div class="philosophy-grid">
                     <div class="philosophy-item">
-                        <h3>適用性優先</h3>
-                        <p>選擇最適合問題的工具，而非最熱門的技術</p>
+                        <h3 data-i18n="techStack.philosophy.principle1.title">適用性優先</h3>
+                        <p data-i18n="techStack.philosophy.principle1.desc">選擇最適合問題的工具，而非最熱門的技術</p>
                     </div>
                     <div class="philosophy-item">
-                        <h3>持續學習</h3>
-                        <p>緊跟技術趨勢，定期評估並更新技術棧</p>
+                        <h3 data-i18n="techStack.philosophy.principle2.title">持續學習</h3>
+                        <p data-i18n="techStack.philosophy.principle2.desc">緊跟技術趨勢，定期評估並更新技術棧</p>
                     </div>
                     <div class="philosophy-item">
-                        <h3>性能為王</h3>
-                        <p>追求極致性能，優化每一個環節</p>
+                        <h3 data-i18n="techStack.philosophy.principle3.title">性能為王</h3>
+                        <p data-i18n="techStack.philosophy.principle3.desc">追求極致性能，優化每一個環節</p>
                     </div>
                     <div class="philosophy-item">
-                        <h3>安全第一</h3>
-                        <p>從設計階段就考慮安全性，而非事後補救</p>
+                        <h3 data-i18n="techStack.philosophy.principle4.title">安全第一</h3>
+                        <p data-i18n="techStack.philosophy.principle4.desc">從設計階段就考慮安全性，而非事後補救</p>
                     </div>
                 </div>
             </div>
@@ -290,14 +386,14 @@
         <!-- CTA -->
         <section class="cta-section">
             <div class="container">
-                <h2 class="cta-title">想了解我們如何運用這些技術？</h2>
-                <p class="cta-description">查看我們的實際案例或直接與我們聊聊</p>
+                <h2 class="cta-title" data-i18n="techStack.cta.title">想了解我們如何運用這些技術？</h2>
+                <p class="cta-description" data-i18n="techStack.cta.desc">查看我們的實際案例或直接與我們聊聊</p>
                 <div class="cta-buttons">
                     <a href="portfolio.html" class="btn btn-secondary btn-large">
-                        <span>查看作品集</span>
+                        <span data-i18n="techStack.cta.portfolioBtn">查看作品集</span>
                     </a>
                     <a href="contact.html" class="btn btn-primary btn-large">
-                        <span>聯絡我們</span>
+                        <span data-i18n="techStack.cta.contactBtn">聯絡我們</span>
                         <span class="btn-glow"></span>
                     </a>
                 </div>
@@ -310,28 +406,30 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <h3>AiInPocket</h3>
-                    <p class="footer-tagline">讓智慧觸手可及</p>
+                    <p class="footer-tagline" data-i18n="footer.tagline">讓智慧觸手可及</p>
                 </div>
                 <div class="footer-links">
                     <div class="footer-column">
-                        <h4>服務</h4>
+                        <h4 data-i18n="footer.services">服務</h4>
                         <ul>
-                            <li><a href="portfolio.html">作品集</a></li>
-                            <li><a href="tech-stack.html">技術棧</a></li>
-                            <li><a href="about.html">關於我們</a></li>
+                            <li><a href="portfolio.html" data-i18n="nav.portfolio">作品集</a></li>
+                            <li><a href="tech-stack.html" data-i18n="nav.techStack">技術棧</a></li>
+                            <li><a href="about.html" data-i18n="nav.about">關於我們</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
-                        <h4>聯絡</h4>
+                        <h4 data-i18n="footer.contactUs">聯絡</h4>
                         <ul>
-                            <li><a href="contact.html">聯絡我們</a></li>
-                            <li><a href="mailto:help@aiinpocket.com">Email</a></li>
+                            <li><a href="contact.html" data-i18n="nav.contact">聯絡我們</a></li>
+                            <li><a href="privacy.html" data-i18n="footer.privacy">隱私權政策</a></li>
+                            <li><a href="mailto:help@aiinpocket.com" data-i18n="footer.email">Email</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <span id="current-year"></span> AiInPocket. All rights reserved.</p>
+                <p>&copy; <span id="current-year"></span> <span data-i18n="footer.copyright">AiInPocket. All rights reserved.</span></p>
+                <p class="footer-note" data-i18n="footer.poweredBy">/// Powered by AI & Innovation ///</p>
             </div>
         </div>
     </footer>
@@ -339,14 +437,18 @@
     <div id="easter-egg-modal" class="modal">
         <div class="modal-overlay" id="modal-overlay"></div>
         <div class="modal-content">
-            <h2 class="modal-title">[彩蛋觸發！]</h2>
-            <p class="modal-text">你發現了隱藏的魔法咒語！</p>
+            <h2 class="modal-title" data-i18n="easterEgg.title">[彩蛋觸發！]</h2>
+            <p class="modal-text" data-i18n="easterEgg.text">你發現了隱藏的魔法咒語！</p>
             <div class="magic-text">AI is in your pocket now!</div>
-            <button class="btn btn-primary modal-close" id="modal-close">關閉</button>
+            <button class="btn btn-primary modal-close" id="modal-close" data-i18n="easterEgg.close">關閉</button>
         </div>
     </div>
 
+    <script src="../shared/js/devtools-guard.js"></script>
     <script src="../shared/js/particles.js"></script>
+    <script src="../shared/js/i18n.js"></script>
+    <script src="../shared/js/lang-switcher.js"></script>
+    <script src="../shared/js/cookie-consent.js"></script>
     <script src="../shared/js/easter-eggs.js"></script>
     <script src="../shared/js/main.js"></script>
     <script src="../shared/js/ai-chat.js"></script>

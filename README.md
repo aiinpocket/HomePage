@@ -1,256 +1,209 @@
-# AI Website Generator
+# AiInPocket - AI 網站生成器
 
-A full-stack web application that generates professional single-page websites using AI technology in under 30 seconds.
+**30 秒內使用 AI 生成專業網站**
 
-**Why AI/LLM is Essential:** Unlike traditional website builders with static templates, this system uses Large Language Models (GPT-4, Claude, etc.) to create fully customized, content-rich websites. The AI analyzes your business description, extracts styles from reference images, and generates tailored designs with appropriate color schemes, layouts, and compelling copy.
+一個全棧 AI 網站生成平台，讓用戶通過簡單的表單填寫，即可獲得完整、可下載的專業網站。
 
-## Key Features
+## ✨ 核心功能
 
-- **AI-Powered Generation** - LLM creates custom websites, not just templates
-- **Image Style Analysis** - Upload reference images, AI extracts color palettes and design styles (GPT-4 Vision)
-- **Incremental Updates** - Modify websites with natural language commands without full regeneration
-- **25+ Template Styles** - Starting points across various industries
-- **Multi-LLM Support** - Works with OpenAI, Claude, Gemini, or local models via Ollama
-- **Real-time Preview & Download** - See changes instantly
-- **Docker Deployment** - One-command setup
+- **AI 自動生成** - 使用 GPT-4/Claude/Gemini 生成完整 HTML
+- **25+ 模板風格** - 涵蓋企業、電商、個人品牌等各行業
+- **圖片風格分析** - 上傳參考圖片，AI 自動提取設計風格
+- **即時預覽** - 生成完成立即查看效果
+- **一鍵下載** - ZIP 包含完整網站（HTML + 圖片）
+- **會員系統** - 註冊登入，管理所有作品
 
-## Tech Stack
+## 🚀 快速開始
 
-### Backend
-- Python 3.11
-- FastAPI
-- PostgreSQL (with pgvector)
-- Redis
-- OpenAI API (optional)
-- Docker & Docker Compose
-
-### Frontend
-- HTML5/CSS3/JavaScript
-- Responsive design
-- No framework dependencies
-
-## Quick Start
-
-### Prerequisites
+### 系統需求
 
 - Docker & Docker Compose
-- Git
+- 任何 LLM API Key（OpenAI/Claude/Gemini）
 
-### Installation
+### 啟動專案
 
-1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/onepageweb.git
+# 1. Clone 專案
+git clone <repository-url>
 cd onepageweb
-```
 
-2. Set up environment variables:
-```bash
+# 2. 設定環境變數
 cp backend/.env.example backend/.env
+# 編輯 backend/.env，填入你的 API Key
+
+# 3. 啟動容器
+docker-compose up -d
+
+# 4. 訪問網站
+# 前端：http://localhost:80
+# 後端 API：http://localhost:8000
+# API 文檔：http://localhost:8000/docs
 ```
 
-Edit `backend/.env` with your preferred LLM provider (see [LLM Configuration Guide](LLM_CONFIGURATION.md)):
+### Windows 快速啟動
 
-**Option A: OpenAI (Default)**
-```env
-OPENAI_API_KEY=your_api_key_here
-OPENAI_MODEL=gpt-4
+```cmd
+start.bat
 ```
 
-**Option B: Anthropic Claude**
-```env
-ANTHROPIC_API_KEY=your_api_key_here
-ANTHROPIC_MODEL=claude-3-sonnet-20240229
-```
+### Linux/Mac 快速啟動
 
-**Option C: Local Ollama (No API key needed)**
-```env
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama2
-```
-
-See `LLM_CONFIGURATION.md` for all supported providers and detailed setup instructions.
-
-3. Start the application:
 ```bash
-docker-compose up --build -d
+chmod +x start.sh
+./start.sh
 ```
 
-4. Access the application:
-- Generator: http://localhost:8000/generator
-- API Documentation: http://localhost:8001/docs
-
-## Project Structure
+## 📁 專案結構
 
 ```
 onepageweb/
-├── frontend/
-│   ├── corporate/       # Corporate website (optional, can be removed)
-│   ├── generator/       # AI website generator (main application)
-│   └── shared/          # Shared CSS/JS resources
-├── backend/             # FastAPI backend
+├── frontend/              # 前端靜態網站
+│   ├── index.html        # 主頁
+│   ├── generator/        # AI 生成器頁面
+│   │   ├── index.html    # 生成器主頁面
+│   │   └── dashboard.html # 我的作品
+│   └── corporate/        # 企業頁面
+├── backend/              # Python FastAPI 後端
 │   ├── app/
-│   │   ├── main.py
-│   │   ├── website_generator.py
-│   │   ├── models.py
-│   │   └── ...
+│   │   ├── main.py              # 主程式
+│   │   ├── website_generator.py # AI 生成核心
+│   │   ├── template_styles.py   # 25+ 模板配置
+│   │   └── background_tasks.py  # 並行處理（50% CPU）
 │   └── requirements.txt
-├── docker/              # Docker configurations
-│   ├── nginx/
-│   └── backend/
-├── docker-compose.yml
-├── README.md
-├── LLM_CONFIGURATION.md # LLM provider setup guide
-└── MAINTENANCE.md       # System maintenance guide
+└── docker-compose.yml    # Docker 編排
 ```
 
-## Configuration
+## 🎯 使用流程
 
-### LLM Provider Setup
+### 1. 生成網站
 
-This application supports multiple LLM providers. See [LLM_CONFIGURATION.md](LLM_CONFIGURATION.md) for detailed setup instructions for:
-- OpenAI (GPT-4, GPT-3.5)
-- Anthropic (Claude 3)
-- Google (Gemini Pro)
-- Ollama (Local LLMs)
-- Azure OpenAI
+1. 訪問 http://localhost:80/generator/
+2. 選擇模板風格（25+ 選項）
+3. 填寫公司資訊（名稱、標語、服務等）
+4. 填寫聯絡 Email（**必填**）
+5. 可選：上傳圖片、作品集
+6. 點擊「生成網站」
 
-### General Configuration
+### 2. 查看作品
 
-### Environment Variables
+1. 點擊「登入」，使用生成時填寫的 Email
+2. 進入「我的作品」
+3. 查看狀態：
+   - ⏳ **生成中** - 等待完成（約 40-50 秒）
+   - ✅ **已完成** - 可預覽和下載
+   - ❌ **失敗** - 查看錯誤訊息
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| OPENAI_API_KEY | OpenAI API key for AI features | - |
-| OPENAI_MODEL | OpenAI model to use | gpt-4 |
-| DATABASE_URL | PostgreSQL connection string | - |
-| REDIS_URL | Redis connection string | - |
-| CORS_ORIGINS | Allowed CORS origins | localhost:8000 |
+### 3. 預覽與下載
 
-### Timezone
+- **預覽** - 點擊「🔍 預覽」在新視窗查看
+- **下載** - 點擊「📥 下載」：
+  1. 系統發送 6 位數提取碼到 Email
+  2. 輸入提取碼
+  3. 下載 ZIP（含 index.html + images/）
+  4. 提取碼失效（一次性使用）
 
-All services are configured to use **Asia/Taipei (UTC+8)** timezone by default. Modify `docker-compose.yml` to change:
+## ⚙️ 配置說明
 
-```yaml
-environment:
-  TZ: Your/Timezone
-```
-
-## API Endpoints
-
-### Generate Website
-```http
-POST /api/generate
-Content-Type: application/json
-
-{
-  "company_name": "My Company",
-  "industry": "Technology",
-  "style": "modern",
-  "description": "A brief description"
-}
-```
-
-### Preview Website
-```http
-GET /api/preview/{access_token}
-```
-
-### Download Website
-```http
-GET /api/download/{access_token}
-```
-
-For complete API documentation, visit http://localhost:8001/docs
-
-## Development
-
-### Running Locally (without Docker)
-
-1. Backend:
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8001
-```
-
-2. Frontend:
-```bash
-cd frontend
-python -m http.server 8000
-```
-
-### Database Migrations
+### 環境變數 (backend/.env)
 
 ```bash
-docker-compose exec backend alembic upgrade head
+# === LLM 配置 ===
+OPENAI_API_KEY=sk-...           # OpenAI API Key
+OPENAI_MODEL=gpt-4              # 使用的模型
+
+# 或使用其他 LLM
+ANTHROPIC_API_KEY=sk-ant-...    # Claude
+GEMINI_API_KEY=...              # Gemini
+OLLAMA_BASE_URL=http://...      # 本地 Ollama
+
+# === 資料庫 ===
+DATABASE_URL=postgresql://user:password@db:5432/aiinpocket
+
+# === Email 配置（可選）===
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+EMAIL_FROM=noreply@aiinpocket.com
+
+# === 其他 ===
+BASE_URL=http://localhost:8000
+CORS_ORIGINS=http://localhost:80,http://localhost:3000
 ```
 
-## Customization
+### LLM 切換
 
-### Removing Corporate Website
+支援多種 LLM，在 `backend/app/config.py` 中配置：
 
-If you only need the generator, remove the `corporate/` directory:
+```python
+# OpenAI (預設)
+LLM_PROVIDER = "openai"
+OPENAI_MODEL = "gpt-4"
 
-```bash
-rm -rf frontend/corporate
+# Claude
+LLM_PROVIDER = "anthropic"
+ANTHROPIC_MODEL = "claude-3-5-sonnet-20241022"
+
+# Gemini
+LLM_PROVIDER = "gemini"
+GEMINI_MODEL = "gemini-1.5-pro"
+
+# 本地 Ollama
+LLM_PROVIDER = "ollama"
+OLLAMA_MODEL = "llama3"
+OLLAMA_BASE_URL = "http://localhost:11434"
 ```
 
-Update `frontend/index.html` to redirect directly to the generator.
+## 🔧 進階功能
 
-### Adding Template Styles
+### 並行處理
 
-Edit `backend/app/template_styles.py` to add new website templates.
+系統使用 ThreadPoolExecutor 支援並行生成：
+- 自動使用 **50% CPU**
+- 同時處理多個生成請求
+- 每個任務獨立 DB session 和 event loop
 
-## Security Notes
+### 圖片處理
 
-- Change default database passwords in `docker-compose.yml`
-- Use strong API keys in production
-- Enable HTTPS for production deployment
-- Review CORS settings for production use
+- 上傳圖片以 base64 儲存在資料庫
+- 預覽時嵌入為 data URI
+- 下載時轉換為獨立檔案（images/ 資料夾）
 
-## License
+### 會員系統
 
-MIT License - see LICENSE file for details
+- Email 自動註冊：填寫 Email 即自動創建帳號
+- 作品關聯：所有專案自動綁定到 Email
+- 專案管理：查看、預覽、下載、刪除
 
-## Contributing
+## 📚 更多文檔
 
-Contributions are welcome. Please read CONTRIBUTING.md for guidelines.
+- **[DEPLOY.md](./DEPLOY.md)** - 詳細部署指南（生產環境、監控、備份）
+- **[CLAUDE.md](./CLAUDE.md)** - Claude Code 開發指引
 
-## Support
+## 🛠️ 常見問題
 
-For issues and questions, please use the GitHub issue tracker.
+### Q: 生成速度可以更快嗎？
+A: 主要瓶頸是 LLM API（40-50 秒），可以：
+- 使用更快的模型（如 gpt-3.5-turbo）
+- 使用本地 Ollama（需高性能 GPU）
 
-## Deployment
+### Q: 支援多語言嗎？
+A: 預設支援繁體中文、英文、日文三語切換。
 
-### Production Deployment
+### Q: 沒有 Email 伺服器可以用嗎？
+A: 可以，Email 功能是可選的。不配置 SMTP 也能正常生成網站，只是無法收到通知和下載碼。
 
-1. Update production environment variables
-2. Configure reverse proxy (nginx/Caddy)
-3. Enable SSL/TLS certificates
-4. Set up backup for PostgreSQL data
-5. Configure monitoring and logging
+### Q: 如何增加模板？
+A: 編輯 `backend/app/template_styles.py`，添加新的模板配置。
 
-### Docker Production Build
+### Q: 可以商用嗎？
+A: 請確保使用的 LLM API 符合商用授權。OpenAI/Claude/Gemini 皆有商用方案。
 
-```bash
-docker-compose -f docker-compose.prod.yml up -d
-```
+## 📞 聯絡我們
 
-## Troubleshooting
+- **Website**: https://aiinpocket.com
+- **Email**: help@aiinpocket.com
 
-### Container fails to start
-```bash
-docker-compose logs backend
-docker-compose logs postgres
-```
+---
 
-### Database connection issues
-Check PostgreSQL container status and connection string in `.env`
-
-### API not responding
-Verify backend container is running: `docker ps`
-
-## Acknowledgments
-
-Built with modern web technologies and AI capabilities to democratize website creation.
+**© 2025 AiInPocket. All rights reserved.**

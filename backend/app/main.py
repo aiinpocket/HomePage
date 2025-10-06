@@ -2,9 +2,9 @@
 FastAPI 主程式
 AiInPocket AI 聊天機器人後端 API
 """
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, Dict, List
 import uvicorn
@@ -12,6 +12,7 @@ from datetime import datetime
 import uuid
 import logging
 from pathlib import Path
+import json
 
 from .config import settings
 from .ai_handler import ai_handler
@@ -26,6 +27,7 @@ from .database import get_db
 from .models import User, Project
 from sqlalchemy.orm import Session
 from fastapi import Depends
+from .email_templates import format_email
 
 # 設定日誌
 logging.basicConfig(level=logging.INFO)
@@ -70,6 +72,8 @@ class GenerateWebsiteRequest(BaseModel):
     template_id: str
     user_data: Dict
     contact_email: str
+    languages: List[str] = ["zh-TW", "en", "ja"]  # 預設支援三語
+    images: Optional[Dict[str, str]] = None  # {"logo": "base64...", "portfolio1": "base64..."}
 
 
 class GenerateWebsiteResponse(BaseModel):
@@ -78,6 +82,7 @@ class GenerateWebsiteResponse(BaseModel):
     preview_url: str
     download_url: str
     timestamp: str
+    message: Optional[str] = None
 
 
 class UpdateWebsiteRequest(BaseModel):
@@ -122,6 +127,23 @@ class ChatPreviewResponse(BaseModel):
     reply: str
     usage_count: int
     remaining: int
+    timestamp: str
+
+
+class ContactRequest(BaseModel):
+    """聯絡表單請求模型"""
+    name: str
+    email: str
+    company: Optional[str] = None
+    service: str  # 'ai', 'cloud', 'devops', 'consulting', 'other'
+    message: str
+    language: str = 'zh-TW'  # 預設繁體中文
+
+
+class ContactResponse(BaseModel):
+    """聯絡表單回應模型"""
+    success: bool
+    message: str
     timestamp: str
 
 
@@ -807,96 +829,222 @@ async def get_usage_stats(site_id: str, db: Session = Depends(get_db)):
 
 
 # ========================================
+# 聯絡表單 API
+# ========================================
+
+@app.post("/api/contact", response_model=ContactResponse, tags=["Contact"])
+async def contact(request: ContactRequest):
+    """
+    聯絡表單提交
+
+    Args:
+        request: 聯絡表單資料（包含語言資訊）
+
+    Returns:
+        ContactResponse: 提交結果
+    """
+    try:
+        logger.info(f"Contact form submitted: {request.email} (Language: {request.language})")
+
+        # 格式化 Email 內容（根據語言）
+        email_content = format_email(
+            template_name='contact_confirmation',
+            language=request.language,
+            name=request.name,
+            service=request.service,
+            message=request.message
+        )
+
+        # 發送確認 Email 給使用者
+        await email_service.send_email(
+            to_email=request.email,
+            subject=email_content['subject'],
+            body=email_content['body']
+        )
+
+        # 發送通知 Email 給管理員（使用繁中）
+        admin_email = format_email(
+            template_name='contact_confirmation',
+            language='zh-TW',
+            name=request.name,
+            service=request.service,
+            message=request.message
+        )
+
+        await email_service.send_email(
+            to_email='help@aiinpocket.com',
+            subject=f'[新諮詢] {request.name} - {request.service}',
+            body=f"""
+收到新的聯絡表單提交：
+
+姓名：{request.name}
+Email：{request.email}
+公司：{request.company or '未提供'}
+服務：{request.service}
+語言：{request.language}
+
+訊息：
+{request.message}
+
+---
+提交時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+            """
+        )
+
+        # 發送 Webhook 通知（如果已設定）
+        if settings.WEBHOOK_URL:
+            try:
+                import httpx
+                webhook_data = {
+                    "event": "contact_form_submission",
+                    "timestamp": datetime.now().isoformat(),
+                    "data": {
+                        "name": request.name,
+                        "email": request.email,
+                        "company": request.company or "",
+                        "service": request.service,
+                        "message": request.message,
+                        "language": request.language
+                    }
+                }
+
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    webhook_response = await client.post(
+                        settings.WEBHOOK_URL,
+                        json=webhook_data,
+                        headers={"Content-Type": "application/json; charset=utf-8"}
+                    )
+                    logger.info(f"Webhook sent successfully: {webhook_response.status_code}")
+            except Exception as webhook_error:
+                # Webhook 失敗不應影響主流程
+                logger.error(f"Failed to send webhook: {webhook_error}")
+
+
+        # 返回成功訊息（根據語言）
+        success_messages = {
+            'zh-TW': '感謝您的聯繫！我們會在 24 小時內回覆您。',
+            'en': 'Thank you for contacting us! We will respond within 24 hours.',
+            'ja': 'お問い合わせありがとうございます！24時間以内に返信いたします。'
+        }
+
+        return ContactResponse(
+            success=True,
+            message=success_messages.get(request.language, success_messages['zh-TW']),
+            timestamp=datetime.now().isoformat()
+        )
+
+    except Exception as e:
+        logger.error(f"Error in contact endpoint: {e}")
+
+        error_messages = {
+            'zh-TW': '提交失敗，請稍後再試或直接發送 Email 至 help@aiinpocket.com',
+            'en': 'Submission failed. Please try again later or email us at help@aiinpocket.com',
+            'ja': '送信に失敗しました。後でもう一度お試しいただくか、help@aiinpocket.comまでメールでお問い合わせください'
+        }
+
+        return ContactResponse(
+            success=False,
+            message=error_messages.get(request.language, error_messages['zh-TW']),
+            timestamp=datetime.now().isoformat()
+        )
+
+
+# ========================================
 # 網站生成 API
 # ========================================
 
 @app.post("/api/generate-website", response_model=GenerateWebsiteResponse, tags=["Website Generation"])
-async def generate_website(request: GenerateWebsiteRequest):
+async def generate_website(
+    request: GenerateWebsiteRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
+):
     """
-    生成網站
+    提交網站生成請求（異步處理）
 
     Args:
-        request: 生成網站請求（包含模板 ID、使用者資料和聯絡 email）
+        request: 生成網站請求（包含模板 ID、使用者資料、圖片等）
+        background_tasks: FastAPI 背景任務
+        db: 資料庫 session
 
     Returns:
-        GenerateWebsiteResponse: 包含 site_id、預覽 URL 和下載 URL
+        GenerateWebsiteResponse: 包含專案 ID 和狀態訊息
     """
     try:
-        logger.info(f"Starting website generation with template: {request.template_id}")
+        logger.info(f"Received website generation request with template: {request.template_id}")
 
-        # 1. 生成網站 HTML
-        html_content = await website_generator.generate_website(
+        # 1. 根據 email 查詢或創建使用者
+        user_id = None
+        contact_email = request.contact_email
+
+        if contact_email:
+            # 查詢使用者是否存在
+            user = db.query(User).filter(User.email == contact_email).first()
+
+            if not user:
+                # 如果使用者不存在，創建新使用者（自動註冊）
+                user = User(
+                    email=contact_email,
+                    vip_level=0,  # 免費用戶
+                    max_projects=10,  # 預設上限
+                    total_projects_created=0
+                )
+                db.add(user)
+                db.commit()
+                db.refresh(user)
+                logger.info(f"Auto-created user for email: {contact_email}")
+
+            user_id = user.id
+
+            # 更新專案計數
+            user.total_projects_created += 1
+            db.commit()
+
+        # 2. 創建專案記錄
+        project = Project(
+            user_id=user_id,  # 關聯到使用者（通過 email 查詢得到）
+            project_name=request.user_data.get("company_name", "未命名專案"),
             template_id=request.template_id,
-            user_data=request.user_data
+            form_data=json.dumps(request.user_data, ensure_ascii=False),
+            images_data=json.dumps(request.images, ensure_ascii=False) if request.images else None,
+            status="pending"
         )
 
-        # 2. 生成唯一的 site_id
-        site_id = str(uuid.uuid4())
-        logger.info(f"Generated site_id: {site_id}")
+        db.add(project)
+        db.commit()
+        db.refresh(project)
 
-        # 3. 建立兩個版本的 ZIP
-        # 預覽版（使用平台 API key，有限制）
-        preview_zip = zip_builder.create_website_package(
-            site_id=site_id,
-            html_content=html_content,
-            user_data=request.user_data,
-            with_api_key=False
-        )
-        logger.info(f"Preview package created: {preview_zip}")
+        logger.info(f"Created project {project.id}, submitting to background task")
 
-        # 下載版（需要使用者自己的 API key，無限制）
-        download_zip = zip_builder.create_website_package(
-            site_id=f"{site_id}_full",
-            html_content=html_content,
-            user_data=request.user_data,
-            with_api_key=True
-        )
-        logger.info(f"Download package created: {download_zip}")
+        # 2. 提交到背景任務（不傳遞 db session，讓背景任務自己創建）
+        from .background_tasks import submit_generation_task
+        submit_generation_task(project.id)
 
-        # 4. 建立 URL
-        preview_url = f"{settings.SITE_URL}/api/preview/{site_id}"
-        download_url = f"{settings.SITE_URL}/api/download/{site_id}"
-
-        # 5. 發送 email 通知
-        try:
-            await email_service.send_generation_complete_email(
-                recipient_email=request.contact_email,
-                site_id=site_id,
-                company_name=request.user_data.get("company_name", "Your Company"),
-                preview_url=preview_url,
-                download_url=download_url
-            )
-            logger.info(f"Email sent to: {request.contact_email}")
-        except Exception as email_error:
-            logger.error(f"Failed to send email: {email_error}")
-            # 不要因為 email 失敗而中斷整個流程
-
-        # 6. 返回結果
+        # 3. 立即返回（不等待生成完成）
         return GenerateWebsiteResponse(
-            site_id=site_id,
-            preview_url=preview_url,
-            download_url=download_url,
-            timestamp=datetime.now().isoformat()
+            site_id=project.id,
+            preview_url="",  # 生成完成後會發送郵件
+            download_url="",
+            timestamp=datetime.now().isoformat(),
+            message="已收到您的請求，網站生成中，完成後將發送 Email 通知您"
         )
 
-    except ValueError as ve:
-        logger.error(f"Validation error: {ve}")
-        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
-        logger.error(f"Error generating website: {e}", exc_info=True)
+        logger.error(f"Error submitting generation request: {e}", exc_info=True)
         raise HTTPException(
             status_code=500,
-            detail=f"生成網站時發生錯誤：{str(e)}"
+            detail=f"提交請求時發生錯誤：{str(e)}"
         )
 
 
 @app.post("/api/update-website", response_model=UpdateWebsiteResponse, tags=["Website Generation"])
-async def update_website(request: UpdateWebsiteRequest):
+async def update_website(request: UpdateWebsiteRequest, db: Session = Depends(get_db)):
     """
-    更新已生成的網站 (增量更新,不需要完全重新生成)
+    更新已生成的網站 (使用 AI 增量更新)
 
     Args:
         request: 更新網站請求 (site_id, modifications, instruction)
+        db: 資料庫 session
 
     Returns:
         UpdateWebsiteResponse: 更新後的預覽 URL
@@ -919,31 +1067,33 @@ async def update_website(request: UpdateWebsiteRequest):
     try:
         logger.info(f"Updating website: {request.site_id}")
 
-        # 1. 讀取現有網站 HTML
-        site_path = Path("generated_sites") / request.site_id / "index.html"
-        if not site_path.exists():
-            raise HTTPException(status_code=404, detail="網站不存在")
+        # 1. 從資料庫讀取專案
+        project = db.query(Project).filter(Project.id == request.site_id).first()
 
-        with open(site_path, 'r', encoding='utf-8') as f:
-            current_html = f.read()
+        if not project:
+            raise HTTPException(status_code=404, detail="專案不存在")
+
+        if not project.html_content:
+            raise HTTPException(status_code=400, detail="網站內容不存在，無法更新")
 
         # 2. 使用 AI 進行增量更新
         updated_html = await website_generator.update_website(
-            current_html=current_html,
+            current_html=project.html_content,
             instruction=request.instruction,
             modifications=request.modifications
         )
 
-        # 3. 保存更新後的 HTML
-        with open(site_path, 'w', encoding='utf-8') as f:
-            f.write(updated_html)
+        # 3. 保存更新後的 HTML 到資料庫
+        project.html_content = updated_html
+        project.updated_at = datetime.utcnow()
+        db.commit()
 
         logger.info(f"Website updated successfully: {request.site_id}")
 
         # 4. 返回結果
         return UpdateWebsiteResponse(
             site_id=request.site_id,
-            preview_url=f"{settings.SITE_URL}/api/preview/{request.site_id}",
+            preview_url=f"/api/preview/{request.site_id}",
             timestamp=datetime.now().isoformat(),
             changes_applied=request.modifications
         )
@@ -1055,12 +1205,13 @@ async def chat_preview(request: ChatPreviewRequest):
 
 
 @app.get("/api/preview/{site_id}", response_class=HTMLResponse, tags=["Website Generation"])
-async def preview_website(site_id: str):
+async def preview_website(site_id: str, db: Session = Depends(get_db)):
     """
-    預覽網站
+    預覽網站（圖片以 data URI 嵌入）
 
     Args:
-        site_id: 網站 ID
+        site_id: 專案/網站 ID
+        db: 資料庫 session
 
     Returns:
         HTML 內容
@@ -1068,38 +1219,95 @@ async def preview_website(site_id: str):
     try:
         logger.info(f"Preview request for site: {site_id}")
 
-        # 從 generated_sites 資料夾讀取 ZIP 並解壓
-        generated_sites_path = Path(settings.GENERATED_SITES_PATH)
-        zip_path = generated_sites_path / f"{site_id}.zip"
+        # 從資料庫取得專案
+        project = db.query(Project).filter(Project.id == site_id).first()
 
-        if not zip_path.exists():
-            logger.warning(f"Site not found: {site_id}")
-            raise HTTPException(status_code=404, detail="網站不存在")
+        if not project:
+            logger.warning(f"Project not found: {site_id}")
+            raise HTTPException(status_code=404, detail="專案不存在")
 
-        # 解壓並讀取 index.html
-        import zipfile
-        import tempfile
+        if project.status == "pending":
+            return HTMLResponse(content="""
+                <!DOCTYPE html>
+                <html lang="zh-TW">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>生成中...</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            text-align: center;
+                        }
+                        .container { padding: 2rem; }
+                        .spinner {
+                            border: 4px solid rgba(255, 255, 255, 0.3);
+                            border-top: 4px solid white;
+                            border-radius: 50%;
+                            width: 50px;
+                            height: 50px;
+                            animation: spin 1s linear infinite;
+                            margin: 0 auto 1rem;
+                        }
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="spinner"></div>
+                        <h2>🚀 網站生成中...</h2>
+                        <p>我們正在為您生成專屬網站，完成後將發送 Email 通知您</p>
+                    </div>
+                </body>
+                </html>
+            """)
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(temp_dir)
+        if project.status == "failed":
+            return HTMLResponse(content=f"""
+                <!DOCTYPE html>
+                <html lang="zh-TW">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>生成失敗</title>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            background: #f8d7da;
+                            color: #721c24;
+                            text-align: center;
+                        }}
+                        .container {{ padding: 2rem; max-width: 600px; }}
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h2>😔 網站生成失敗</h2>
+                        <p>錯誤訊息：{project.error_message}</p>
+                        <p>請聯繫客服或嘗試重新生成</p>
+                    </div>
+                </body>
+                </html>
+            """)
 
-            index_path = Path(temp_dir) / "index.html"
-            if not index_path.exists():
-                raise HTTPException(status_code=500, detail="網站檔案損壞")
+        if not project.html_content:
+            raise HTTPException(status_code=500, detail="網站內容不存在")
 
-            html_content = index_path.read_text(encoding='utf-8')
-
-            # 注入 ai-chat.js
-            js_path = Path(temp_dir) / "ai-chat.js"
-            if js_path.exists():
-                js_content = js_path.read_text(encoding='utf-8')
-                html_content = html_content.replace(
-                    '</body>',
-                    f'<script>{js_content}</script>\n</body>'
-                )
-
-            return HTMLResponse(content=html_content)
+        # 返回 HTML（圖片已經嵌入為 data URI）
+        return HTMLResponse(content=project.html_content)
 
     except HTTPException:
         raise
@@ -1111,13 +1319,59 @@ async def preview_website(site_id: str):
         )
 
 
-@app.get("/api/download/{site_id}", tags=["Website Generation"])
-async def download_website(site_id: str):
+@app.post("/api/regenerate-download-password/{project_id}", tags=["Website Generation"])
+async def regenerate_download_password(project_id: str, db: Session = Depends(get_db)):
     """
-    下載完整版 ZIP
+    重新生成下載密碼（當使用者遺失密碼時）
 
     Args:
-        site_id: 網站 ID
+        project_id: 專案 ID
+        db: 資料庫 session
+
+    Returns:
+        新的下載密碼
+    """
+    try:
+        project = db.query(Project).filter(Project.id == project_id).first()
+
+        if not project:
+            raise HTTPException(status_code=404, detail="專案不存在")
+
+        # 生成新密碼
+        import random
+        new_password = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+        project.download_password = new_password
+        project.download_password_used = False
+        db.commit()
+
+        logger.info(f"Download password regenerated for project: {project_id}")
+
+        return {
+            "success": True,
+            "password": new_password,
+            "message": "下載密碼已重新生成"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error regenerating password: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"重新生成密碼時發生錯誤：{str(e)}"
+        )
+
+
+@app.get("/api/download/{site_id}", tags=["Website Generation"])
+async def download_website(site_id: str, password: str, db: Session = Depends(get_db)):
+    """
+    下載完整版 ZIP（需要一次性密碼）
+
+    Args:
+        site_id: 專案/網站 ID
+        password: 一次性下載密碼
+        db: 資料庫 session
 
     Returns:
         ZIP 檔案
@@ -1125,18 +1379,49 @@ async def download_website(site_id: str):
     try:
         logger.info(f"Download request for site: {site_id}")
 
-        # 下載完整版（帶 _full 後綴）
-        generated_sites_path = Path(settings.GENERATED_SITES_PATH)
-        zip_path = generated_sites_path / f"{site_id}_full.zip"
+        # 從資料庫取得專案
+        project = db.query(Project).filter(Project.id == site_id).first()
 
-        if not zip_path.exists():
-            logger.warning(f"Download package not found: {site_id}")
-            raise HTTPException(status_code=404, detail="下載檔案不存在")
+        if not project:
+            logger.warning(f"Project not found: {site_id}")
+            raise HTTPException(status_code=404, detail="專案不存在")
 
-        return FileResponse(
-            path=str(zip_path),
+        if project.status != "completed":
+            raise HTTPException(
+                status_code=400,
+                detail=f"專案尚未完成生成，目前狀態：{project.status}"
+            )
+
+        # 驗證下載密碼
+        if not project.download_password:
+            raise HTTPException(status_code=400, detail="此專案未設定下載密碼")
+
+        if project.download_password_used:
+            raise HTTPException(
+                status_code=403,
+                detail="下載密碼已使用過，請聯繫客服重新取得密碼"
+            )
+
+        if project.download_password != password:
+            raise HTTPException(status_code=403, detail="下載密碼錯誤")
+
+        # 標記密碼已使用
+        project.download_password_used = True
+        db.commit()
+
+        logger.info(f"Download password validated for site: {site_id}")
+
+        # 生成下載套件
+        from .background_tasks import create_download_package
+        zip_buffer = create_download_package(project)
+
+        # 返回 ZIP 檔案
+        return StreamingResponse(
+            zip_buffer,
             media_type='application/zip',
-            filename=f"website_{site_id}.zip"
+            headers={
+                'Content-Disposition': f'attachment; filename="website_{project.project_name}.zip"'
+            }
         )
 
     except HTTPException:
@@ -1146,6 +1431,110 @@ async def download_website(site_id: str):
         raise HTTPException(
             status_code=500,
             detail=f"下載檔案時發生錯誤：{str(e)}"
+        )
+
+
+@app.get("/preview/{site_id}", tags=["Website Generation"])
+async def preview_website(site_id: str, db: Session = Depends(get_db)):
+    """
+    預覽生成的網站（返回 HTML）
+
+    Args:
+        site_id: 專案/網站 ID
+        db: 資料庫 session
+
+    Returns:
+        HTML 內容
+    """
+    try:
+        logger.info(f"Preview request for site: {site_id}")
+
+        # 從資料庫取得專案
+        project = db.query(Project).filter(Project.site_id == site_id).first()
+
+        if not project:
+            # 也嘗試使用 project.id 查找
+            project = db.query(Project).filter(Project.id == site_id).first()
+
+        if not project:
+            logger.warning(f"Project not found: {site_id}")
+            raise HTTPException(status_code=404, detail="專案不存在")
+
+        if project.status == "failed":
+            raise HTTPException(
+                status_code=400,
+                detail=f"網站生成失敗：{project.error_message or '未知錯誤'}"
+            )
+
+        if project.status != "completed":
+            # 返回生成中的頁面
+            return HTMLResponse(content=f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網站生成中...</title>
+    <style>
+        body {{
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e27, #1a1f3a);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }}
+        .container {{
+            text-align: center;
+            padding: 2rem;
+        }}
+        .spinner {{
+            border: 4px solid rgba(135, 206, 235, 0.3);
+            border-top: 4px solid #87CEEB;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }}
+        @keyframes spin {{
+            0% {{ transform: rotate(0deg); }}
+            100% {{ transform: rotate(360deg); }}
+        }}
+        h1 {{ color: #7FFF00; }}
+        p {{ color: #87CEEB; font-size: 1.2rem; }}
+    </style>
+    <script>
+        setTimeout(() => location.reload(), 5000);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>🚀 網站生成中...</h1>
+        <p>狀態：{project.status}</p>
+        <p>頁面將每 5 秒自動重新整理</p>
+    </div>
+</body>
+</html>
+            """)
+
+        # 返回完成的 HTML
+        if not project.html_content:
+            raise HTTPException(status_code=500, detail="HTML 內容不存在")
+
+        return HTMLResponse(content=project.html_content)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error serving preview: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"預覽網站時發生錯誤：{str(e)}"
         )
 
 
