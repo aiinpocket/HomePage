@@ -54,6 +54,8 @@ services:
       - ./backend/app:/app/app
       # 掛載前端檔案供 RAG 讀取（可寫入以生成 sitemap）
       - ./frontend:/app/frontend
+      # 掛載生成的網站檔案目錄
+      - ./backend/generated_sites:/app/generated_sites
     networks:
       - aiinpocket-network
     depends_on:

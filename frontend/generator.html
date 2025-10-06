@@ -1493,7 +1493,10 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ image: imageData })
+                    body: JSON.stringify({
+                        image_base64: imageData.split(',')[1], // 去掉 data:image/xxx;base64, 前綴
+                        description: document.getElementById('custom-description')?.value || ''
+                    })
                 });
 
                 if (response.ok) {
@@ -1770,9 +1773,10 @@
 
                 if (response.ok) {
                     const result = await response.json();
-                    showSuccess(result.url);
+                    showSuccess(result.preview_url, result.download_url);
                 } else {
-                    throw new Error('生成失敗');
+                    const error = await response.text();
+                    throw new Error(`生成失敗: ${error}`);
                 }
             } catch (error) {
                 console.error('生成網站失敗:', error);
@@ -1782,44 +1786,49 @@
         }
 
         function collectFormData() {
-            // 收集所有表單資料
-            const formData = {
-                style: selectedStyle,
-                customImage: uploadedImage,
-                customDescription: document.getElementById('custom-description')?.value,
-                companyName: document.getElementById('company-name').value,
-                slogan: document.getElementById('slogan').value,
-                companyDescription: document.getElementById('company-description').value,
-                services: [],
-                contactEmail: document.getElementById('contact-email').value,
-                contactPhone: document.getElementById('contact-phone').value,
-                needPortfolio: document.getElementById('need-portfolio').checked,
-                portfolio: []
-            };
-
             // 收集服務列表
+            const services = [];
             document.querySelectorAll('input[name="service[]"]').forEach(input => {
                 if (input.value.trim()) {
-                    formData.services.push(input.value.trim());
+                    services.push(input.value.trim());
                 }
             });
 
             // 收集作品集
-            if (formData.needPortfolio) {
+            const portfolio = [];
+            const needPortfolio = document.getElementById('need-portfolio').checked;
+            if (needPortfolio) {
                 const portfolioNames = document.querySelectorAll('input[name="portfolio-name[]"]');
                 const portfolioDescriptions = document.querySelectorAll('textarea[name="portfolio-description[]"]');
                 const portfolioTechs = document.querySelectorAll('input[name="portfolio-tech[]"]');
                 const portfolioDates = document.querySelectorAll('input[name="portfolio-date[]"]');
 
                 for (let i = 0; i < portfolioNames.length; i++) {
-                    formData.portfolio.push({
-                        name: portfolioNames[i].value,
-                        description: portfolioDescriptions[i].value,
-                        tech: portfolioTechs[i].value,
-                        date: portfolioDates[i].value
+                    portfolio.push({
+                        title: portfolioNames[i].value,
+                        description: portfolioDescriptions[i].value
                     });
                 }
             }
+
+            // 構建符合後端 API 期望的格式
+            // Backend expects: GenerateWebsiteRequest = { template_id, user_data, contact_email }
+            const formData = {
+                template_id: selectedStyle || 'modern-tech',
+                user_data: {
+                    company_name: document.getElementById('company-name').value,
+                    tagline: document.getElementById('slogan').value,
+                    description: document.getElementById('company-description').value,
+                    services: services,
+                    contact_phone: document.getElementById('contact-phone').value || '',
+                    portfolio: portfolio,
+                    custom_style: selectedStyle === 'custom' ? {
+                        image: uploadedImage ? uploadedImage.split(',')[1] : null, // base64 without prefix
+                        description: document.getElementById('custom-description')?.value || ''
+                    } : null
+                },
+                contact_email: document.getElementById('contact-email').value
+            };
 
             return formData;
         }
@@ -1838,7 +1847,7 @@
             }, 500);
         }
 
-        function showSuccess(url) {
+        function showSuccess(previewUrl, downloadUrl) {
             // 隱藏 Loading
             const loadingOverlay = document.getElementById('loading-overlay');
             loadingOverlay.classList.remove('active');
@@ -1853,8 +1862,22 @@
             successMessage.classList.add('active');
 
             // 設定網站 URL
-            document.getElementById('website-url').textContent = url || 'https://aiinpocket.com/sites/demo';
-            document.getElementById('visit-website').href = url || '#';
+            document.getElementById('website-url').textContent = previewUrl || 'https://aiinpocket.com/sites/demo';
+            document.getElementById('visit-website').href = previewUrl || '#';
+
+            // 如果有下載 URL，添加下載按鈕
+            if (downloadUrl) {
+                const downloadBtn = document.createElement('a');
+                downloadBtn.href = downloadUrl;
+                downloadBtn.className = 'btn btn-secondary';
+                downloadBtn.innerHTML = '下載完整版<span>⬇</span>';
+                downloadBtn.style.marginLeft = '1rem';
+
+                const buttonContainer = document.querySelector('#success-message .btn-primary').parentElement;
+                if (buttonContainer && !buttonContainer.querySelector('.btn-secondary')) {
+                    buttonContainer.querySelector('.btn-primary').insertAdjacentElement('afterend', downloadBtn);
+                }
+            }
 
             // 滾動到頂部
             window.scrollTo({ top: 0, behavior: 'smooth' });
