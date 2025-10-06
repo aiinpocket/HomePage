@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 網站生成器 - AiInPocket | 30 秒打造專屬網站</title>
+    <meta name="description" content="使用 AI 技術，30 秒內生成專業網站。選擇風格、填寫資料，立即獲得您的專屬網站。">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* ========================================
+           生成器專用樣式
+           ======================================== */
+
+        /* 進度指示器 */
+        .progress-indicator {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 90;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+        }
+
+        .progress-steps {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: rgba(135, 206, 235, 0.2);
+            z-index: -1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(135, 206, 235, 0.1);
+            border: 2px solid rgba(135, 206, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .progress-step.active .step-circle {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            border-color: var(--primary-green);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px var(--glow-green);
+        }
+
+        .progress-step.completed .step-circle {
+            background: rgba(127, 255, 0, 0.2);
+            border-color: var(--primary-green);
+            color: var(--primary-green);
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        /* 主內容區域 */
+        .generator-content {
+            padding-top: 160px;
+            min-height: 100vh;
+        }
+
+        /* 歡迎區域 */
+        .welcome-section {
+            text-align: center;
+            padding: 3rem 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .time-badge {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: rgba(127, 255, 0, 0.1);
+            border: 1px solid var(--primary-green);
+            border-radius: 50px;
+            color: var(--primary-green);
+            font-weight: 600;
+            font-size: 0.95rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 區塊容器 */
+        .section-block {
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .section-block.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 風格選擇區域 */
+        .style-section {
+            padding: 3rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .style-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(135, 206, 235, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .style-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--glow-green) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .style-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 10px 30px var(--glow-blue);
+        }
+
+        .style-card.selected {
+            border-color: var(--primary-green);
+            background: var(--card-hover-bg);
+            box-shadow: 0 15px 40px var(--glow-green);
+        }
+
+        .style-card.selected::before {
+            opacity: 0.1;
+        }
+
+        .style-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .style-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .style-name {
+            font-size: 1.3rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+        }
+
+        .style-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .style-colors {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .color-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .style-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .style-tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(135, 206, 235, 0.1);
+            border: 1px solid var(--primary-blue);
+            border-radius: 15px;
+            font-size: 0.75rem;
+            color: var(--primary-blue);
+        }
+
+        /* 自訂風格區域 */
+        .custom-style-area {
+            display: none;
+            margin-top: 3rem;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-green);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(10px);
+        }
+
+        .custom-style-area.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(135, 206, 235, 0.4);
+            border-radius: var(--radius-md);
+            padding: 3rem;
+            text-align: center;
+            transition: var(--transition);
+            margin-bottom: 2rem;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-green);
+            background: rgba(127, 255, 0, 0.05);
+            box-shadow: 0 0 20px var(--glow-green);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-blue);
+            background: rgba(135, 206, 235, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .image-preview {
+            display: none;
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        /* 問卷表單區域 */
+        .form-section {
+            padding: 3rem 0;
+        }
+
+        .generator-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-field {
+            margin-bottom: 2rem;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.7rem;
+            font-weight: 500;
+        }
+
+        .form-field label .required {
+            color: var(--primary-green);
+            margin-left: 0.3rem;
+        }
+
+        .form-field input,
+        .form-field textarea,
+        .form-field select {
+            width: 100%;
+            background: rgba(135, 206, 235, 0.05);
+            border: 1px solid rgba(135, 206, 235, 0.3);
+            border-radius: var(--radius-sm);
+            padding: 1rem 1.2rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 15px var(--glow-green);
+            background: rgba(127, 255, 0, 0.05);
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-field.error input,
+        .form-field.error textarea,
+        .form-field.error select {
+            border-color: #ff4444;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .form-field.error .error-message {
+            display: block;
+        }
+
+        /* 動態列表 */
+        .dynamic-list {
+            margin-top: 1rem;
+        }
+
+        .list-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .list-item input {
+            flex: 1;
+        }
+
+        .btn-remove {
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-remove:hover {
+            background: rgba(255, 68, 68, 0.2);
+            transform: scale(1.05);
+        }
+
+        .btn-add {
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(135, 206, 235, 0.1);
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .btn-add:hover {
+            background: rgba(135, 206, 235, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Checkbox 樣式 */
+        .checkbox-field {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(135, 206, 235, 0.05);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(135, 206, 235, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .checkbox-field:hover {
+            background: rgba(135, 206, 235, 0.1);
+            border-color: var(--primary-blue);
+        }
+
+        .checkbox-field input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: var(--primary-green);
+        }
+
+        .checkbox-field label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        /* 作品集項目 */
+        .portfolio-items {
+            display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(127, 255, 0, 0.05);
+            border: 1px solid rgba(127, 255, 0, 0.2);
+            border-radius: var(--radius-md);
+        }
+
+        .portfolio-items.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .portfolio-item-block {
+            background: var(--card-bg);
+            border: 1px solid rgba(135, 206, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .portfolio-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .portfolio-item-title {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* 導航按鈕 */
+        .navigation-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(135, 206, 235, 0.2);
+        }
+
+        .btn-nav {
+            flex: 1;
+            max-width: 250px;
+            padding: 1.2rem 2rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            justify-content: center;
+        }
+
+        .btn-next {
+            margin-left: auto;
+        }
+
+        /* 提交按鈕 */
+        .submit-section {
+            text-align: center;
+            padding: 4rem 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .submit-title {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .submit-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .btn-generate {
+            padding: 1.5rem 4rem;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px var(--glow-green);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .estimate-time {
+            display: block;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            color: var(--primary-green);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Loading 狀態 */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 100px;
+            height: 100px;
+            border: 4px solid rgba(135, 206, 235, 0.2);
+            border-top-color: var(--primary-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            text-align: center;
+        }
+
+        .loading-progress {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: var(--primary-green);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* 成功訊息 */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: var(--primary-green);
+            margin-bottom: 2rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .success-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .website-preview {
+            margin: 3rem auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-green);
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+        }
+
+        .preview-url {
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+            word-break: break-all;
+            padding: 1rem;
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: var(--radius-sm);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .generator-content {
+                padding-top: 200px;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .progress-steps::before {
+                display: none;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .styles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .btn-nav {
+                max-width: 100%;
+            }
+
+            .btn-next {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景容器 -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- 導航列 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" style="text-decoration: none;">
+                    <span class="logo-text">AiInPocket</span>
+                    <span class="logo-subtext">口袋智慧</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">首頁</a></li>
+                <li><a href="portfolio.html">作品集</a></li>
+                <li><a href="tech-stack.html">技術棧</a></li>
+                <li><a href="about.html">關於我們</a></li>
+                <li><a href="contact.html">聯絡我們</a></li>
+                <li><a href="generator.html" class="active nav-cta">網站生成器</a></li>
+            </ul>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 進度指示器 -->
+    <div class="progress-indicator">
+        <div class="progress-steps">
+            <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">選擇風格</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">填寫資料</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">生成網站</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要內容 -->
+    <main class="main-content generator-content">
+        <div class="container">
+            <!-- 歡迎區域 -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">AI 網站生成器</h1>
+                <p class="welcome-subtitle">
+                    運用最新 AI 技術，30 秒內為您打造專業、美觀的專屬網站。<br>
+                    無需任何程式知識，只需簡單三步驟，即可擁有高品質的網路形象。
+                </p>
+                <div class="time-badge">⚡ 預估時間：30-60 秒</div>
+            </div>
+
+            <!-- 步驟 1: 風格選擇 -->
+            <section class="section-block active" id="step-1">
+                <div class="style-section">
+                    <div class="section-header">
+                        <h2>第一步：選擇網站風格</h2>
+                        <p>從 25+ 種精心設計的模板中選擇，或上傳圖片自訂專屬風格</p>
+                    </div>
+
+                    <div class="styles-grid" id="styles-grid">
+                        <!-- 風格卡片將由 JavaScript 動態生成 -->
+                    </div>
+
+                    <!-- 自訂風格區域 -->
+                    <div class="custom-style-area" id="custom-style-area">
+                        <h3 style="color: var(--primary-green); margin-bottom: 2rem; font-size: 1.5rem;">自訂您的專屬風格</h3>
+
+                        <div class="upload-area" id="upload-area">
+                            <div class="upload-icon">📸</div>
+                            <div class="upload-text">點擊或拖放圖片到此處</div>
+                            <div class="upload-hint">支援 JPG, PNG, GIF（最大 5MB）</div>
+                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            <img id="image-preview" class="image-preview" alt="Preview">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="custom-description">
+                                風格描述
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">（描述您想要的視覺風格、配色、氛圍等）</span>
+                            </label>
+                            <textarea
+                                id="custom-description"
+                                placeholder="例如：簡約現代風格，使用柔和的藍綠色調，給人專業又親切的感覺..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="btn btn-primary btn-nav btn-next" onclick="nextStep(2)">
+                            下一步
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 步驟 2: 填寫資料 -->
+            <section class="section-block" id="step-2">
+                <div class="form-section">
+                    <div class="section-header">
+                        <h2>第二步：填寫網站資料</h2>
+                        <p>提供您的公司或品牌資訊，我們將為您生成完美的網站內容</p>
+                    </div>
+
+                    <form class="generator-form" id="generator-form">
+                        <!-- 基本資訊 -->
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="company-name">
+                                    公司/品牌名稱<span class="required">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="company-name"
+                                    name="companyName"
+                                    placeholder="例如：創新科技有限公司"
+                                    required
+                                >
+                                <div class="error-message">請輸入公司/品牌名稱</div>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="slogan">
+                                    標語/口號
+                                    <span style="font-size: 0.85rem; color: var(--text-muted);">（選填）</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="slogan"
+                                    name="slogan"
+                                    placeholder="例如：創新引領未來"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- 公司描述 -->
+                        <div class="form-field">
+                            <label for="company-description">
+                                公司/品牌描述<span class="required">*</span>
+                            </label>
+                            <textarea
+                                id="company-description"
+                                name="companyDescription"
+                                placeholder="請簡述您的公司業務、特色、願景等..."
+                                rows="5"
+                                required
+                            ></textarea>
+                            <div class="error-message">請輸入公司/品牌描述</div>
+                        </div>
+
+                        <!-- 服務列表 -->
+                        <div class="form-field">
+                            <label>
+                                提供的服務/產品<span class="required">*</span>
+                            </label>
+                            <div class="dynamic-list" id="services-list">
+                                <div class="list-item">
+                                    <input
+                                        type="text"
+                                        name="service[]"
+                                        placeholder="例如：網站開發"
+                                        required
+                                    >
+                                    <button type="button" class="btn-remove" onclick="removeItem(this)">刪除</button>
+                                </div>
+                                <div class="list-item">
+                                    <input
+                                        type="text"
+                                        name="service[]"
+                                        placeholder="例如：APP 設計"
+                                        required
+                                    >
+                                    <button type="button" class="btn-remove" onclick="removeItem(this)">刪除</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-add" onclick="addService()">+ 新增服務</button>
+                            <div class="error-message">請至少提供一項服務</div>
+                        </div>
+
+                        <!-- 聯絡資訊 -->
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="contact-email">
+                                    聯絡 Email<span class="required">*</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    id="contact-email"
+                                    name="contactEmail"
+                                    placeholder="contact@example.com"
+                                    required
+                                >
+                                <div class="error-message">請輸入有效的 Email 地址</div>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="contact-phone">
+                                    聯絡電話
+                                    <span style="font-size: 0.85rem; color: var(--text-muted);">（選填）</span>
+                                </label>
+                                <input
+                                    type="tel"
+                                    id="contact-phone"
+                                    name="contactPhone"
+                                    placeholder="02-1234-5678"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- 作品集選項 -->
+                        <div class="checkbox-field" onclick="toggleCheckbox('need-portfolio')">
+                            <input
+                                type="checkbox"
+                                id="need-portfolio"
+                                name="needPortfolio"
+                                onclick="event.stopPropagation(); togglePortfolio()"
+                            >
+                            <label for="need-portfolio">
+                                需要作品集區塊
+                                <span style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;">
+                                    展示您的成功案例或代表作品
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- 作品集項目（條件顯示） -->
+                        <div class="portfolio-items" id="portfolio-items">
+                            <h3 style="color: var(--primary-green); margin-bottom: 2rem;">作品集項目</h3>
+                            <div id="portfolio-list">
+                                <!-- 作品集項目將動態生成 -->
+                            </div>
+                            <button type="button" class="btn btn-add" onclick="addPortfolioItem()">+ 新增作品</button>
+                        </div>
+                    </form>
+
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary btn-nav" onclick="previousStep(1)">
+                            <span>←</span>
+                            上一步
+                        </button>
+                        <button class="btn btn-primary btn-nav btn-next" onclick="nextStep(3)">
+                            下一步
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 步驟 3: 生成網站 -->
+            <section class="section-block" id="step-3">
+                <div class="submit-section">
+                    <h2 class="submit-title">準備好了嗎？</h2>
+                    <p class="submit-description">
+                        確認您的資料後，點擊下方按鈕，<br>
+                        我們將立即使用 AI 為您生成專屬網站！
+                    </p>
+                    <button class="btn-generate" onclick="generateWebsite()">
+                        🚀 立即生成網站
+                    </button>
+                    <span class="estimate-time">預估生成時間：30-60 秒</span>
+                </div>
+
+                <div class="navigation-buttons" style="margin-top: 3rem;">
+                    <button class="btn btn-secondary btn-nav" onclick="previousStep(2)">
+                        <span>←</span>
+                        上一步
+                    </button>
+                </div>
+            </section>
+
+            <!-- 成功訊息 -->
+            <section class="success-message" id="success-message">
+                <div class="success-icon">✨</div>
+                <h2 class="success-title">網站生成成功！</h2>
+                <p class="success-description">
+                    恭喜！您的專屬網站已經準備就緒。<br>
+                    點擊下方連結即可查看您的新網站。
+                </p>
+                <div class="website-preview">
+                    <div style="margin-bottom: 1rem; color: var(--text-secondary);">您的網站地址：</div>
+                    <div class="preview-url" id="website-url">https://aiinpocket.com/sites/your-website</div>
+                </div>
+                <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="#" class="btn btn-primary" id="visit-website">
+                        訪問網站
+                        <span>→</span>
+                    </a>
+                    <button class="btn btn-secondary" onclick="location.reload()">
+                        再生成一個
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading 覆蓋層 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">AI 正在為您生成專屬網站...</div>
+        <div class="loading-progress" id="loading-progress">0%</div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>AiInPocket</h3>
+                    <p class="footer-tagline">讓智慧觸手可及</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>服務</h4>
+                        <ul>
+                            <li><a href="portfolio.html">作品集</a></li>
+                            <li><a href="tech-stack.html">技術棧</a></li>
+                            <li><a href="about.html">關於我們</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>聯絡</h4>
+                        <ul>
+                            <li><a href="contact.html">聯絡我們</a></li>
+                            <li><a href="mailto:help@aiinpocket.com">Email</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AiInPocket. All rights reserved.</p>
+                <p class="footer-note">/// Powered by AI & Innovation ///</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/particles.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // ========================================
+        // 全域變數
+        // ========================================
+        let currentStep = 1;
+        let selectedStyle = null;
+        let uploadedImage = null;
+        let portfolioItemCount = 0;
+
+        // ========================================
+        // 25+ 種模板風格定義
+        // ========================================
+        const templateStyles = [
+            {
+                id: 'modern-tech',
+                name: '現代科技',
+                icon: '💻',
+                description: '簡潔的設計搭配科技感配色，適合科技公司與新創團隊',
+                colors: ['#2563eb', '#3b82f6', '#60a5fa'],
+                tags: ['科技', '專業', '現代']
+            },
+            {
+                id: 'business-pro',
+                name: '商務專業',
+                icon: '💼',
+                description: '穩重大氣的企業風格，展現專業與可信度',
+                colors: ['#1e3a8a', '#1e40af', '#3730a3'],
+                tags: ['商務', '企業', '專業']
+            },
+            {
+                id: 'creative-agency',
+                name: '創意設計',
+                icon: '🎨',
+                description: '大膽活潑的色彩與排版，展現創意與活力',
+                colors: ['#ec4899', '#f97316', '#f59e0b'],
+                tags: ['創意', '設計', '活潑']
+            },
+            {
+                id: 'minimal-clean',
+                name: '極簡主義',
+                icon: '⚪',
+                description: '純粹的留白美學，簡約而不簡單',
+                colors: ['#000000', '#ffffff', '#6b7280'],
+                tags: ['極簡', '純淨', '優雅']
+            },
+            {
+                id: 'nature-eco',
+                name: '自然環保',
+                icon: '🌿',
+                description: '清新的綠色系，傳遞環保與健康理念',
+                colors: ['#059669', '#10b981', '#34d399'],
+                tags: ['環保', '自然', '健康']
+            },
+            {
+                id: 'luxury-gold',
+                name: '奢華尊貴',
+                icon: '👑',
+                description: '金色與黑色的經典組合，展現高端品味',
+                colors: ['#d97706', '#b45309', '#92400e'],
+                tags: ['奢華', '高端', '尊貴']
+            },
+            {
+                id: 'startup-bold',
+                name: '新創活力',
+                icon: '🚀',
+                description: '充滿動感的設計，彰顯創新與突破精神',
+                colors: ['#7c3aed', '#8b5cf6', '#a78bfa'],
+                tags: ['新創', '創新', '活力']
+            },
+            {
+                id: 'medical-care',
+                name: '醫療健康',
+                icon: '🏥',
+                description: '清爽的藍白色調，傳遞專業與信任感',
+                colors: ['#0ea5e9', '#06b6d4', '#22d3ee'],
+                tags: ['醫療', '健康', '專業']
+            },
+            {
+                id: 'education-learn',
+                name: '教育學習',
+                icon: '📚',
+                description: '溫暖的配色與友善的設計，適合教育機構',
+                colors: ['#f59e0b', '#eab308', '#facc15'],
+                tags: ['教育', '學習', '友善']
+            },
+            {
+                id: 'food-restaurant',
+                name: '餐飲美食',
+                icon: '🍽️',
+                description: '誘人的色調與視覺，激發食慾與興趣',
+                colors: ['#dc2626', '#ef4444', '#f87171'],
+                tags: ['餐飲', '美食', '溫暖']
+            },
+            {
+                id: 'fashion-style',
+                name: '時尚潮流',
+                icon: '👗',
+                description: '前衛的設計語言，展現時尚品味',
+                colors: ['#db2777', '#e11d48', '#f43f5e'],
+                tags: ['時尚', '潮流', '前衛']
+            },
+            {
+                id: 'finance-trust',
+                name: '金融理財',
+                icon: '💰',
+                description: '穩定可靠的視覺設計，建立信任感',
+                colors: ['#065f46', '#047857', '#059669'],
+                tags: ['金融', '信任', '穩定']
+            },
+            {
+                id: 'sports-fitness',
+                name: '運動健身',
+                icon: '💪',
+                description: '充滿活力的設計，激發運動熱情',
+                colors: ['#ea580c', '#f97316', '#fb923c'],
+                tags: ['運動', '健身', '活力']
+            },
+            {
+                id: 'travel-adventure',
+                name: '旅遊探險',
+                icon: '✈️',
+                description: '輕鬆愉悅的色調，喚起旅行慾望',
+                colors: ['#0284c7', '#0ea5e9', '#38bdf8'],
+                tags: ['旅遊', '探險', '自由']
+            },
+            {
+                id: 'real-estate',
+                name: '房地產',
+                icon: '🏠',
+                description: '大氣穩重的設計，展現實力與品質',
+                colors: ['#334155', '#475569', '#64748b'],
+                tags: ['房地產', '專業', '穩重']
+            },
+            {
+                id: 'automotive',
+                name: '汽車產業',
+                icon: '🚗',
+                description: '動感流線的設計，展現速度與科技',
+                colors: ['#1e293b', '#374151', '#4b5563'],
+                tags: ['汽車', '動感', '科技']
+            },
+            {
+                id: 'beauty-spa',
+                name: '美容美體',
+                icon: '💆',
+                description: '柔和舒適的色調，營造放鬆氛圍',
+                colors: ['#f0abfc', '#e879f9', '#d946ef'],
+                tags: ['美容', '放鬆', '舒適']
+            },
+            {
+                id: 'wedding-event',
+                name: '婚禮活動',
+                icon: '💐',
+                description: '浪漫優雅的設計，捕捉幸福時刻',
+                colors: ['#fda4af', '#fb7185', '#f43f5e'],
+                tags: ['婚禮', '浪漫', '優雅']
+            },
+            {
+                id: 'legal-law',
+                name: '法律服務',
+                icon: '⚖️',
+                description: '莊重專業的視覺，展現權威與信任',
+                colors: ['#1e40af', '#1e3a8a', '#1e293b'],
+                tags: ['法律', '專業', '權威']
+            },
+            {
+                id: 'photography',
+                name: '攝影藝術',
+                icon: '📷',
+                description: '注重視覺表現，讓作品成為焦點',
+                colors: ['#000000', '#ffffff', '#f59e0b'],
+                tags: ['攝影', '藝術', '視覺']
+            },
+            {
+                id: 'music-entertainment',
+                name: '音樂娛樂',
+                icon: '🎵',
+                description: '動感節奏的設計，展現音樂魅力',
+                colors: ['#8b5cf6', '#7c3aed', '#6d28d9'],
+                tags: ['音樂', '娛樂', '動感']
+            },
+            {
+                id: 'nonprofit-charity',
+                name: '公益慈善',
+                icon: '❤️',
+                description: '溫暖人心的設計，傳遞愛與關懷',
+                colors: ['#f87171', '#ef4444', '#dc2626'],
+                tags: ['公益', '慈善', '溫暖']
+            },
+            {
+                id: 'pet-animal',
+                name: '寵物服務',
+                icon: '🐾',
+                description: '可愛友善的設計，展現對寵物的愛',
+                colors: ['#fbbf24', '#f59e0b', '#d97706'],
+                tags: ['寵物', '可愛', '友善']
+            },
+            {
+                id: 'kids-children',
+                name: '兒童產品',
+                icon: '🧸',
+                description: '繽紛活潑的色彩，吸引兒童目光',
+                colors: ['#34d399', '#fbbf24', '#f472b6'],
+                tags: ['兒童', '繽紛', '活潑']
+            },
+            {
+                id: 'cyber-security',
+                name: '資安科技',
+                icon: '🔐',
+                description: '科技感與安全感並重的視覺設計',
+                colors: ['#0f172a', '#1e293b', '#0ea5e9'],
+                tags: ['資安', '科技', '安全']
+            },
+            {
+                id: 'custom',
+                name: '自訂風格',
+                icon: '🎯',
+                description: '上傳圖片或描述，打造獨一無二的專屬風格',
+                colors: ['#87CEEB', '#7FFF00', '#4A90E2'],
+                tags: ['自訂', '獨特', '專屬']
+            }
+        ];
+
+        // ========================================
+        // 初始化
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStyles();
+            initializeUpload();
+            initializeNavigation();
+        });
+
+        // ========================================
+        // 生成風格卡片
+        // ========================================
+        function initializeStyles() {
+            const stylesGrid = document.getElementById('styles-grid');
+
+            templateStyles.forEach(style => {
+                const card = document.createElement('div');
+                card.className = 'style-card';
+                card.setAttribute('data-style-id', style.id);
+                card.onclick = () => selectStyle(style.id);
+
+                card.innerHTML = `
+                    <div class="style-icon">${style.icon}</div>
+                    <div class="style-name">${style.name}</div>
+                    <div class="style-description">${style.description}</div>
+                    <div class="style-colors">
+                        ${style.colors.map(color => `<div class="color-dot" style="background: ${color};"></div>`).join('')}
+                    </div>
+                    <div class="style-tags">
+                        ${style.tags.map(tag => `<span class="style-tag">${tag}</span>`).join('')}
+                    </div>
+                `;
+
+                stylesGrid.appendChild(card);
+            });
+        }
+
+        // ========================================
+        // 選擇風格
+        // ========================================
+        function selectStyle(styleId) {
+            // 移除所有選中狀態
+            document.querySelectorAll('.style-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // 選中當前風格
+            const selectedCard = document.querySelector(`[data-style-id="${styleId}"]`);
+            selectedCard.classList.add('selected');
+            selectedStyle = styleId;
+
+            // 顯示或隱藏自訂區域
+            const customArea = document.getElementById('custom-style-area');
+            if (styleId === 'custom') {
+                customArea.classList.add('active');
+            } else {
+                customArea.classList.remove('active');
+            }
+        }
+
+        // ========================================
+        // 圖片上傳功能
+        // ========================================
+        function initializeUpload() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('image-upload');
+            const preview = document.getElementById('image-preview');
+
+            // 點擊上傳
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            // 檔案選擇
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // 拖放功能
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            // 檢查檔案類型
+            if (!file.type.startsWith('image/')) {
+                alert('請上傳圖片檔案');
+                return;
+            }
+
+            // 檢查檔案大小（5MB）
+            if (file.size > 5 * 1024 * 1024) {
+                alert('圖片大小不能超過 5MB');
+                return;
+            }
+
+            // 讀取並預覽圖片
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('image-preview');
+                preview.src = e.target.result;
+                preview.classList.add('show');
+                uploadedImage = e.target.result;
+
+                // 如果需要，可以呼叫 API 分析圖片
+                analyzeImage(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ========================================
+        // 圖片分析（呼叫後端 API）
+        // ========================================
+        async function analyzeImage(imageData) {
+            try {
+                const response = await fetch('/api/analyze-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ image: imageData })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    // 可以根據分析結果自動填充描述
+                    if (result.suggestion) {
+                        document.getElementById('custom-description').value = result.suggestion;
+                    }
+                }
+            } catch (error) {
+                console.error('圖片分析失敗:', error);
+                // 不影響主流程，僅記錄錯誤
+            }
+        }
+
+        // ========================================
+        // 導航功能
+        // ========================================
+        function initializeNavigation() {
+            // 手機版選單
+            const navToggle = document.getElementById('nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (navToggle) {
+                navToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                });
+            }
+        }
+
+        function nextStep(step) {
+            // 驗證當前步驟
+            if (step === 2 && !validateStep1()) {
+                return;
+            }
+
+            if (step === 3 && !validateStep2()) {
+                return;
+            }
+
+            // 更新步驟
+            updateStep(step);
+        }
+
+        function previousStep(step) {
+            updateStep(step);
+        }
+
+        function updateStep(step) {
+            // 隱藏所有區塊
+            document.querySelectorAll('.section-block').forEach(block => {
+                block.classList.remove('active');
+            });
+
+            // 顯示目標區塊
+            document.getElementById(`step-${step}`).classList.add('active');
+
+            // 更新進度指示器
+            document.querySelectorAll('.progress-step').forEach(stepEl => {
+                stepEl.classList.remove('active', 'completed');
+                const stepNum = parseInt(stepEl.getAttribute('data-step'));
+                if (stepNum < step) {
+                    stepEl.classList.add('completed');
+                } else if (stepNum === step) {
+                    stepEl.classList.add('active');
+                }
+            });
+
+            currentStep = step;
+
+            // 滾動到頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ========================================
+        // 驗證步驟 1
+        // ========================================
+        function validateStep1() {
+            if (!selectedStyle) {
+                alert('請選擇一個網站風格');
+                return false;
+            }
+
+            if (selectedStyle === 'custom') {
+                const description = document.getElementById('custom-description').value.trim();
+                if (!uploadedImage && !description) {
+                    alert('請上傳圖片或填寫風格描述');
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // ========================================
+        // 驗證步驟 2
+        // ========================================
+        function validateStep2() {
+            let isValid = true;
+
+            // 驗證必填欄位
+            const requiredFields = [
+                { id: 'company-name', name: '公司/品牌名稱' },
+                { id: 'company-description', name: '公司描述' },
+                { id: 'contact-email', name: '聯絡 Email' }
+            ];
+
+            requiredFields.forEach(field => {
+                const input = document.getElementById(field.id);
+                const formField = input.closest('.form-field');
+
+                if (!input.value.trim()) {
+                    formField.classList.add('error');
+                    isValid = false;
+                } else {
+                    formField.classList.remove('error');
+                }
+            });
+
+            // 驗證 Email 格式
+            const email = document.getElementById('contact-email');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email.value && !emailRegex.test(email.value)) {
+                email.closest('.form-field').classList.add('error');
+                isValid = false;
+            }
+
+            // 驗證服務列表
+            const services = document.querySelectorAll('input[name="service[]"]');
+            let hasService = false;
+            services.forEach(service => {
+                if (service.value.trim()) {
+                    hasService = true;
+                }
+            });
+
+            if (!hasService) {
+                alert('請至少提供一項服務');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // ========================================
+        // 動態列表功能
+        // ========================================
+        function addService() {
+            const list = document.getElementById('services-list');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <input
+                    type="text"
+                    name="service[]"
+                    placeholder="輸入服務名稱"
+                >
+                <button type="button" class="btn-remove" onclick="removeItem(this)">刪除</button>
+            `;
+            list.appendChild(newItem);
+        }
+
+        function removeItem(button) {
+            const listItem = button.closest('.list-item');
+            const list = listItem.parentElement;
+
+            // 至少保留一個項目
+            if (list.children.length > 1) {
+                listItem.remove();
+            } else {
+                alert('至少需要保留一個項目');
+            }
+        }
+
+        // ========================================
+        // Checkbox 切換
+        // ========================================
+        function toggleCheckbox(id) {
+            const checkbox = document.getElementById(id);
+            checkbox.checked = !checkbox.checked;
+            if (id === 'need-portfolio') {
+                togglePortfolio();
+            }
+        }
+
+        function togglePortfolio() {
+            const checkbox = document.getElementById('need-portfolio');
+            const portfolioItems = document.getElementById('portfolio-items');
+
+            if (checkbox.checked) {
+                portfolioItems.classList.add('active');
+                // 自動添加第一個作品項目
+                if (portfolioItemCount === 0) {
+                    addPortfolioItem();
+                }
+            } else {
+                portfolioItems.classList.remove('active');
+            }
+        }
+
+        function addPortfolioItem() {
+            portfolioItemCount++;
+            const list = document.getElementById('portfolio-list');
+            const item = document.createElement('div');
+            item.className = 'portfolio-item-block';
+            item.innerHTML = `
+                <div class="portfolio-item-header">
+                    <div class="portfolio-item-title">作品 #${portfolioItemCount}</div>
+                    <button type="button" class="btn-remove" onclick="removePortfolioItem(this)">刪除</button>
+                </div>
+                <div class="form-field">
+                    <label>作品名稱</label>
+                    <input type="text" name="portfolio-name[]" placeholder="例如：企業官網設計">
+                </div>
+                <div class="form-field">
+                    <label>作品描述</label>
+                    <textarea name="portfolio-description[]" placeholder="簡述作品特色與成果..." rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>使用技術</label>
+                        <input type="text" name="portfolio-tech[]" placeholder="例如：React, Node.js">
+                    </div>
+                    <div class="form-field">
+                        <label>完成時間</label>
+                        <input type="text" name="portfolio-date[]" placeholder="例如：2024 年 3 月">
+                    </div>
+                </div>
+            `;
+            list.appendChild(item);
+        }
+
+        function removePortfolioItem(button) {
+            const item = button.closest('.portfolio-item-block');
+            item.remove();
+            portfolioItemCount--;
+
+            // 重新編號
+            const items = document.querySelectorAll('.portfolio-item-title');
+            items.forEach((title, index) => {
+                title.textContent = `作品 #${index + 1}`;
+            });
+        }
+
+        // ========================================
+        // 生成網站（呼叫後端 API）
+        // ========================================
+        async function generateWebsite() {
+            if (!validateStep2()) {
+                alert('請先完成必填欄位');
+                previousStep(2);
+                return;
+            }
+
+            // 收集表單資料
+            const formData = collectFormData();
+
+            // 顯示 Loading
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.classList.add('active');
+
+            // 模擬進度
+            simulateProgress();
+
+            try {
+                // 呼叫後端 API
+                const response = await fetch('/api/generate-website', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showSuccess(result.url);
+                } else {
+                    throw new Error('生成失敗');
+                }
+            } catch (error) {
+                console.error('生成網站失敗:', error);
+                alert('網站生成失敗，請稍後再試');
+                loadingOverlay.classList.remove('active');
+            }
+        }
+
+        function collectFormData() {
+            // 收集所有表單資料
+            const formData = {
+                style: selectedStyle,
+                customImage: uploadedImage,
+                customDescription: document.getElementById('custom-description')?.value,
+                companyName: document.getElementById('company-name').value,
+                slogan: document.getElementById('slogan').value,
+                companyDescription: document.getElementById('company-description').value,
+                services: [],
+                contactEmail: document.getElementById('contact-email').value,
+                contactPhone: document.getElementById('contact-phone').value,
+                needPortfolio: document.getElementById('need-portfolio').checked,
+                portfolio: []
+            };
+
+            // 收集服務列表
+            document.querySelectorAll('input[name="service[]"]').forEach(input => {
+                if (input.value.trim()) {
+                    formData.services.push(input.value.trim());
+                }
+            });
+
+            // 收集作品集
+            if (formData.needPortfolio) {
+                const portfolioNames = document.querySelectorAll('input[name="portfolio-name[]"]');
+                const portfolioDescriptions = document.querySelectorAll('textarea[name="portfolio-description[]"]');
+                const portfolioTechs = document.querySelectorAll('input[name="portfolio-tech[]"]');
+                const portfolioDates = document.querySelectorAll('input[name="portfolio-date[]"]');
+
+                for (let i = 0; i < portfolioNames.length; i++) {
+                    formData.portfolio.push({
+                        name: portfolioNames[i].value,
+                        description: portfolioDescriptions[i].value,
+                        tech: portfolioTechs[i].value,
+                        date: portfolioDates[i].value
+                    });
+                }
+            }
+
+            return formData;
+        }
+
+        function simulateProgress() {
+            let progress = 0;
+            const progressElement = document.getElementById('loading-progress');
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 95) {
+                    progress = 95;
+                    clearInterval(interval);
+                }
+                progressElement.textContent = Math.floor(progress) + '%';
+            }, 500);
+        }
+
+        function showSuccess(url) {
+            // 隱藏 Loading
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.classList.remove('active');
+
+            // 隱藏所有步驟
+            document.querySelectorAll('.section-block').forEach(block => {
+                block.classList.remove('active');
+            });
+
+            // 顯示成功訊息
+            const successMessage = document.getElementById('success-message');
+            successMessage.classList.add('active');
+
+            // 設定網站 URL
+            document.getElementById('website-url').textContent = url || 'https://aiinpocket.com/sites/demo';
+            document.getElementById('visit-website').href = url || '#';
+
+            // 滾動到頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
