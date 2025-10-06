@@ -1959,7 +1959,7 @@
 
                 if (response.ok) {
                     const result = await response.json();
-                    showSuccess(result.preview_url, result.download_url);
+                    showSuccess(result.site_id, result.preview_url, result.download_url, formData);
                 } else {
                     const error = await response.text();
                     throw new Error(`生成失敗: ${error}`);
@@ -2041,7 +2041,7 @@
             }, 500);
         }
 
-        function showSuccess(previewUrl, downloadUrl) {
+        async function showSuccess(siteId, previewUrl, downloadUrl, formData) {
             // 隱藏 Loading
             const loadingOverlay = document.getElementById('loading-overlay');
             loadingOverlay.classList.remove('active');
@@ -2071,6 +2071,51 @@
                 if (buttonContainer && !buttonContainer.querySelector('.btn-secondary')) {
                     buttonContainer.querySelector('.btn-primary').insertAdjacentElement('afterend', downloadBtn);
                 }
+            }
+
+            // 自動儲存專案（如果已登入）
+            const session = UserSession.get();
+            if (session && session.user_id && siteId && formData) {
+                try {
+                    console.log('[Auto-save] Attempting to save project...');
+
+                    const saveResponse = await fetch('/api/projects', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: session.user_id,
+                            project_name: formData.user_data.company_name || '未命名專案',
+                            template_id: formData.template_id,
+                            form_data: formData.user_data,
+                            site_id: siteId,
+                            preview_url: previewUrl,
+                            download_url: downloadUrl
+                        })
+                    });
+
+                    const saveResult = await saveResponse.json();
+
+                    if (saveResult.success) {
+                        console.log('[Auto-save] Project saved successfully:', saveResult.project_id);
+
+                        // 在成功訊息中添加提示
+                        const successHint = document.createElement('p');
+                        successHint.style.cssText = 'color: #7FFF00; margin-top: 1rem; font-size: 0.9rem;';
+                        successHint.innerHTML = '✅ 專案已自動儲存到「我的作品」';
+
+                        const successTitle = successMessage.querySelector('h2');
+                        if (successTitle && !successMessage.querySelector('p[style*="7FFF00"]')) {
+                            successTitle.insertAdjacentElement('afterend', successHint);
+                        }
+                    } else {
+                        console.warn('[Auto-save] Failed to save project:', saveResult.message);
+                    }
+                } catch (error) {
+                    console.error('[Auto-save] Error saving project:', error);
+                    // 不影響主流程，只記錄錯誤
+                }
+            } else {
+                console.log('[Auto-save] Skipped - User not logged in or missing data');
             }
 
             // 滾動到頂部
@@ -2293,22 +2338,98 @@
                 if (data.success) {
                     const formData = data.project.form_data;
 
-                    // 填入表單
+                    // 填入基本資料
                     document.getElementById('company-name').value = formData.company_name || '';
                     document.getElementById('slogan').value = formData.tagline || '';
                     document.getElementById('company-description').value = formData.description || '';
                     document.getElementById('contact-phone').value = formData.contact_phone || '';
                     document.getElementById('contact-email').value = session.email;
 
-                    // TODO: 填入服務和作品集資料
+                    // 填入服務項目
+                    if (formData.services && Array.isArray(formData.services) && formData.services.length > 0) {
+                        // 清空現有服務列表
+                        const servicesList = document.getElementById('services-list');
+                        servicesList.innerHTML = '';
+
+                        // 添加每個服務
+                        formData.services.forEach((service, index) => {
+                            const serviceName = typeof service === 'string' ? service : (service.name || service.title || '');
+                            const newItem = document.createElement('div');
+                            newItem.className = 'list-item';
+                            newItem.innerHTML = `
+                                <input
+                                    type="text"
+                                    name="service[]"
+                                    placeholder="輸入服務名稱"
+                                    value="${serviceName}"
+                                >
+                                <button type="button" class="btn-remove" onclick="removeItem(this)">刪除</button>
+                            `;
+                            servicesList.appendChild(newItem);
+                        });
+                    }
+
+                    // 填入作品集
+                    if (formData.portfolio && Array.isArray(formData.portfolio) && formData.portfolio.length > 0) {
+                        // 確保作品集區域展開
+                        const needPortfolio = document.getElementById('need-portfolio');
+                        if (!needPortfolio.checked) {
+                            needPortfolio.checked = true;
+                            togglePortfolio();
+                        }
+
+                        // 清空現有作品集
+                        const portfolioList = document.getElementById('portfolio-list');
+                        portfolioList.innerHTML = '';
+                        portfolioItemCount = 0;
+
+                        // 添加每個作品
+                        formData.portfolio.forEach((item, index) => {
+                            addPortfolioItem();
+                            const itemId = portfolioItemCount;
+
+                            // 填入作品名稱
+                            const nameInput = portfolioList.querySelector(`[data-item-id="${itemId}"] input[name="portfolio-name[]"]`);
+                            if (nameInput) nameInput.value = item.title || '';
+
+                            // 填入作品描述
+                            const descInput = portfolioList.querySelector(`[data-item-id="${itemId}"] textarea[name="portfolio-description[]"]`);
+                            if (descInput) descInput.value = item.description || '';
+
+                            // 填入使用技術
+                            const techInput = portfolioList.querySelector(`[data-item-id="${itemId}"] input[name="portfolio-tech[]"]`);
+                            if (techInput && item.tech) techInput.value = item.tech;
+
+                            // 填入完成時間
+                            const dateInput = portfolioList.querySelector(`[data-item-id="${itemId}"] input[name="portfolio-date[]"]`);
+                            if (dateInput && item.date) dateInput.value = item.date;
+
+                            // 填入圖片（如果有）
+                            if (item.image) {
+                                const imageData = portfolioList.querySelector(`#portfolio-image-data-${itemId}`);
+                                if (imageData) {
+                                    imageData.value = item.image;
+
+                                    // 顯示預覽
+                                    const preview = document.getElementById(`preview-${itemId}`);
+                                    const placeholder = document.getElementById(`placeholder-${itemId}`);
+                                    if (preview && placeholder) {
+                                        preview.src = item.image;
+                                        preview.style.display = 'block';
+                                        placeholder.style.display = 'none';
+                                    }
+                                }
+                            }
+                        });
+                    }
 
                     hideProjectsModal();
-                    alert('專案已載入！');
+                    alert('專案已載入！所有資料已填入表單。');
 
                     // 跳到步驟 2
                     goToStep(2);
                 } else {
-                    alert('載入失敗');
+                    alert('載入失敗：' + (data.message || '未知錯誤'));
                 }
             } catch (error) {
                 console.error('Load project error:', error);
