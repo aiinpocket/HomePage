@@ -80,6 +80,21 @@ class GenerateWebsiteResponse(BaseModel):
     timestamp: str
 
 
+class UpdateWebsiteRequest(BaseModel):
+    """更新網站請求模型"""
+    site_id: str
+    modifications: Dict  # {"section": "hero", "changes": {...}}
+    instruction: str  # AI 指令,例如 "改成藍色主題" 或 "調整標題文字為..."
+
+
+class UpdateWebsiteResponse(BaseModel):
+    """更新網站回應模型"""
+    site_id: str
+    preview_url: str
+    timestamp: str
+    changes_applied: Dict
+
+
 class AnalyzeImageRequest(BaseModel):
     """分析圖片請求模型"""
     image_base64: str
@@ -872,6 +887,74 @@ async def generate_website(request: GenerateWebsiteRequest):
         raise HTTPException(
             status_code=500,
             detail=f"生成網站時發生錯誤：{str(e)}"
+        )
+
+
+@app.post("/api/update-website", response_model=UpdateWebsiteResponse, tags=["Website Generation"])
+async def update_website(request: UpdateWebsiteRequest):
+    """
+    更新已生成的網站 (增量更新,不需要完全重新生成)
+
+    Args:
+        request: 更新網站請求 (site_id, modifications, instruction)
+
+    Returns:
+        UpdateWebsiteResponse: 更新後的預覽 URL
+
+    Examples:
+        修改主題顏色:
+        {
+            "site_id": "abc-123",
+            "modifications": {},
+            "instruction": "把主色改成深藍色 #1a365d"
+        }
+
+        修改文字內容:
+        {
+            "site_id": "abc-123",
+            "modifications": {"section": "hero", "title": "新標題"},
+            "instruction": "更新首頁大標題"
+        }
+    """
+    try:
+        logger.info(f"Updating website: {request.site_id}")
+
+        # 1. 讀取現有網站 HTML
+        site_path = Path("generated_sites") / request.site_id / "index.html"
+        if not site_path.exists():
+            raise HTTPException(status_code=404, detail="網站不存在")
+
+        with open(site_path, 'r', encoding='utf-8') as f:
+            current_html = f.read()
+
+        # 2. 使用 AI 進行增量更新
+        updated_html = await website_generator.update_website(
+            current_html=current_html,
+            instruction=request.instruction,
+            modifications=request.modifications
+        )
+
+        # 3. 保存更新後的 HTML
+        with open(site_path, 'w', encoding='utf-8') as f:
+            f.write(updated_html)
+
+        logger.info(f"Website updated successfully: {request.site_id}")
+
+        # 4. 返回結果
+        return UpdateWebsiteResponse(
+            site_id=request.site_id,
+            preview_url=f"{settings.SITE_URL}/api/preview/{request.site_id}",
+            timestamp=datetime.now().isoformat(),
+            changes_applied=request.modifications
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating website: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"更新網站時發生錯誤：{str(e)}"
         )
 
 

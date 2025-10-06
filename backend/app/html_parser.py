@@ -15,14 +15,31 @@ class HTMLParser:
         self.frontend_path = Path(frontend_path)
 
     def get_all_html_files(self) -> List[Path]:
-        """獲取所有 HTML 檔案"""
+        """獲取所有 HTML 檔案 (遞迴掃描所有子目錄)"""
         if not self.frontend_path.exists():
             print(f"[WARN] Frontend path not found: {self.frontend_path}")
             return []
 
-        html_files = list(self.frontend_path.glob("*.html"))
-        print(f"[INFO] Found {len(html_files)} HTML files")
-        return html_files
+        # 使用 rglob 遞迴掃描所有子目錄
+        html_files = list(self.frontend_path.rglob("*.html"))
+
+        # 過濾掉不需要索引的檔案
+        excluded_patterns = [
+            'node_modules',
+            'dist',
+            'build',
+            '.git',
+            'samples',  # 範例檔案不需要索引
+        ]
+
+        filtered_files = []
+        for file_path in html_files:
+            # 檢查路徑中是否包含排除的目錄
+            if not any(pattern in str(file_path) for pattern in excluded_patterns):
+                filtered_files.append(file_path)
+
+        print(f"[INFO] Found {len(filtered_files)} HTML files (excluded {len(html_files) - len(filtered_files)} files)")
+        return filtered_files
 
     def parse_html_file(self, file_path: Path) -> Dict:
         """
@@ -43,8 +60,13 @@ class HTMLParser:
 
             soup = BeautifulSoup(html_content, 'lxml')
 
-            # 提取 URL 路徑
-            url_path = f"/{file_path.name}"
+            # 提取 URL 路徑 (相對於 frontend 目錄)
+            try:
+                relative_path = file_path.relative_to(self.frontend_path)
+                url_path = f"/{relative_path.as_posix()}"
+            except ValueError:
+                # 如果無法取得相對路徑,使用檔名
+                url_path = f"/{file_path.name}"
 
             # 提取標題
             title = ""

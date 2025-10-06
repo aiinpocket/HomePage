@@ -380,6 +380,71 @@ class WebsiteGenerator:
                 "keywords": ["現代", "簡潔", "專業"]
             }
 
+    async def update_website(
+        self,
+        current_html: str,
+        instruction: str,
+        modifications: Dict
+    ) -> str:
+        """
+        更新現有網站 (增量更新而非完全重新生成)
+
+        Args:
+            current_html: 當前的 HTML 內容
+            instruction: 使用者的修改指令 (自然語言)
+            modifications: 結構化的修改資料
+
+        Returns:
+            更新後的 HTML 內容
+        """
+        if not self.client:
+            raise ValueError("OpenAI client not initialized")
+
+        try:
+            prompt = f"""你是一個專業的網頁設計師。請根據使用者的指令更新以下 HTML。
+
+**使用者指令：**
+{instruction}
+
+**結構化修改資料：**
+{json.dumps(modifications, ensure_ascii=False, indent=2)}
+
+**當前 HTML：**
+```html
+{current_html}
+```
+
+**重要要求：**
+1. 只修改必要的部分，保留其他內容不變
+2. 保持 HTML 結構完整性
+3. 確保修改後的網站仍然美觀且響應式
+4. 如果修改顏色，要確保配色協調
+5. 如果修改文字，要保持語氣和風格一致
+6. 返回完整的 HTML 檔案
+
+請直接返回修改後的完整 HTML，不要包含任何解釋或註解。"""
+
+            response = self.client.chat.completions.create(
+                model=settings.OPENAI_MODEL,
+                messages=[
+                    {"role": "system", "content": self.base_system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,  # 降低溫度以確保一致性
+                max_tokens=4000
+            )
+
+            updated_html = response.choices[0].message.content
+
+            # 後處理
+            updated_html = self._post_process_html(updated_html, {})
+
+            return updated_html
+
+        except Exception as e:
+            print(f"[ERROR] Failed to update website: {e}")
+            raise
+
 
 # 全域生成器實例
 website_generator = WebsiteGenerator()

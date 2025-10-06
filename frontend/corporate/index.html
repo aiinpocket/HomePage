@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiInPocket | 口袋智慧 - 將未來科技裝進你的口袋</title>
+    <meta name="description" content="AiInPocket 提供 AI 解決方案、雲端架構與 DevOps 自動化服務">
+    <link rel="stylesheet" href="../shared/css/styles.css">
+</head>
+<body>
+    <!-- 粒子背景容器 -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- 導航列 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo" id="logo-secret">
+                <span class="logo-text">AiInPocket</span>
+                <span class="logo-subtext">口袋智慧</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">首頁</a></li>
+                <li><a href="portfolio.html">作品集</a></li>
+                <li><a href="tech-stack.html">技術棧</a></li>
+                <li><a href="about.html">關於我們</a></li>
+                <li><a href="contact.html">聯絡我們</a></li>
+                <li><a href="../generator/index.html" class="nav-cta">AI 生成器</a></li>
+            </ul>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 隱藏的委託資訊框 -->
+    <div class="secret-info" id="secret-info">
+        <div class="secret-content">
+            <h3>委託資訊</h3>
+            <p><strong>專案代號:</strong> POCKET-AI-2024</p>
+            <p><strong>技術棧:</strong> Next-Gen AI | Cloud Native | DevOps</p>
+            <p><strong>狀態:</strong> <span class="status-active">ACTIVE</span></p>
+            <p><strong>加密等級:</strong> LEVEL-5</p>
+            <div class="secret-footer">
+                <small>/// 僅授權人員可見 ///</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要內容 -->
+    <main class="main-content">
+        <!-- Hero 區塊 -->
+        <section class="hero-section" id="home">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="text-glitch" data-text="將未來科技">將未來科技</span>
+                        <br>
+                        <span class="text-highlight">裝進你的口袋</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        人工智慧 × 雲端架構 × DevOps 自動化
+                    </p>
+                    <div class="hero-description">
+                        <p>AiInPocket 致力於將最先進的 AI 技術與雲端解決方案，</p>
+                        <p>以最簡潔的方式交付到您的手中。</p>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="contact.html" class="btn btn-primary">
+                            <span>開始合作</span>
+                            <span class="btn-glow"></span>
+                        </a>
+                        <a href="portfolio.html" class="btn btn-secondary">
+                            <span>查看案例</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3D 浮動元素 -->
+                <div class="floating-elements">
+                    <div class="float-item float-1">AI</div>
+                    <div class="float-item float-2">Cloud</div>
+                    <div class="float-item float-3">DevOps</div>
+                    <div class="float-item float-4">Tech</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 服務項目 -->
+        <section class="services-section" id="services">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="title-number">01</span>
+                    核心服務
+                </h2>
+
+                <div class="services-grid">
+                    <div class="service-card" data-service="ai">
+                        <div class="card-icon">AI</div>
+                        <h3 class="card-title">AI 解決方案</h3>
+                        <p class="card-description">
+                            深度學習、自然語言處理、電腦視覺、智能自動化。
+                            打造專屬的 AI 模型，賦能您的業務。
+                        </p>
+                        <ul class="card-features">
+                            <li>客製化 AI 模型訓練</li>
+                            <li>LLM 應用整合</li>
+                            <li>智能數據分析</li>
+                            <li>自動化決策系統</li>
+                        </ul>
+                        <div class="card-tech">Python · TensorFlow · PyTorch · OpenAI</div>
+                    </div>
+
+                    <div class="service-card" data-service="cloud">
+                        <div class="card-icon">Cloud</div>
+                        <h3 class="card-title">雲端架構</h3>
+                        <p class="card-description">
+                            可擴展、高可用、成本優化的雲端方案。
+                            從零開始或優化現有架構。
+                        </p>
+                        <ul class="card-features">
+                            <li>雲原生架構設計</li>
+                            <li>容器化與編排</li>
+                            <li>無伺服器架構</li>
+                            <li>多雲策略</li>
+                        </ul>
+                        <div class="card-tech">AWS · Azure · GCP · Kubernetes</div>
+                    </div>
+
+                    <div class="service-card" data-service="devops">
+                        <div class="card-icon">DevOps</div>
+                        <h3 class="card-title">DevOps 工程</h3>
+                        <p class="card-description">
+                            CI/CD 流程、基礎設施即代碼、監控告警。
+                            加速開發，提升穩定性。
+                        </p>
+                        <ul class="card-features">
+                            <li>自動化部署管道</li>
+                            <li>基礎設施即代碼 (IaC)</li>
+                            <li>監控與日誌系統</li>
+                            <li>安全性掃描</li>
+                        </ul>
+                        <div class="card-tech">Docker · Terraform · Jenkins · Prometheus</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 數據展示 -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="99">0</div>
+                        <div class="stat-label">客戶滿意度</div>
+                        <div class="stat-unit">%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="50">0</div>
+                        <div class="stat-label">專案交付</div>
+                        <div class="stat-unit">+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="24">0</div>
+                        <div class="stat-label">全天候支援</div>
+                        <div class="stat-unit">/7</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="5">0</div>
+                        <div class="stat-label">服務年限</div>
+                        <div class="stat-unit">年+</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA 區塊 -->
+        <section class="cta-section">
+            <div class="container">
+                <h2 class="cta-title">準備好開啟 AI 之旅了嗎？</h2>
+                <p class="cta-description">
+                    讓我們一起探索無限可能，打造屬於您的智能解決方案
+                </p>
+                <a href="contact.html" class="btn btn-primary btn-large">
+                    <span>立即聯繫</span>
+                    <span class="btn-glow"></span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>AiInPocket</h3>
+                    <p class="footer-tagline">讓智慧觸手可及</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>服務</h4>
+                        <ul>
+                            <li><a href="portfolio.html">作品集</a></li>
+                            <li><a href="tech-stack.html">技術棧</a></li>
+                            <li><a href="about.html">關於我們</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>聯絡</h4>
+                        <ul>
+                            <li><a href="contact.html">聯絡我們</a></li>
+                            <li><a href="mailto:help@aiinpocket.com">Email</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> AiInPocket. All rights reserved.</p>
+                <p class="footer-note">/// Powered by AI & Innovation ///</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 彩蛋彈窗 -->
+    <div id="easter-egg-modal" class="modal">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content">
+            <h2 class="modal-title">[彩蛋觸發！]</h2>
+            <p class="modal-text">你發現了隱藏的魔法咒語！</p>
+            <div class="magic-text">AI is in your pocket now!</div>
+            <button class="btn btn-primary modal-close" id="modal-close">關閉</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../shared/js/particles.js"></script>
+    <script src="../shared/js/easter-eggs.js"></script>
+    <script src="../shared/js/main.js"></script>
+    <script src="../shared/js/ai-chat.js"></script>
+</body>
+</html>

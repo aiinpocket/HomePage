@@ -10,6 +10,7 @@ services:
       POSTGRES_DB: aiinpocket
       POSTGRES_USER: aiinpocket
       POSTGRES_PASSWORD: aiinpocket_secure_password
+      TZ: Asia/Taipei
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -25,6 +26,8 @@ services:
     image: redis:7-alpine
     container_name: aiinpocket-redis
     restart: unless-stopped
+    environment:
+      TZ: Asia/Taipei
     command: redis-server --appendonly yes
     volumes:
       - redis-data:/data
@@ -47,6 +50,7 @@ services:
       - "8001:8000"
     environment:
       - PYTHONUNBUFFERED=1
+      - TZ=Asia/Taipei
     env_file:
       - backend/.env
     volumes:
@@ -77,6 +81,8 @@ services:
       dockerfile: docker/nginx/Dockerfile
     container_name: aiinpocket-frontend
     restart: unless-stopped
+    environment:
+      TZ: Asia/Taipei
     ports:
       - "8000:80"
     depends_on:

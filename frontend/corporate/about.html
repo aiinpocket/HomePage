@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>關於我們 | AiInPocket</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../shared/css/styles.css">
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
@@ -20,7 +20,8 @@
                 <li><a href="portfolio.html">作品集</a></li>
                 <li><a href="tech-stack.html">技術棧</a></li>
                 <li><a href="about.html" class="active">關於我們</a></li>
-                <li><a href="contact.html" class="nav-cta">聯絡我們</a></li>
+                <li><a href="contact.html">聯絡我們</a></li>
+                <li><a href="../generator/index.html" class="nav-cta">AI 生成器</a></li>
             </ul>
             <div class="nav-toggle" id="nav-toggle">
                 <span></span>
@@ -32,7 +33,7 @@
 
     <div class="secret-info" id="secret-info">
         <div class="secret-content">
-            <h3>🔐 委託資訊</h3>
+            <h3>[機密] 委託資訊</h3>
             <p><strong>專案代號:</strong> POCKET-AI-2024</p>
             <p><strong>技術棧:</strong> Next-Gen AI | Cloud Native | DevOps</p>
             <p><strong>狀態:</strong> <span class="status-active">ACTIVE</span></p>
@@ -70,22 +71,22 @@
 
                 <div class="values-grid">
                     <div class="value-item">
-                        <div class="value-icon">🎯</div>
+                        <div class="value-icon">[Focus]</div>
                         <h3>專注客戶</h3>
                         <p>深入理解客戶需求，提供量身訂製的解決方案</p>
                     </div>
                     <div class="value-item">
-                        <div class="value-icon">⚡</div>
+                        <div class="value-icon">[Excel]</div>
                         <h3>追求卓越</h3>
                         <p>不斷精進技術，追求極致性能與品質</p>
                     </div>
                     <div class="value-item">
-                        <div class="value-icon">🤝</div>
+                        <div class="value-icon">[Trust]</div>
                         <h3>誠信合作</h3>
                         <p>以透明溝通與長期夥伴關係為基礎</p>
                     </div>
                     <div class="value-item">
-                        <div class="value-icon">🚀</div>
+                        <div class="value-icon">[Innovate]</div>
                         <h3>持續創新</h3>
                         <p>擁抱變化，積極探索新技術與新可能</p>
                     </div>
@@ -100,7 +101,7 @@
                 <div class="team-grid">
                     <div class="team-member">
                         <div class="member-avatar">
-                            <span class="avatar-icon">👨‍💻</span>
+                            <span class="avatar-icon">[CTO]</span>
                         </div>
                         <h3 class="member-name">技術長</h3>
                         <p class="member-role">Chief Technology Officer</p>
@@ -116,7 +117,7 @@
 
                     <div class="team-member">
                         <div class="member-avatar">
-                            <span class="avatar-icon">🧠</span>
+                            <span class="avatar-icon">[AI]</span>
                         </div>
                         <h3 class="member-name">AI 研發主管</h3>
                         <p class="member-role">Head of AI Research</p>
@@ -132,7 +133,7 @@
 
                     <div class="team-member">
                         <div class="member-avatar">
-                            <span class="avatar-icon">🎨</span>
+                            <span class="avatar-icon">[Dev]</span>
                         </div>
                         <h3 class="member-name">全端工程師</h3>
                         <p class="member-role">Full-Stack Engineer</p>
@@ -148,7 +149,7 @@
 
                     <div class="team-member">
                         <div class="member-avatar">
-                            <span class="avatar-icon">🔒</span>
+                            <span class="avatar-icon">[Sec]</span>
                         </div>
                         <h3 class="member-name">資安專家</h3>
                         <p class="member-role">Security Specialist</p>
@@ -270,7 +271,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 AiInPocket. All rights reserved.</p>
+                <p>&copy; <span id="current-year"></span> AiInPocket. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -278,16 +279,16 @@
     <div id="easter-egg-modal" class="modal">
         <div class="modal-overlay" id="modal-overlay"></div>
         <div class="modal-content">
-            <h2 class="modal-title">🎉 彩蛋觸發！</h2>
+            <h2 class="modal-title">[彩蛋觸發！]</h2>
             <p class="modal-text">你發現了隱藏的魔法咒語！</p>
-            <div class="magic-text">AI is in your pocket now! 🚀</div>
+            <div class="magic-text">AI is in your pocket now!</div>
             <button class="btn btn-primary modal-close" id="modal-close">關閉</button>
         </div>
     </div>
 
-    <script src="js/particles.js"></script>
-    <script src="js/easter-eggs.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/ai-chat.js"></script>
+    <script src="../shared/js/particles.js"></script>
+    <script src="../shared/js/easter-eggs.js"></script>
+    <script src="../shared/js/main.js"></script>
+    <script src="../shared/js/ai-chat.js"></script>
 </body>
 </html>

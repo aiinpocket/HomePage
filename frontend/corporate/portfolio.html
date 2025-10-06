@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>作品集 | AiInPocket</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../shared/css/styles.css">
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
@@ -21,7 +21,8 @@
                 <li><a href="portfolio.html" class="active">作品集</a></li>
                 <li><a href="tech-stack.html">技術棧</a></li>
                 <li><a href="about.html">關於我們</a></li>
-                <li><a href="contact.html" class="nav-cta">聯絡我們</a></li>
+                <li><a href="contact.html">聯絡我們</a></li>
+                <li><a href="../generator/index.html" class="nav-cta">AI 生成器</a></li>
             </ul>
             <div class="nav-toggle" id="nav-toggle">
                 <span></span>
@@ -33,7 +34,7 @@
 
     <div class="secret-info" id="secret-info">
         <div class="secret-content">
-            <h3>🔐 委託資訊</h3>
+            <h3>[機密] 委託資訊</h3>
             <p><strong>專案代號:</strong> POCKET-AI-2024</p>
             <p><strong>技術棧:</strong> Next-Gen AI | Cloud Native | DevOps</p>
             <p><strong>狀態:</strong> <span class="status-active">ACTIVE</span></p>
@@ -76,7 +77,7 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">🤖</span>
+                                    <span class="placeholder-icon">[AI]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
@@ -106,7 +107,7 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">☁️</span>
+                                    <span class="placeholder-icon">[Cloud]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
@@ -136,7 +137,7 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">⚡</span>
+                                    <span class="placeholder-icon">[Fast]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
@@ -166,7 +167,7 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">📊</span>
+                                    <span class="placeholder-icon">[Data]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
@@ -196,7 +197,7 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">🌐</span>
+                                    <span class="placeholder-icon">[Web]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
@@ -226,7 +227,7 @@
                         <div class="portfolio-card">
                             <div class="portfolio-image">
                                 <div class="project-placeholder">
-                                    <span class="placeholder-icon">🔒</span>
+                                    <span class="placeholder-icon">[Secure]</span>
                                 </div>
                             </div>
                             <div class="portfolio-content">
@@ -293,7 +294,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 AiInPocket. All rights reserved.</p>
+                <p>&copy; <span id="current-year"></span> AiInPocket. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -301,16 +302,16 @@
     <div id="easter-egg-modal" class="modal">
         <div class="modal-overlay" id="modal-overlay"></div>
         <div class="modal-content">
-            <h2 class="modal-title">🎉 彩蛋觸發！</h2>
+            <h2 class="modal-title">[彩蛋觸發！]</h2>
             <p class="modal-text">你發現了隱藏的魔法咒語！</p>
-            <div class="magic-text">AI is in your pocket now! 🚀</div>
+            <div class="magic-text">AI is in your pocket now!</div>
             <button class="btn btn-primary modal-close" id="modal-close">關閉</button>
         </div>
     </div>
 
-    <script src="js/particles.js"></script>
-    <script src="js/easter-eggs.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/ai-chat.js"></script>
+    <script src="../shared/js/particles.js"></script>
+    <script src="../shared/js/easter-eggs.js"></script>
+    <script src="../shared/js/main.js"></script>
+    <script src="../shared/js/ai-chat.js"></script>
 </body>
 </html>

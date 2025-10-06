@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 網站生成器 - AiInPocket | 30 秒打造專屬網站</title>
     <meta name="description" content="使用 AI 技術，30 秒內生成專業網站。選擇風格、填寫資料，立即獲得您的專屬網站。">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../shared/css/styles.css">
     <style>
         /* ========================================
            生成器專用樣式
@@ -823,18 +823,18 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html" style="text-decoration: none;">
+                <a href="../corporate/index.html" style="text-decoration: none;">
                     <span class="logo-text">AiInPocket</span>
                     <span class="logo-subtext">口袋智慧</span>
                 </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">首頁</a></li>
-                <li><a href="portfolio.html">作品集</a></li>
-                <li><a href="tech-stack.html">技術棧</a></li>
-                <li><a href="about.html">關於我們</a></li>
-                <li><a href="contact.html">聯絡我們</a></li>
-                <li><a href="generator.html" class="active nav-cta">網站生成器</a></li>
+                <li><a href="../corporate/index.html">首頁</a></li>
+                <li><a href="../corporate/portfolio.html">作品集</a></li>
+                <li><a href="../corporate/tech-stack.html">技術棧</a></li>
+                <li><a href="../corporate/about.html">關於我們</a></li>
+                <li><a href="../corporate/contact.html">聯絡我們</a></li>
+                <li><a href="index.html" class="nav-cta active">AI 生成器</a></li>
                 <li id="user-menu-item" style="display: none;">
                     <a href="#" id="my-projects-btn">我的作品</a>
                 </li>
@@ -879,7 +879,7 @@
                     運用最新 AI 技術，30 秒內為您打造專業、美觀的專屬網站。<br>
                     無需任何程式知識，只需簡單三步驟，即可擁有高品質的網路形象。
                 </p>
-                <div class="time-badge">⚡ 預估時間：30-60 秒</div>
+                <div class="time-badge">預估時間：30-60 秒</div>
             </div>
 
             <!-- 步驟 1: 風格選擇 -->
@@ -1089,7 +1089,7 @@
                         我們將立即使用 AI 為您生成專屬網站！
                     </p>
                     <button class="btn-generate" onclick="generateWebsite()">
-                        🚀 立即生成網站
+                        立即生成網站
                     </button>
                     <span class="estimate-time">預估生成時間：30-60 秒</span>
                 </div>
@@ -1104,7 +1104,7 @@
 
             <!-- 成功訊息 -->
             <section class="success-message" id="success-message">
-                <div class="success-icon">✨</div>
+                <div class="success-icon">[Success]</div>
                 <h2 class="success-title">網站生成成功！</h2>
                 <p class="success-description">
                     恭喜！您的專屬網站已經準備就緒。<br>
@@ -1146,30 +1146,30 @@
                     <div class="footer-column">
                         <h4>服務</h4>
                         <ul>
-                            <li><a href="portfolio.html">作品集</a></li>
-                            <li><a href="tech-stack.html">技術棧</a></li>
-                            <li><a href="about.html">關於我們</a></li>
+                            <li><a href="../corporate/portfolio.html">作品集</a></li>
+                            <li><a href="../corporate/tech-stack.html">技術棧</a></li>
+                            <li><a href="../corporate/about.html">關於我們</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
                         <h4>聯絡</h4>
                         <ul>
-                            <li><a href="contact.html">聯絡我們</a></li>
+                            <li><a href="../corporate/contact.html">聯絡我們</a></li>
                             <li><a href="mailto:help@aiinpocket.com">Email</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 AiInPocket. All rights reserved.</p>
+                <p>&copy; <span id="current-year"></span> AiInPocket. All rights reserved.</p>
                 <p class="footer-note">/// Powered by AI & Innovation ///</p>
             </div>
         </div>
     </footer>
 
     <!-- JavaScript -->
-    <script src="js/particles.js"></script>
-    <script src="js/main.js"></script>
+    <script src="../shared/js/particles.js"></script>
+    <script src="../shared/js/main.js"></script>
 
     <script>
         // ========================================
@@ -1187,7 +1187,7 @@
             {
                 id: 'modern-tech',
                 name: '現代科技',
-                icon: '💻',
+                icon: 'Tech',
                 description: '簡潔的設計搭配科技感配色，適合科技公司與新創團隊',
                 colors: ['#2563eb', '#3b82f6', '#60a5fa'],
                 tags: ['科技', '專業', '現代']
@@ -1195,7 +1195,7 @@
             {
                 id: 'business-pro',
                 name: '商務專業',
-                icon: '💼',
+                icon: 'Business',
                 description: '穩重大氣的企業風格，展現專業與可信度',
                 colors: ['#1e3a8a', '#1e40af', '#3730a3'],
                 tags: ['商務', '企業', '專業']
@@ -1203,7 +1203,7 @@
             {
                 id: 'creative-agency',
                 name: '創意設計',
-                icon: '🎨',
+                icon: 'Creative',
                 description: '大膽活潑的色彩與排版，展現創意與活力',
                 colors: ['#ec4899', '#f97316', '#f59e0b'],
                 tags: ['創意', '設計', '活潑']
@@ -1211,7 +1211,7 @@
             {
                 id: 'minimal-clean',
                 name: '極簡主義',
-                icon: '⚪',
+                icon: 'Minimal',
                 description: '純粹的留白美學，簡約而不簡單',
                 colors: ['#000000', '#ffffff', '#6b7280'],
                 tags: ['極簡', '純淨', '優雅']
@@ -1219,7 +1219,7 @@
             {
                 id: 'nature-eco',
                 name: '自然環保',
-                icon: '🌿',
+                icon: 'Nature',
                 description: '清新的綠色系，傳遞環保與健康理念',
                 colors: ['#059669', '#10b981', '#34d399'],
                 tags: ['環保', '自然', '健康']
@@ -1227,7 +1227,7 @@
             {
                 id: 'luxury-gold',
                 name: '奢華尊貴',
-                icon: '👑',
+                icon: 'Luxury',
                 description: '金色與黑色的經典組合，展現高端品味',
                 colors: ['#d97706', '#b45309', '#92400e'],
                 tags: ['奢華', '高端', '尊貴']
@@ -1235,7 +1235,7 @@
             {
                 id: 'startup-bold',
                 name: '新創活力',
-                icon: '🚀',
+                icon: 'Startup',
                 description: '充滿動感的設計，彰顯創新與突破精神',
                 colors: ['#7c3aed', '#8b5cf6', '#a78bfa'],
                 tags: ['新創', '創新', '活力']
@@ -1243,7 +1243,7 @@
             {
                 id: 'medical-care',
                 name: '醫療健康',
-                icon: '🏥',
+                icon: 'Medical',
                 description: '清爽的藍白色調，傳遞專業與信任感',
                 colors: ['#0ea5e9', '#06b6d4', '#22d3ee'],
                 tags: ['醫療', '健康', '專業']
@@ -1251,7 +1251,7 @@
             {
                 id: 'education-learn',
                 name: '教育學習',
-                icon: '📚',
+                icon: 'Education',
                 description: '溫暖的配色與友善的設計，適合教育機構',
                 colors: ['#f59e0b', '#eab308', '#facc15'],
                 tags: ['教育', '學習', '友善']
@@ -1259,7 +1259,7 @@
             {
                 id: 'food-restaurant',
                 name: '餐飲美食',
-                icon: '🍽️',
+                icon: 'Food',
                 description: '誘人的色調與視覺，激發食慾與興趣',
                 colors: ['#dc2626', '#ef4444', '#f87171'],
                 tags: ['餐飲', '美食', '溫暖']
@@ -1267,7 +1267,7 @@
             {
                 id: 'fashion-style',
                 name: '時尚潮流',
-                icon: '👗',
+                icon: 'Fashion',
                 description: '前衛的設計語言，展現時尚品味',
                 colors: ['#db2777', '#e11d48', '#f43f5e'],
                 tags: ['時尚', '潮流', '前衛']
@@ -1275,7 +1275,7 @@
             {
                 id: 'finance-trust',
                 name: '金融理財',
-                icon: '💰',
+                icon: 'Finance',
                 description: '穩定可靠的視覺設計，建立信任感',
                 colors: ['#065f46', '#047857', '#059669'],
                 tags: ['金融', '信任', '穩定']
@@ -1283,7 +1283,7 @@
             {
                 id: 'sports-fitness',
                 name: '運動健身',
-                icon: '💪',
+                icon: 'Fitness',
                 description: '充滿活力的設計，激發運動熱情',
                 colors: ['#ea580c', '#f97316', '#fb923c'],
                 tags: ['運動', '健身', '活力']
@@ -1291,7 +1291,7 @@
             {
                 id: 'travel-adventure',
                 name: '旅遊探險',
-                icon: '✈️',
+                icon: 'Travel',
                 description: '輕鬆愉悅的色調，喚起旅行慾望',
                 colors: ['#0284c7', '#0ea5e9', '#38bdf8'],
                 tags: ['旅遊', '探險', '自由']
@@ -1299,7 +1299,7 @@
             {
                 id: 'real-estate',
                 name: '房地產',
-                icon: '🏠',
+                icon: 'RealEstate',
                 description: '大氣穩重的設計，展現實力與品質',
                 colors: ['#334155', '#475569', '#64748b'],
                 tags: ['房地產', '專業', '穩重']
@@ -1307,7 +1307,7 @@
             {
                 id: 'automotive',
                 name: '汽車產業',
-                icon: '🚗',
+                icon: 'Auto',
                 description: '動感流線的設計，展現速度與科技',
                 colors: ['#1e293b', '#374151', '#4b5563'],
                 tags: ['汽車', '動感', '科技']
@@ -1315,7 +1315,7 @@
             {
                 id: 'beauty-spa',
                 name: '美容美體',
-                icon: '💆',
+                icon: 'Beauty',
                 description: '柔和舒適的色調，營造放鬆氛圍',
                 colors: ['#f0abfc', '#e879f9', '#d946ef'],
                 tags: ['美容', '放鬆', '舒適']
@@ -1323,7 +1323,7 @@
             {
                 id: 'wedding-event',
                 name: '婚禮活動',
-                icon: '💐',
+                icon: 'Wedding',
                 description: '浪漫優雅的設計，捕捉幸福時刻',
                 colors: ['#fda4af', '#fb7185', '#f43f5e'],
                 tags: ['婚禮', '浪漫', '優雅']
@@ -1331,7 +1331,7 @@
             {
                 id: 'legal-law',
                 name: '法律服務',
-                icon: '⚖️',
+                icon: 'Legal',
                 description: '莊重專業的視覺，展現權威與信任',
                 colors: ['#1e40af', '#1e3a8a', '#1e293b'],
                 tags: ['法律', '專業', '權威']
@@ -1339,7 +1339,7 @@
             {
                 id: 'photography',
                 name: '攝影藝術',
-                icon: '📷',
+                icon: 'Photo',
                 description: '注重視覺表現，讓作品成為焦點',
                 colors: ['#000000', '#ffffff', '#f59e0b'],
                 tags: ['攝影', '藝術', '視覺']
@@ -1347,7 +1347,7 @@
             {
                 id: 'music-entertainment',
                 name: '音樂娛樂',
-                icon: '🎵',
+                icon: 'Music',
                 description: '動感節奏的設計，展現音樂魅力',
                 colors: ['#8b5cf6', '#7c3aed', '#6d28d9'],
                 tags: ['音樂', '娛樂', '動感']
@@ -1355,7 +1355,7 @@
             {
                 id: 'nonprofit-charity',
                 name: '公益慈善',
-                icon: '❤️',
+                icon: 'Charity',
                 description: '溫暖人心的設計，傳遞愛與關懷',
                 colors: ['#f87171', '#ef4444', '#dc2626'],
                 tags: ['公益', '慈善', '溫暖']
@@ -1363,7 +1363,7 @@
             {
                 id: 'pet-animal',
                 name: '寵物服務',
-                icon: '🐾',
+                icon: 'Pet',
                 description: '可愛友善的設計，展現對寵物的愛',
                 colors: ['#fbbf24', '#f59e0b', '#d97706'],
                 tags: ['寵物', '可愛', '友善']
@@ -1371,7 +1371,7 @@
             {
                 id: 'kids-children',
                 name: '兒童產品',
-                icon: '🧸',
+                icon: 'Kids',
                 description: '繽紛活潑的色彩，吸引兒童目光',
                 colors: ['#34d399', '#fbbf24', '#f472b6'],
                 tags: ['兒童', '繽紛', '活潑']
@@ -1379,7 +1379,7 @@
             {
                 id: 'cyber-security',
                 name: '資安科技',
-                icon: '🔐',
+                icon: 'Security',
                 description: '科技感與安全感並重的視覺設計',
                 colors: ['#0f172a', '#1e293b', '#0ea5e9'],
                 tags: ['資安', '科技', '安全']
@@ -1387,7 +1387,7 @@
             {
                 id: 'custom',
                 name: '自訂風格',
-                icon: '🎯',
+                icon: 'Custom',
                 description: '上傳圖片或描述，打造獨一無二的專屬風格',
                 colors: ['#87CEEB', '#7FFF00', '#4A90E2'],
                 tags: ['自訂', '獨特', '專屬']
@@ -2101,7 +2101,7 @@
                         // 在成功訊息中添加提示
                         const successHint = document.createElement('p');
                         successHint.style.cssText = 'color: #7FFF00; margin-top: 1rem; font-size: 0.9rem;';
-                        successHint.innerHTML = '✅ 專案已自動儲存到「我的作品」';
+                        successHint.innerHTML = '[OK] 專案已自動儲存到「我的作品」';
 
                         const successTitle = successMessage.querySelector('h2');
                         if (successTitle && !successMessage.querySelector('p[style*="7FFF00"]')) {

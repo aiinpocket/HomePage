@@ -28,7 +28,12 @@ class SitemapGenerator:
         # 生成 URL 列表
         urls = []
         for file_path in html_files:
-            url_path = f"/{file_path.name}"
+            # 使用相對於 frontend 的路徑
+            try:
+                relative_path = file_path.relative_to(self.frontend_path)
+                url_path = f"/{relative_path.as_posix()}"
+            except ValueError:
+                url_path = f"/{file_path.name}"
 
             # 設定優先級
             priority = self._get_priority(url_path)
@@ -48,22 +53,31 @@ class SitemapGenerator:
         return xml_content
 
     def _get_priority(self, url_path: str) -> str:
-        """獲取頁面優先級"""
-        if url_path == '/index.html':
+        """獲取頁面優先級 (支援子目錄路徑)"""
+        # 根目錄首頁
+        if url_path in ['/index.html', '/corporate/index.html']:
             return '1.0'
-        elif url_path in ['/portfolio.html', '/contact.html']:
+        # 生成器首頁
+        elif url_path == '/generator/index.html':
+            return '1.0'
+        # 重要頁面
+        elif any(page in url_path for page in ['portfolio', 'contact', 'generator']):
             return '0.9'
-        elif url_path in ['/about.html', '/tech-stack.html']:
+        # 一般頁面
+        elif any(page in url_path for page in ['about', 'tech-stack']):
             return '0.8'
         else:
             return '0.7'
 
     def _get_changefreq(self, url_path: str) -> str:
-        """獲取頁面更新頻率"""
-        if url_path == '/index.html':
+        """獲取頁面更新頻率 (支援子目錄路徑)"""
+        # 首頁和生成器更新頻繁
+        if 'index.html' in url_path or 'generator' in url_path:
             return 'weekly'
-        elif url_path in ['/portfolio.html', '/tech-stack.html']:
+        # 作品集和技術棧每月更新
+        elif any(page in url_path for page in ['portfolio', 'tech-stack']):
             return 'monthly'
+        # 其他頁面較少更新
         else:
             return 'yearly'
 
