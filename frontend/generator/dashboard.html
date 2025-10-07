@@ -723,26 +723,32 @@
             const downloadUrl = `/api/download/${currentDownloadProject.id}?password=${encodeURIComponent(password)}`;
 
             try {
-                // 使用 fetch 檢查密碼是否正確
-                const response = await fetch(downloadUrl, { method: 'HEAD' });
+                // 直接使用 fetch 下載檔案
+                const response = await fetch(downloadUrl);
 
                 if (!response.ok) {
-                    errorDiv.textContent = '密碼錯誤或已使用過';
+                    // 根據狀態碼顯示不同錯誤訊息
+                    if (response.status === 403) {
+                        errorDiv.textContent = '密碼錯誤或已使用過';
+                    } else if (response.status === 404) {
+                        errorDiv.textContent = '專案不存在';
+                    } else {
+                        errorDiv.textContent = '下載失敗，請稍後再試';
+                    }
                     errorDiv.style.display = 'block';
                     return;
                 }
 
-                // 密碼正確，開始下載
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = downloadUrl;
-                document.body.appendChild(iframe);
-
-                setTimeout(() => {
-                    if (iframe.parentNode) {
-                        document.body.removeChild(iframe);
-                    }
-                }, 3000);
+                // 下載成功，處理檔案
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `website_${currentDownloadProject.name}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
 
                 // 檢查是否為批量下載模式
                 if (currentDownloadProject.isBulkDownload) {
@@ -759,6 +765,7 @@
                     currentDownloadProject = null;
                 }
             } catch (error) {
+                console.error('Download error:', error);
                 errorDiv.textContent = '下載失敗，請稍後再試';
                 errorDiv.style.display = 'block';
             }
