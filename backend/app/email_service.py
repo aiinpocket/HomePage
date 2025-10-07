@@ -209,6 +209,9 @@ class EmailService:
         if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
             print(f"[WARN] SMTP not configured, email not sent to {to_email}")
             print(f"[INFO] Subject: {subject}")
+            print(f"[INFO] To: {to_email}")
+            print(f"[INFO] Body preview: {html_body[:200]}...")
+            # 在開發模式下,不拋出異常,允許系統繼續運作
             return
 
         try:
@@ -233,6 +236,10 @@ class EmailService:
 
         except Exception as e:
             print(f"[ERROR] Failed to send email: {e}")
+            print(f"[ERROR] To: {to_email}")
+            print(f"[ERROR] Subject: {subject}")
+            # 拋出異常,讓調用方知道郵件發送失敗
+            raise Exception(f"郵件發送失敗: {str(e)}")
 
 
 # 全域實例

@@ -94,8 +94,9 @@ class AuthService:
             except Exception as email_error:
                 logger.error(f"Failed to send OTP email: {email_error}")
                 # 即使 Email 發送失敗，密碼仍然有效（開發環境可以從 log 看到）
-                logger.info(f"OTP Code (for dev): {otp_token}")
-                return True, f"驗證碼已生成（開發模式）: {otp_token}"
+                logger.warning(f"[DEV MODE] OTP Code for {email}: {otp_token}")
+                # 返回包含 OTP 的訊息,讓開發環境可以使用
+                return True, f"⚠️ 郵件發送失敗,但已生成驗證碼（開發模式）: {otp_token}"
 
         except Exception as e:
             logger.error(f"Error sending OTP: {e}")

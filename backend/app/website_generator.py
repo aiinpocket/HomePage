@@ -1193,13 +1193,30 @@ Footer 資訊完整且結構化（4 欄位）
         # 加入外部連結
         external_links = user_data.get("external_links", [])
         if external_links:
-            prompt += f"### 社交媒體與外部連結\n"
-            prompt += "請在網站中適當位置（例如 Header、Footer 或聯絡區塊）加入以下社交媒體連結圖示：\n\n"
+            prompt += f"### 🔗 社交媒體與外部連結（必須實現）\n"
+            prompt += "**重要提醒：以下外部連結必須在網站中清晰可見！**\n\n"
+            prompt += "請在 Footer 的 `.footer-social` 區域加入以下社交媒體連結，每個連結都必須包含:\n"
+            prompt += "1. 視覺化的圖示（使用 SVG icon 或 emoji）\n"
+            prompt += "2. 清楚的連結文字或 tooltip\n"
+            prompt += "3. hover 效果（顏色變化或位移動畫）\n"
+            prompt += "4. 在新視窗開啟（target=\"_blank\" rel=\"noopener noreferrer\"）\n\n"
+            prompt += "**必須加入的連結：**\n"
             for link in external_links:
                 link_name = link.get('name', 'External Link')
                 link_url = link.get('url', '#')
                 prompt += f"- **{link_name}**: {link_url}\n"
-            prompt += "\n請使用適當的圖示（可用 SVG 或 emoji）並確保連結在新視窗開啟（target=\"_blank\" rel=\"noopener noreferrer\"）\n\n"
+            prompt += "\n**實現範例：**\n"
+            prompt += "```html\n"
+            prompt += "<div class=\"footer-social\">\n"
+            for i, link in enumerate(external_links):
+                link_name = link.get('name', 'External Link')
+                link_url = link.get('url', '#')
+                prompt += f"  <a href=\"{link_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"social-icon\" title=\"{link_name}\">\n"
+                prompt += f"    <!-- {link_name} 的圖示或 emoji -->\n"
+                prompt += f"  </a>\n"
+            prompt += "</div>\n"
+            prompt += "```\n\n"
+            prompt += "**請確保這些連結在 Footer 中清楚可見，不要遺漏！**\n\n"
 
         # 加入風格指引
         if custom_style or template.get('id') == 'custom':

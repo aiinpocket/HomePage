@@ -428,7 +428,7 @@
     <div id="password-page" class="password-page">
         <div class="password-container">
             <div class="password-card">
-                <h2>🔐 請輸入下載密碼</h2>
+                <h2 id="password-page-title">🔐 請輸入下載密碼</h2>
                 <p class="password-hint">密碼已透過郵件發送給您（6位數字）</p>
 
                 <div class="password-input-group">
@@ -635,6 +635,10 @@
         function downloadWithPassword(projectId, projectName) {
             currentDownloadProject = { id: projectId, name: projectName };
 
+            // 更新頁面標題和提示
+            document.getElementById('password-page-title').textContent = `🔐 下載「${projectName}」`;
+            document.querySelector('.password-hint').textContent = '密碼已透過郵件發送給您（6位數字）';
+
             // 顯示密碼輸入頁面
             document.getElementById('password-page').classList.add('active');
             document.getElementById('password-input').value = '';
@@ -644,6 +648,28 @@
 
         function closePasswordPage() {
             document.getElementById('password-page').classList.remove('active');
+
+            // 如果是批量下載模式，清空佇列並重置計數
+            if (currentDownloadProject && currentDownloadProject.isBulkDownload) {
+                if (bulkDownloadQueue.length > 0) {
+                    if (confirm(`還有 ${bulkDownloadQueue.length} 個專案未下載，確定要取消批量下載嗎？`)) {
+                        bulkDownloadQueue = [];
+                        bulkDownloadCount = 0;
+                    } else {
+                        // 繼續批量下載
+                        setTimeout(() => {
+                            processBulkDownloadNext();
+                        }, 500);
+                        return;
+                    }
+                }
+            }
+
+            // 重置標題和提示訊息
+            document.getElementById('password-page-title').textContent = '🔐 請輸入下載密碼';
+            const passwordHint = document.querySelector('.password-hint');
+            passwordHint.textContent = '密碼已透過郵件發送給您（6位數字）';
+
             currentDownloadProject = null;
         }
 
@@ -676,10 +702,7 @@
                     return;
                 }
 
-                // 密碼正確，關閉頁面並開始下載
-                closePasswordPage();
-
-                // 使用隱藏的 iframe 觸發下載
+                // 密碼正確，開始下載
                 const iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
                 iframe.src = downloadUrl;
@@ -690,6 +713,20 @@
                         document.body.removeChild(iframe);
                     }
                 }, 3000);
+
+                // 檢查是否為批量下載模式
+                if (currentDownloadProject.isBulkDownload) {
+                    bulkDownloadCount++;
+                    closePasswordPage();
+
+                    // 延遲後處理下一個專案
+                    setTimeout(() => {
+                        processBulkDownloadNext();
+                    }, 1000);
+                } else {
+                    // 單個下載，關閉頁面
+                    closePasswordPage();
+                }
             } catch (error) {
                 errorDiv.textContent = '下載失敗，請稍後再試';
                 errorDiv.style.display = 'block';
@@ -751,6 +788,8 @@
         // ========== 批量操作功能 ==========
         let bulkSelectMode = false;
         let selectedProjects = new Set();
+        let bulkDownloadQueue = [];
+        let bulkDownloadCount = 0;
 
         function toggleBulkSelect() {
             bulkSelectMode = !bulkSelectMode;
@@ -813,9 +852,9 @@
                 return;
             }
 
-            alert(`批量下載功能需要為每個專案輸入密碼。\n\n您選中了 ${selectedProjects.size} 個專案，請依序輸入密碼。`);
-
-            let downloadCount = 0;
+            // 收集所有可下載的專案
+            bulkDownloadQueue = [];
+            bulkDownloadCount = 0;
 
             for (const projectId of selectedProjects) {
                 const card = document.querySelector(`[data-project-id="${projectId}"]`);
@@ -823,31 +862,48 @@
                 const projectName = card.querySelector('h3').textContent;
 
                 if (status === 'completed') {
-                    const password = prompt(`請輸入專案「${projectName}」的下載密碼（6位數字）：`);
-
-                    if (!password) {
-                        continue; // 跳過此專案
-                    }
-
-                    if (!/^\d{6}$/.test(password)) {
-                        alert(`專案「${projectName}」密碼格式錯誤，已跳過。`);
-                        continue;
-                    }
-
-                    // 使用隱藏的 iframe 觸發下載
-                    const iframe = document.createElement('iframe');
-                    iframe.style.display = 'none';
-                    iframe.src = `/api/download/${projectId}?password=${encodeURIComponent(password)}`;
-                    document.body.appendChild(iframe);
-
-                    downloadCount++;
-
-                    // 延遲以避免瀏覽器阻止多次下載
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    bulkDownloadQueue.push({ id: projectId, name: projectName });
                 }
             }
 
-            alert(`批量下載完成！成功下載 ${downloadCount} 個專案。`);
+            if (bulkDownloadQueue.length === 0) {
+                alert('沒有可下載的已完成專案');
+                return;
+            }
+
+            alert(`即將依序為 ${bulkDownloadQueue.length} 個專案輸入下載密碼`);
+
+            // 開始處理第一個專案
+            processBulkDownloadNext();
+        }
+
+        function processBulkDownloadNext() {
+            if (bulkDownloadQueue.length === 0) {
+                // 所有專案處理完畢
+                alert(`批量下載完成！成功下載 ${bulkDownloadCount} 個專案。`);
+                bulkDownloadCount = 0;
+                return;
+            }
+
+            // 取出下一個要下載的專案
+            const nextProject = bulkDownloadQueue.shift();
+
+            // 設置當前下載專案並顯示密碼輸入頁面
+            currentDownloadProject = {
+                id: nextProject.id,
+                name: nextProject.name,
+                isBulkDownload: true // 標記為批量下載
+            };
+
+            // 更新密碼頁面的標題和提示訊息
+            document.getElementById('password-page-title').textContent = `🔐 下載「${nextProject.name}」`;
+            const passwordHint = document.querySelector('.password-hint');
+            passwordHint.textContent = `批量下載進度：已完成 ${bulkDownloadCount}，剩餘 ${bulkDownloadQueue.length + 1} 個\n密碼已透過郵件發送給您（6位數字）`;
+
+            document.getElementById('password-page').classList.add('active');
+            document.getElementById('password-input').value = '';
+            document.getElementById('password-error').style.display = 'none';
+            document.getElementById('password-input').focus();
         }
 
         async function bulkDelete() {
