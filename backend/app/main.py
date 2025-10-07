@@ -1429,11 +1429,16 @@ async def download_website(site_id: str, password: str, db: Session = Depends(ge
         zip_buffer = create_download_package(project)
 
         # 返回 ZIP 檔案
+        # 處理中文檔名編碼問題
+        from urllib.parse import quote
+        filename = f"website_{project.project_name}.zip"
+        encoded_filename = quote(filename)
+
         return StreamingResponse(
             zip_buffer,
             media_type='application/zip',
             headers={
-                'Content-Disposition': f'attachment; filename="website_{project.project_name}.zip"'
+                'Content-Disposition': f"attachment; filename*=UTF-8''{encoded_filename}"
             }
         )
 
