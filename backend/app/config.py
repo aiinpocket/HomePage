@@ -52,6 +52,20 @@ class Settings(BaseSettings):
     GENERATED_SITES_PATH: str = "/app/generated_sites"
     DOWNLOAD_BASE_URL: str = "https://aiinpocket.com/download"
 
+    # 安全設定
+    SECRET_KEY: str = "your-secret-key-here-change-in-production"
+
+    # Rate Limiting
+    RATE_LIMIT_PER_HOUR: int = 1000
+
+    # 檔案上傳設定
+    MAX_UPLOAD_SIZE_MB: int = 10
+
+    # 功能開關
+    ENABLE_AI_CHAT: bool = True
+    ENABLE_AUTH: bool = False
+    ENABLE_EMAIL: bool = False
+
     class Config:
         env_file = ".env"
         case_sensitive = True

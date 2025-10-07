@@ -188,8 +188,12 @@ def embed_images_in_html(html: str, images: Dict[str, str]) -> str:
 async def send_completion_email(project: Project, db: Session):
     """發送生成完成通知郵件"""
     try:
-        form_data = json.loads(project.form_data)
-        user_email = form_data.get("contact_email")
+        # 從 project.user 取得正確的使用者 email
+        if not project.user:
+            logger.warning(f"No user associated with project {project.id}")
+            return
+
+        user_email = project.user.email
 
         if not user_email:
             logger.warning(f"No email found for project {project.id}")
@@ -287,8 +291,12 @@ async def send_completion_email(project: Project, db: Session):
 async def send_failure_email(project: Project, db: Session):
     """發送生成失敗通知郵件"""
     try:
-        form_data = json.loads(project.form_data)
-        user_email = form_data.get("contact_email")
+        # 從 project.user 取得正確的使用者 email
+        if not project.user:
+            logger.warning(f"No user associated with project {project.id}")
+            return
+
+        user_email = project.user.email
 
         if not user_email:
             logger.warning(f"No email found for project {project.id}")

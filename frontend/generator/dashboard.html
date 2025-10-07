@@ -247,56 +247,60 @@
             background: rgba(127, 255, 0, 0.1);
         }
 
-        /* 密碼 Modal 樣式 */
-        .password-modal {
+        /* 密碼頁面樣式 */
+        .password-page {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: var(--dark-bg);
             z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
+            overflow-y: auto;
         }
 
-        .password-modal-content {
+        .password-page.active {
+            display: block;
+        }
+
+        .password-container {
+            max-width: 500px;
+            margin: 5rem auto;
+            padding: 2rem;
+        }
+
+        .password-card {
             background: linear-gradient(135deg, rgba(10, 14, 39, 0.95), rgba(20, 30, 60, 0.95));
             border: 2px solid var(--primary-blue);
             border-radius: 20px;
-            padding: 2.5rem;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(135, 206, 235, 0.3);
-            animation: modalSlideIn 0.3s ease-out;
+            padding: 3rem;
         }
 
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .password-modal-content h2 {
+        .password-card h2 {
             font-size: 1.8rem;
             margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-align: center;
         }
 
         .password-hint {
             color: rgba(255, 255, 255, 0.7);
             margin-bottom: 1.5rem;
             font-size: 1rem;
+            text-align: center;
+        }
+
+        .password-input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .password-input-group label {
+            color: var(--primary-blue);
+            display: block;
+            margin-bottom: 0.5rem;
         }
 
         .password-input {
@@ -304,11 +308,10 @@
             padding: 1rem;
             font-size: 1.5rem;
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid var(--primary-blue);
-            border-radius: 12px;
+            background: rgba(135, 206, 235, 0.05);
+            border: 2px solid rgba(135, 206, 235, 0.3);
+            border-radius: 10px;
             color: white;
-            margin-bottom: 1rem;
             letter-spacing: 0.5rem;
             font-family: 'Courier New', monospace;
         }
@@ -316,12 +319,12 @@
         .password-input:focus {
             outline: none;
             border-color: var(--primary-green);
-            box-shadow: 0 0 20px rgba(127, 255, 0, 0.3);
+            background: rgba(135, 206, 235, 0.1);
         }
 
         .password-error {
             color: #ff4444;
-            margin-bottom: 1rem;
+            margin-top: 0.5rem;
             font-size: 0.9rem;
         }
 
@@ -329,7 +332,6 @@
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
-            justify-content: center;
             margin-top: 1.5rem;
         }
 
@@ -366,9 +368,13 @@
                 text-align: center;
             }
 
-            .password-modal-content {
-                padding: 1.5rem;
-                width: 95%;
+            .password-container {
+                margin: 2rem auto;
+                padding: 1rem;
+            }
+
+            .password-card {
+                padding: 2rem;
             }
 
             .password-actions {
@@ -418,35 +424,45 @@
         </div>
     </div>
 
-    <!-- 下載密碼輸入 Modal -->
-    <div id="password-modal" class="password-modal" style="display: none;">
-        <div class="password-modal-content">
-            <h2>🔐 請輸入下載密碼</h2>
-            <p class="password-hint">密碼已透過郵件發送給您（6位數字）</p>
+    <!-- 下載密碼輸入頁面 -->
+    <div id="password-page" class="password-page">
+        <div class="password-container">
+            <div class="password-card">
+                <h2>🔐 請輸入下載密碼</h2>
+                <p class="password-hint">密碼已透過郵件發送給您（6位數字）</p>
 
-            <input type="text" id="password-input" class="password-input" placeholder="請輸入6位數字密碼" maxlength="6" pattern="\d{6}">
-            <div id="password-error" class="password-error" style="display: none;"></div>
+                <div class="password-input-group">
+                    <label>下載密碼</label>
+                    <input type="text" id="password-input" class="password-input" placeholder="請輸入6位數字密碼" maxlength="6" pattern="\d{6}">
+                    <div id="password-error" class="password-error" style="display: none;"></div>
+                </div>
 
-            <div class="password-actions">
-                <button class="btn btn-primary" onclick="confirmPasswordDownload()">✅ 確認下載</button>
-                <button class="btn btn-secondary" onclick="regeneratePasswordModal()">🔄 重新取得密碼</button>
-                <button class="btn btn-secondary" onclick="closePasswordModal()">❌ 取消</button>
+                <div class="password-actions">
+                    <button class="btn btn-primary" onclick="confirmPasswordDownload()" style="flex: 1;">✅ 確認下載</button>
+                    <button class="btn btn-secondary" onclick="regeneratePasswordPage()" style="flex: 1;">🔄 重新取得密碼</button>
+                </div>
+
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-secondary" onclick="closePasswordPage()" style="width: 100%;">❌ 返回作品列表</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 顯示密碼 Modal -->
-    <div id="show-password-modal" class="password-modal" style="display: none;">
-        <div class="password-modal-content">
-            <h2>✅ 新的下載密碼已生成</h2>
-            <div class="password-display">
-                <span id="new-password" class="new-password"></span>
-            </div>
-            <p class="password-warning">⚠️ 請妥善保管此密碼（僅可使用一次）</p>
+    <!-- 顯示新密碼頁面 -->
+    <div id="show-password-page" class="password-page">
+        <div class="password-container">
+            <div class="password-card">
+                <h2>✅ 新的下載密碼已生成</h2>
+                <div class="password-display">
+                    <span id="new-password" class="new-password"></span>
+                </div>
+                <p class="password-warning">⚠️ 請妥善保管此密碼（僅可使用一次）</p>
 
-            <div class="password-actions">
-                <button class="btn btn-primary" onclick="downloadWithNewPassword()">📥 立即下載</button>
-                <button class="btn btn-secondary" onclick="closeShowPasswordModal()">關閉</button>
+                <div class="password-actions">
+                    <button class="btn btn-primary" onclick="downloadWithNewPassword()" style="flex: 1;">📥 立即下載</button>
+                    <button class="btn btn-secondary" onclick="closeShowPasswordPage()" style="flex: 1;">返回</button>
+                </div>
             </div>
         </div>
     </div>
@@ -615,19 +631,19 @@
             window.location.href = 'index.html';
         }
 
-        // ========== 下載功能（使用 Modal） ==========
+        // ========== 下載功能（使用獨立頁面） ==========
         function downloadWithPassword(projectId, projectName) {
             currentDownloadProject = { id: projectId, name: projectName };
 
-            // 顯示密碼輸入 Modal
-            document.getElementById('password-modal').style.display = 'flex';
+            // 顯示密碼輸入頁面
+            document.getElementById('password-page').classList.add('active');
             document.getElementById('password-input').value = '';
             document.getElementById('password-error').style.display = 'none';
             document.getElementById('password-input').focus();
         }
 
-        function closePasswordModal() {
-            document.getElementById('password-modal').style.display = 'none';
+        function closePasswordPage() {
+            document.getElementById('password-page').classList.remove('active');
             currentDownloadProject = null;
         }
 
@@ -660,8 +676,8 @@
                     return;
                 }
 
-                // 密碼正確，關閉 Modal 並開始下載
-                closePasswordModal();
+                // 密碼正確，關閉頁面並開始下載
+                closePasswordPage();
 
                 // 使用隱藏的 iframe 觸發下載
                 const iframe = document.createElement('iframe');
@@ -680,8 +696,8 @@
             }
         }
 
-        async function regeneratePasswordModal() {
-            closePasswordModal();
+        async function regeneratePasswordPage() {
+            closePasswordPage();
             await regeneratePassword(currentDownloadProject.id, currentDownloadProject.name);
         }
 
@@ -697,10 +713,10 @@
 
                 const data = await response.json();
 
-                // 顯示新密碼 Modal
+                // 顯示新密碼頁面
                 currentDownloadProject = { id: projectId, name: projectName };
                 document.getElementById('new-password').textContent = data.password;
-                document.getElementById('show-password-modal').style.display = 'flex';
+                document.getElementById('show-password-page').classList.add('active');
 
             } catch (error) {
                 console.error('Error regenerating password:', error);
@@ -708,8 +724,8 @@
             }
         }
 
-        function closeShowPasswordModal() {
-            document.getElementById('show-password-modal').style.display = 'none';
+        function closeShowPasswordPage() {
+            document.getElementById('show-password-page').classList.remove('active');
             currentDownloadProject = null;
         }
 
@@ -717,7 +733,7 @@
             const password = document.getElementById('new-password').textContent;
             const downloadUrl = `/api/download/${currentDownloadProject.id}?password=${encodeURIComponent(password)}`;
 
-            closeShowPasswordModal();
+            closeShowPasswordPage();
 
             // 使用隱藏的 iframe 觸發下載
             const iframe = document.createElement('iframe');

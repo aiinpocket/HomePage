@@ -1108,6 +1108,31 @@
                             </div>
                             <button type="button" class="btn btn-add" onclick="addPortfolioItem()">+ 新增作品</button>
                         </div>
+
+                        <!-- 外部連結選項 -->
+                        <div class="checkbox-field" onclick="toggleCheckbox('need-external-links')" style="margin-top: 2rem;">
+                            <input
+                                type="checkbox"
+                                id="need-external-links"
+                                name="needExternalLinks"
+                                onclick="event.stopPropagation(); toggleExternalLinks()"
+                            >
+                            <label for="need-external-links">
+                                新增外部連結（社交媒體、官網等）
+                                <span style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;">
+                                    在網站中加入 Facebook、Instagram、官網等外部連結
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- 外部連結項目（條件顯示） -->
+                        <div class="portfolio-items" id="external-links-items" style="display: none;">
+                            <h3 style="color: var(--primary-green); margin-bottom: 2rem;">🔗 外部連結</h3>
+                            <div id="external-links-list">
+                                <!-- 外部連結將動態生成 -->
+                            </div>
+                            <button type="button" class="btn btn-add" onclick="addExternalLink()">+ 新增連結</button>
+                        </div>
                     </form>
 
                     <div class="navigation-buttons">
@@ -1223,6 +1248,7 @@
         let selectedStyle = null;
         let uploadedImage = null;
         let portfolioItemCount = 0;
+        let externalLinkCount = 0;
 
         // ========================================
         // 25+ 種模板風格定義
@@ -1999,6 +2025,108 @@
         }
 
         // ========================================
+        // 外部連結管理
+        // ========================================
+        function toggleExternalLinks() {
+            const checkbox = document.getElementById('need-external-links');
+            const externalLinksItems = document.getElementById('external-links-items');
+
+            if (checkbox.checked) {
+                externalLinksItems.style.display = 'block';
+                // 自動添加第一個連結項目
+                if (externalLinkCount === 0) {
+                    addExternalLink();
+                }
+            } else {
+                externalLinksItems.style.display = 'none';
+            }
+        }
+
+        function addExternalLink() {
+            externalLinkCount++;
+            const list = document.getElementById('external-links-list');
+            const item = document.createElement('div');
+            item.className = 'portfolio-item-block';
+            item.setAttribute('data-link-id', externalLinkCount);
+
+            item.innerHTML = `
+                <div class="portfolio-item-header">
+                    <div class="portfolio-item-title">連結 #${externalLinkCount}</div>
+                    <button type="button" class="btn-remove" onclick="removeExternalLink(this)">刪除</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-field" style="flex: 1;">
+                        <label>網站名稱</label>
+                        <select name="external-link-type[]" onchange="updateLinkPlaceholder(this, ${externalLinkCount})" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid rgba(135, 206, 235, 0.3); background: rgba(135, 206, 235, 0.05); color: white; font-size: 1rem;">
+                            <option value="">請選擇或自訂...</option>
+                            <option value="Facebook">Facebook</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="LinkedIn">LinkedIn</option>
+                            <option value="YouTube">YouTube</option>
+                            <option value="Twitter">Twitter (X)</option>
+                            <option value="TikTok">TikTok</option>
+                            <option value="Line">Line</option>
+                            <option value="Website">官方網站</option>
+                            <option value="Blog">部落格</option>
+                            <option value="Custom">自訂名稱...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-field" id="custom-name-field-${externalLinkCount}" style="display: none;">
+                    <label>自訂名稱</label>
+                    <input type="text" name="external-link-custom-name[]" placeholder="例如：Telegram、Discord">
+                </div>
+                <div class="form-field">
+                    <label>連結網址</label>
+                    <input type="url" name="external-link-url[]" id="external-link-url-${externalLinkCount}" placeholder="https://" required>
+                </div>
+            `;
+
+            list.appendChild(item);
+        }
+
+        function updateLinkPlaceholder(selectElement, linkId) {
+            const selectedType = selectElement.value;
+            const urlInput = document.getElementById(`external-link-url-${linkId}`);
+            const customNameField = document.getElementById(`custom-name-field-${linkId}`);
+
+            // 顯示/隱藏自訂名稱欄位
+            if (selectedType === 'Custom') {
+                customNameField.style.display = 'block';
+                urlInput.placeholder = 'https://';
+            } else {
+                customNameField.style.display = 'none';
+
+                // 根據選擇的類型更新 placeholder
+                const placeholders = {
+                    'Facebook': 'https://www.facebook.com/your-page',
+                    'Instagram': 'https://www.instagram.com/your-account',
+                    'LinkedIn': 'https://www.linkedin.com/company/your-company',
+                    'YouTube': 'https://www.youtube.com/channel/your-channel',
+                    'Twitter': 'https://twitter.com/your-account',
+                    'TikTok': 'https://www.tiktok.com/@your-account',
+                    'Line': 'https://line.me/ti/p/your-id',
+                    'Website': 'https://www.your-website.com',
+                    'Blog': 'https://your-blog.com'
+                };
+
+                urlInput.placeholder = placeholders[selectedType] || 'https://';
+            }
+        }
+
+        function removeExternalLink(button) {
+            const item = button.closest('.portfolio-item-block');
+            item.remove();
+            externalLinkCount--;
+
+            // 重新編號
+            const items = document.querySelectorAll('#external-links-list .portfolio-item-title');
+            items.forEach((title, index) => {
+                title.textContent = `連結 #${index + 1}`;
+            });
+        }
+
+        // ========================================
         // 生成網站（呼叫後端 API）
         // ========================================
         async function generateWebsite() {
@@ -2082,6 +2210,36 @@
                 images['custom_logo'] = base64Data;
             }
 
+            // 收集外部連結
+            const externalLinks = [];
+            const needExternalLinks = document.getElementById('need-external-links').checked;
+
+            if (needExternalLinks) {
+                const linkTypes = document.querySelectorAll('select[name="external-link-type[]"]');
+                const linkUrls = document.querySelectorAll('input[name="external-link-url[]"]');
+                const linkCustomNames = document.querySelectorAll('input[name="external-link-custom-name[]"]');
+
+                for (let i = 0; i < linkTypes.length; i++) {
+                    const linkType = linkTypes[i].value;
+                    const linkUrl = linkUrls[i].value.trim();
+
+                    if (linkUrl) {  // 只收集有填寫網址的連結
+                        let linkName = linkType;
+
+                        // 如果是自訂類型，使用自訂名稱
+                        if (linkType === 'Custom' && linkCustomNames[i]) {
+                            linkName = linkCustomNames[i].value.trim() || 'External Link';
+                        }
+
+                        externalLinks.push({
+                            name: linkName,
+                            url: linkUrl,
+                            type: linkType
+                        });
+                    }
+                }
+            }
+
             // 構建符合後端 API 期望的格式
             // Backend expects: GenerateWebsiteRequest = { template_id, user_data, contact_email, images }
             // 後端會自動用 email 查詢或創建使用者並關聯
@@ -2097,6 +2255,7 @@
                     contact_email: contactEmail,  // 加入到 user_data 中供後端使用
                     contact_phone: document.getElementById('contact-phone').value || '',
                     portfolio: portfolio,
+                    external_links: externalLinks,  // 新增外部連結
                     custom_style: selectedStyle === 'custom' ? {
                         image: '{{ custom_logo }}', // 使用佔位符
                         description: document.getElementById('custom-description')?.value || ''

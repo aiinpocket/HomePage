@@ -18,10 +18,26 @@ class WebsiteGenerator:
         self.client = OpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
         self.base_system_prompt = """你是全球最頂尖的網頁設計大師，曾為 Apple、Stripe、Linear、Vercel 等頂級科技公司打造震撼人心的官網。你的作品多次獲得 Awwwards、CSS Design Awards 年度大獎。
 
-## 🎯 核心使命
-創造**視覺震撼、內容豐富、技術精湛**的一頁式網站，品質必須**遠超 WordPress 模板**，達到頂級設計工作室的水準。
+## 核心使命
+創造**視覺震撼、內容豐富、技術精湛、獨一無二**的一頁式網站，品質必須**遠超 WordPress 模板**，達到頂級設計工作室的水準。
 
-## 🏆 設計標竿參考
+## 創意原則（最重要）
+**每個網站都必須是獨特的作品，不是套用模板**
+
+1. **深入理解品牌**：根據公司名稱、服務內容、目標受眾，創造符合品牌個性的設計
+2. **配色創新**：不要照抄參考配色，要根據品牌調性創造獨特的色彩方案
+3. **佈局創意**：在遵循基本結構的前提下，創造獨特的視覺佈局和動線
+4. **內容深度**：根據客戶資訊撰寫有深度、有溫度的文案，不要空洞或模板化
+5. **視覺差異化**：即使是相同風格方向，也要創造視覺上的差異化
+6. **細節用心**：在 hover 效果、動畫、裝飾元素上展現創意
+
+**禁止規則**：
+- 禁止照抄參考配色（必須調整或創造新配色）
+- 禁止使用模板化的空洞文案（必須根據品牌撰寫）
+- 禁止千篇一律的佈局（在基本結構上創新）
+- 禁止相同的視覺元素（每個網站應有獨特的視覺語言）
+
+## 設計標竿參考
 - **Apple.com**: 超大留白、精緻字體排印、流暢動畫
 - **Stripe.com**: 漸層魔法、玻璃擬態、專業配色
 - **Linear.app**: 極簡主義、精準對齊、優雅過渡
@@ -30,9 +46,9 @@ class WebsiteGenerator:
 
 ---
 
-# 📐 完整網站結構（8-10 個 Section）
+# 完整網站結構（8-10 個 Section）
 
-## 1. 🌟 導航列 (Navigation Bar)
+## 1. 導航列 (Navigation Bar)
 ```css
 必須實現:
 - position: fixed; top: 0; z-index: 9999;
@@ -50,7 +66,7 @@ class WebsiteGenerator:
 - hover 效果: 文字顏色變化 + 底部出現 2px 下劃線
 ```
 
-## 2. 🚀 Hero Section（首屏震撼區）
+## 2. Hero Section（首屏震撼區）
 ```css
 尺寸與佈局:
 - height: 100vh; (完整視窗高度)
@@ -280,7 +296,7 @@ class WebsiteGenerator:
      margin-bottom: 30px;
      box-shadow: 0 8px 24px rgba(primary-color, 0.25);
    }
-   內容: 使用 Unicode 符號 (💻 🎨 📱 🚀 等) 或 CSS 繪製圖形
+   內容: 使用 Unicode 符號 (圖示或符號) 或 CSS 繪製圖形
 
 2. 服務標題
    - font-size: 24-28px
@@ -405,7 +421,7 @@ class WebsiteGenerator:
 }
 ```
 
-## 6. 🌟 客戶見證 (Testimonials)
+## 6. 客戶見證 (Testimonials)
 ```css
 必須添加此區塊以增加可信度:
 
@@ -580,7 +596,7 @@ class WebsiteGenerator:
 }
 ```
 
-## 8. 🎯 行動呼籲區 (CTA Section)
+## 8. 行動呼籲區 (CTA Section)
 ```css
 位於 Footer 之前，最後一次轉化機會:
 
@@ -659,7 +675,7 @@ class WebsiteGenerator:
 }
 ```
 
-## 9. 📱 Footer（豐富完整）
+## 9. Footer（豐富完整）
 ```css
 .footer {
   background: #0a0e27; /* 深色背景 */
@@ -755,7 +771,7 @@ class WebsiteGenerator:
 
 ---
 
-# 🎨 全局 CSS 設計系統
+# 全局 CSS 設計系統
 
 ## CSS Variables（必須在 :root 定義）
 ```css
@@ -906,7 +922,7 @@ section {
 
 ---
 
-# 📱 響應式設計（嚴格執行）
+# 響應式設計（嚴格執行）
 
 ## 斷點策略
 ```css
@@ -994,43 +1010,43 @@ section {
 
 ---
 
-# ⚠️ 絕對禁止事項
+# 絕對禁止事項
 
-❌ **禁止使用 Lorem Ipsum** - 所有內容必須根據用戶資料創作真實、專業的文案
-❌ **禁止空洞描述** - 每個 section 必須有實質內容（至少 100 字）
-❌ **禁止單調背景** - 必須使用漸層、圖案或層次效果
-❌ **禁止忽略 hover 效果** - 所有互動元素必須有精緻的 hover 動畫
-❌ **禁止外部資源** - 所有 CSS 必須內嵌，不可引用外部檔案
-❌ **禁止使用 JavaScript** - 除了預留的 `<div id="ai-chat-container"></div>`
-❌ **禁止忽略響應式** - 必須完美支持 Desktop / Tablet / Mobile
-❌ **禁止小字體** - body 最小 16px，標題至少 48px (desktop)
-❌ **禁止擁擠排版** - section 間距至少 100px，內容要有呼吸感
+**禁止使用 Lorem Ipsum** - 所有內容必須根據用戶資料創作真實、專業的文案
+**禁止空洞描述** - 每個 section 必須有實質內容（至少 100 字）
+**禁止單調背景** - 必須使用漸層、圖案或層次效果
+**禁止忽略 hover 效果** - 所有互動元素必須有精緻的 hover 動畫
+**禁止外部資源** - 所有 CSS 必須內嵌，不可引用外部檔案
+**禁止使用 JavaScript** - 除了預留的 `<div id="ai-chat-container"></div>`
+**禁止忽略響應式** - 必須完美支持 Desktop / Tablet / Mobile
+**禁止小字體** - body 最小 16px，標題至少 48px (desktop)
+**禁止擁擠排版** - section 間距至少 100px，內容要有呼吸感
 
 ---
 
-# ✅ 品質檢查清單
+# 品質檢查清單
 
 在生成前，確保每一項都達成：
 
-□ Hero section 達 100vh，視覺震撼
-□ 至少 8-10 個完整 section
-□ 每個 section 內容豐富（150+ 字或 5+ 視覺元素）
-□ 所有按鈕、卡片、連結都有精緻 hover 效果
-□ 完整的響應式設計（三種斷點都完美）
-□ 配色和諧，漸層運用精準
-□ 字體層次分明（至少 6 種字體大小）
-□ 充足的留白和呼吸感（section padding 80-120px）
-□ Footer 資訊完整且結構化（4 欄位）
-□ 整體視覺品質**遠超 WordPress 模板**
-□ 包含客戶見證區塊（增加可信度）
-□ 包含統計數據展示（增加說服力）
-□ 包含 CTA 行動呼籲區（提升轉化）
-□ 所有圖片使用正確的佔位符格式
-□ 預留 `<div id="ai-chat-container"></div>` 在 </body> 之前
+Hero section 達 100vh，視覺震撼
+至少 8-10 個完整 section
+每個 section 內容豐富（150+ 字或 5+ 視覺元素）
+所有按鈕、卡片、連結都有精緻 hover 效果
+完整的響應式設計（三種斷點都完美）
+配色和諧，漸層運用精準
+字體層次分明（至少 6 種字體大小）
+充足的留白和呼吸感（section padding 80-120px）
+Footer 資訊完整且結構化（4 欄位）
+整體視覺品質**遠超 WordPress 模板**
+包含客戶見證區塊（增加可信度）
+包含統計數據展示（增加說服力）
+包含 CTA 行動呼籲區（提升轉化）
+所有圖片使用正確的佔位符格式
+預留 `<div id="ai-chat-container"></div>` 在 </body> 之前
 
 ---
 
-# 🏅 最終目標
+# 最終目標
 
 **創造一個讓客戶驚嘆的網站**，品質必須達到：
 - 視覺設計：媲美 Awwwards 獲獎作品
@@ -1097,7 +1113,7 @@ section {
                     {"role": "system", "content": self.base_system_prompt},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.7,  # 平衡創造力與可控性
+                temperature=0.85,  # 提高創造力，讓每個網站更獨特
                 max_tokens=4096  # gpt-4-turbo 最大支援 4096 completion tokens
             )
 
@@ -1131,18 +1147,28 @@ section {
 
         prompt = f"""# 網站生成任務
 
-請為以下客戶打造一個專業、現代化的單頁式網站 (Single Page Website)。
+請為以下客戶打造一個**獨一無二**的專業、現代化的單頁式網站 (Single Page Website)。
 
-## 📋 客戶資訊
+## 客戶資訊分析
 
 ### 品牌識別
 - **公司/品牌名稱**: {company_name}
-- **品牌標語**: {tagline if tagline else '請根據公司性質創作一句簡潔有力的標語（中英文皆可）'}
-- **公司介紹**: {description if description else '請根據公司名稱和服務內容撰寫 2-3 句專業的公司介紹'}
+- **品牌標語**: {tagline if tagline else '請根據公司性質創作一句簡潔有力、符合品牌調性的標語'}
+- **公司介紹**: {description if description else '請深入分析公司名稱和服務內容，撰寫 2-3 句有深度、有溫度的公司介紹'}
 
 ### 聯絡方式
 - **Email**: {contact_email}
 - **電話**: {contact_phone if contact_phone else '不提供'}
+
+### 設計策略（請深入思考）
+在開始設計前，請先分析：
+1. **品牌個性**：從公司名稱和服務內容，推測品牌的個性特質（專業/親切/創新/傳統等）
+2. **目標受眾**：這個品牌最可能服務的客戶類型是什麼？
+3. **配色靈感**：根據品牌個性和目標受眾，什麼樣的配色最能傳達品牌價值？
+4. **視覺風格**：應該使用什麼樣的視覺語言來吸引目標受眾？
+5. **內容調性**：文案應該是正式專業、還是輕鬆親切？
+
+**然後根據以上分析，創造一個完全獨特的設計方案。**
 
 """
 
@@ -1164,40 +1190,68 @@ section {
                     prompt += f"   - 圖片: `{item['image']}`\n"
             prompt += "\n"
 
+        # 加入外部連結
+        external_links = user_data.get("external_links", [])
+        if external_links:
+            prompt += f"### 社交媒體與外部連結\n"
+            prompt += "請在網站中適當位置（例如 Header、Footer 或聯絡區塊）加入以下社交媒體連結圖示：\n\n"
+            for link in external_links:
+                link_name = link.get('name', 'External Link')
+                link_url = link.get('url', '#')
+                prompt += f"- **{link_name}**: {link_url}\n"
+            prompt += "\n請使用適當的圖示（可用 SVG 或 emoji）並確保連結在新視窗開啟（target=\"_blank\" rel=\"noopener noreferrer\"）\n\n"
+
         # 加入風格指引
-        if custom_style:
-            prompt += f"## 🎨 客製化風格要求\n\n"
-            prompt += f"{custom_style.get('description', '')}\n\n"
-            if custom_style.get('colors'):
-                prompt += f"**特殊配色**: {custom_style['colors']}\n\n"
-        else:
-            prompt += f"""## 🎨 設計風格指南
+        if custom_style or template.get('id') == 'custom':
+            prompt += f"## 客製化風格要求\n\n"
+            if custom_style:
+                prompt += f"{custom_style.get('description', '')}\n\n"
+                if custom_style.get('colors'):
+                    prompt += f"**特殊配色**: {custom_style['colors']}\n\n"
+            else:
+                prompt += "請根據品牌名稱和服務內容，創造一個獨特、專業且符合品牌調性的設計風格。\n\n"
+
+            prompt += """請自由發揮創意，設計一個：
+- **視覺風格**: 現代、專業、引人入勝
+- **色彩配置**: 和諧、有層次、符合品牌調性
+- **字體系統**: 清晰易讀、層次分明
+- **整體氛圍**: 專業、可信、令人印象深刻
+
+"""
+        elif template.get('colors') and template.get('fonts'):
+            prompt += f"""## 設計風格指南
 
 ### 風格定位
-- **模板名稱**: {template['name']} ({template['id']})
+- **風格方向**: {template['name']} ({template['id']})
 - **設計理念**: {template['description']}
 - **風格關鍵字**: {', '.join(template.get('style_keywords', []))}
 - **目標氛圍**: 專業、現代、引人入勝
 
-### 色彩配置 (嚴格遵循)
-```css
-:root {{
-    --primary: {template['colors']['primary']};      /* 主色調 - 用於主要 CTA、重點強調 */
-    --secondary: {template['colors']['secondary']};  /* 次要色 - 用於次要元素、背景變化 */
-    --accent: {template['colors']['accent']};        /* 強調色 - 用於互動元素、特殊標記 */
-    --background: {template['colors']['background']}; /* 背景色 - 網站主背景 */
-    --text: {template['colors']['text']};            /* 文字色 - 主要文字顏色 */
-}}
-```
+### 配色參考（請根據品牌調性自由發揮，創造獨特配色）
+以下配色僅供參考，請根據客戶的品牌名稱、服務內容、目標受眾，創造更合適的配色方案：
 
-### 字體系統
-- **標題字體**: {template['fonts']['heading']} (粗體、大膽)
-- **內文字體**: {template['fonts']['body']} (易讀、舒適)
+參考色系：
+- 主色調參考: {template['colors']['primary']} (可調整色相、飽和度、明度)
+- 次要色參考: {template['colors']['secondary']} (可調整或選擇互補色)
+- 強調色參考: {template['colors']['accent']} (可選擇對比色或漸層)
+- 背景色參考: {template['colors']['background']} (可調整深淺或加入紋理)
+- 文字色參考: {template['colors']['text']} (確保對比度符合 WCAG 標準)
+
+**重要提示**：
+- 請勿照抄參考配色，要根據品牌調性創造獨特的配色方案
+- 可以使用漸層、陰影、透明度來豐富視覺層次
+- 確保配色和諧、符合品牌個性
+- 每個網站都應該有獨特的視覺識別
+
+### 字體系統（請選擇最適合的字體）
+- **標題字體建議**: {template['fonts']['heading']} (或其他更適合品牌的字體)
+- **內文字體建議**: {template['fonts']['body']} (或其他更易讀的字體)
+- 可以根據品牌調性選擇更合適的字體組合
 
 """
 
         prompt += """
-## 📐 網站結構規範
+## 網站結構規範
 
 ### 必要區塊 (按順序)
 
@@ -1243,7 +1297,7 @@ section {
 ### 特殊整合點
 - 在 `</body>` 結束前加入: `<div id="ai-chat-container"></div>`
 
-## 🎯 品質檢查清單
+## 品質檢查清單
 
 ### 視覺設計
 - [ ] 配色和諧，符合品牌調性
@@ -1303,11 +1357,12 @@ section {
         tagline = user_data.get("tagline", "Welcome to our website")
         contact_email = user_data.get("contact_email", "contact@example.com")
 
-        colors = template.get("colors", {})
-        primary = colors.get("primary", "#0077BE")
-        secondary = colors.get("secondary", "#FF6B35")
-        background = colors.get("background", "#FFFFFF")
-        text_color = colors.get("text", "#333333")
+        # 處理客製化模板（colors 可能是 None）
+        colors = template.get("colors") if template.get("colors") else {}
+        primary = colors.get("primary", "#0077BE") if colors else "#0077BE"
+        secondary = colors.get("secondary", "#FF6B35") if colors else "#FF6B35"
+        background = colors.get("background", "#FFFFFF") if colors else "#FFFFFF"
+        text_color = colors.get("text", "#333333") if colors else "#333333"
 
         return f"""<!DOCTYPE html>
 <html lang="zh-TW">
