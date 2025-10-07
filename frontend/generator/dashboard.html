@@ -422,48 +422,44 @@
                 <div>載入中...</div>
             </div>
         </div>
-    </div>
 
-    <!-- 下載密碼輸入頁面 -->
-    <div id="password-page" class="password-page">
-        <div class="password-container">
-            <div class="password-card">
-                <h2 id="password-page-title">🔐 請輸入下載密碼</h2>
-                <p class="password-hint">密碼已透過郵件發送給您（6位數字）</p>
+        <!-- 下載密碼輸入區域 (固定在頁面中) -->
+        <div id="download-password-section" style="display: none; margin-top: 2rem; padding: 2rem; background: rgba(135, 206, 235, 0.05); border: 2px solid rgba(135, 206, 235, 0.3); border-radius: 15px;">
+            <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">
+                <span id="download-section-icon">🔐</span>
+                <span id="download-section-title">請輸入下載密碼</span>
+            </h3>
 
-                <div class="password-input-group">
-                    <label>下載密碼</label>
-                    <input type="text" id="password-input" class="password-input" placeholder="請輸入6位數字密碼" maxlength="6" pattern="\d{6}">
-                    <div id="password-error" class="password-error" style="display: none;"></div>
-                </div>
-
-                <div class="password-actions">
-                    <button class="btn btn-primary" onclick="confirmPasswordDownload()" style="flex: 1;">✅ 確認下載</button>
-                    <button class="btn btn-secondary" onclick="regeneratePasswordPage()" style="flex: 1;">🔄 重新取得密碼</button>
-                </div>
-
-                <div style="margin-top: 1rem;">
-                    <button class="btn btn-secondary" onclick="closePasswordPage()" style="width: 100%;">❌ 返回作品列表</button>
-                </div>
+            <div id="email-sent-notice" style="display: none; background: rgba(135, 206, 235, 0.1); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; border-left: 4px solid var(--primary-green);">
+                <p style="color: var(--primary-green); margin: 0; font-weight: bold;">📧 下載密碼已發送</p>
+                <p style="color: rgba(255, 255, 255, 0.8); margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+                    密碼已發送到您的信箱 <strong id="download-user-email"></strong><br>
+                    請檢查您的收件匣或垃圾郵件資料夾
+                </p>
             </div>
-        </div>
-    </div>
 
-    <!-- 顯示新密碼頁面 -->
-    <div id="show-password-page" class="password-page">
-        <div class="password-container">
-            <div class="password-card">
-                <h2>✅ 新的下載密碼已生成</h2>
-                <div class="password-display">
-                    <span id="new-password" class="new-password"></span>
-                </div>
-                <p class="password-warning">⚠️ 請妥善保管此密碼（僅可使用一次）</p>
+            <p id="download-project-name" style="color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem;">
+                正在下載：<strong style="color: var(--primary-green);">專案名稱</strong>
+            </p>
 
-                <div class="password-actions">
-                    <button class="btn btn-primary" onclick="downloadWithNewPassword()" style="flex: 1;">📥 立即下載</button>
-                    <button class="btn btn-secondary" onclick="closeShowPasswordPage()" style="flex: 1;">返回</button>
-                </div>
+            <div id="bulk-download-progress" style="display: none; background: rgba(135, 206, 235, 0.1); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                <p style="color: var(--primary-blue); margin: 0;">
+                    批量下載進度：<span id="bulk-progress-text"></span>
+                </p>
             </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="color: var(--primary-blue); display: block; margin-bottom: 0.5rem;">下載密碼 (6位數字)</label>
+                <input type="text" id="download-password-input" class="password-input" placeholder="請輸入6位數字密碼" maxlength="6" pattern="\d{6}" style="width: 100%; padding: 1rem; font-size: 1.5rem; text-align: center; background: rgba(135, 206, 235, 0.05); border: 2px solid rgba(135, 206, 235, 0.3); border-radius: 10px; color: white; letter-spacing: 0.5rem; font-family: 'Courier New', monospace;">
+                <div id="download-password-error" class="password-error" style="display: none; color: #ff4444; margin-top: 0.5rem; font-size: 0.9rem;"></div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <button class="btn btn-primary" onclick="confirmDownloadWithPassword()" style="flex: 1;">✅ 確認下載</button>
+                <button class="btn btn-secondary" onclick="resendDownloadPassword()" style="flex: 1;">📧 重新發送密碼</button>
+            </div>
+
+            <button class="btn btn-secondary" onclick="cancelDownload()" style="width: 100%;">❌ 取消</button>
         </div>
     </div>
 
@@ -631,51 +627,85 @@
             window.location.href = 'index.html';
         }
 
-        // ========== 下載功能（使用獨立頁面） ==========
-        function downloadWithPassword(projectId, projectName) {
+        // ========== 下載功能（使用固定輸入區域） ==========
+        async function downloadWithPassword(projectId, projectName) {
             currentDownloadProject = { id: projectId, name: projectName };
 
-            // 更新頁面標題和提示
-            document.getElementById('password-page-title').textContent = `🔐 下載「${projectName}」`;
-            document.querySelector('.password-hint').textContent = '密碼已透過郵件發送給您（6位數字）';
+            // 發送密碼郵件
+            try {
+                const response = await fetch(`/api/regenerate-download-password/${projectId}`, {
+                    method: 'POST'
+                });
 
-            // 顯示密碼輸入頁面
-            document.getElementById('password-page').classList.add('active');
-            document.getElementById('password-input').value = '';
-            document.getElementById('password-error').style.display = 'none';
-            document.getElementById('password-input').focus();
+                if (!response.ok) {
+                    throw new Error('發送密碼郵件失敗');
+                }
+
+                // 顯示下載密碼輸入區域
+                showDownloadPasswordSection(projectName, false);
+
+                // 顯示郵件已發送提示
+                document.getElementById('email-sent-notice').style.display = 'block';
+                document.getElementById('download-user-email').textContent = userEmail;
+
+            } catch (error) {
+                console.error('Error sending download password:', error);
+                alert('發送下載密碼失敗，請稍後再試');
+            }
         }
 
-        function closePasswordPage() {
-            document.getElementById('password-page').classList.remove('active');
+        function showDownloadPasswordSection(projectName, isBulkDownload) {
+            const section = document.getElementById('download-password-section');
+            const projectNameEl = document.getElementById('download-project-name');
+            const bulkProgressEl = document.getElementById('bulk-download-progress');
 
-            // 如果是批量下載模式，清空佇列並重置計數
+            // 更新專案名稱
+            projectNameEl.innerHTML = `正在下載：<strong style="color: var(--primary-green);">${projectName}</strong>`;
+
+            // 顯示或隱藏批量下載進度
+            if (isBulkDownload) {
+                bulkProgressEl.style.display = 'block';
+                document.getElementById('bulk-progress-text').textContent =
+                    `已完成 ${bulkDownloadCount}，剩餘 ${bulkDownloadQueue.length + 1} 個`;
+            } else {
+                bulkProgressEl.style.display = 'none';
+            }
+
+            // 清空輸入框和錯誤訊息
+            document.getElementById('download-password-input').value = '';
+            document.getElementById('download-password-error').style.display = 'none';
+
+            // 顯示區域並滾動到該位置
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // 聚焦輸入框
+            setTimeout(() => {
+                document.getElementById('download-password-input').focus();
+            }, 300);
+        }
+
+        function cancelDownload() {
+            // 如果是批量下載模式，確認取消
             if (currentDownloadProject && currentDownloadProject.isBulkDownload) {
                 if (bulkDownloadQueue.length > 0) {
-                    if (confirm(`還有 ${bulkDownloadQueue.length} 個專案未下載，確定要取消批量下載嗎？`)) {
-                        bulkDownloadQueue = [];
-                        bulkDownloadCount = 0;
-                    } else {
-                        // 繼續批量下載
-                        setTimeout(() => {
-                            processBulkDownloadNext();
-                        }, 500);
+                    if (!confirm(`還有 ${bulkDownloadQueue.length} 個專案未下載，確定要取消批量下載嗎？`)) {
                         return;
                     }
+                    bulkDownloadQueue = [];
+                    bulkDownloadCount = 0;
                 }
             }
 
-            // 重置標題和提示訊息
-            document.getElementById('password-page-title').textContent = '🔐 請輸入下載密碼';
-            const passwordHint = document.querySelector('.password-hint');
-            passwordHint.textContent = '密碼已透過郵件發送給您（6位數字）';
-
+            // 隱藏下載區域
+            document.getElementById('download-password-section').style.display = 'none';
+            document.getElementById('email-sent-notice').style.display = 'none';
             currentDownloadProject = null;
         }
 
-        async function confirmPasswordDownload() {
-            const password = document.getElementById('password-input').value;
-            const errorDiv = document.getElementById('password-error');
+        async function confirmDownloadWithPassword() {
+            const password = document.getElementById('download-password-input').value;
+            const errorDiv = document.getElementById('download-password-error');
 
             if (!password) {
                 errorDiv.textContent = '請輸入密碼';
@@ -717,15 +747,16 @@
                 // 檢查是否為批量下載模式
                 if (currentDownloadProject.isBulkDownload) {
                     bulkDownloadCount++;
-                    closePasswordPage();
 
                     // 延遲後處理下一個專案
                     setTimeout(() => {
                         processBulkDownloadNext();
                     }, 1000);
                 } else {
-                    // 單個下載，關閉頁面
-                    closePasswordPage();
+                    // 單個下載，隱藏下載區域
+                    document.getElementById('download-password-section').style.display = 'none';
+                    document.getElementById('email-sent-notice').style.display = 'none';
+                    currentDownloadProject = null;
                 }
             } catch (error) {
                 errorDiv.textContent = '下載失敗，請稍後再試';
@@ -733,56 +764,32 @@
             }
         }
 
-        async function regeneratePasswordPage() {
-            closePasswordPage();
-            await regeneratePassword(currentDownloadProject.id, currentDownloadProject.name);
-        }
+        async function resendDownloadPassword() {
+            if (!currentDownloadProject) return;
 
-        async function regeneratePassword(projectId, projectName) {
             try {
-                const response = await fetch(`/api/regenerate-download-password/${projectId}`, {
+                const response = await fetch(`/api/regenerate-download-password/${currentDownloadProject.id}`, {
                     method: 'POST'
                 });
 
                 if (!response.ok) {
-                    throw new Error('重新生成密碼失敗');
+                    throw new Error('發送密碼郵件失敗');
                 }
 
-                const data = await response.json();
+                // 顯示郵件已發送提示
+                document.getElementById('email-sent-notice').style.display = 'block';
+                document.getElementById('download-user-email').textContent = userEmail;
 
-                // 顯示新密碼頁面
-                currentDownloadProject = { id: projectId, name: projectName };
-                document.getElementById('new-password').textContent = data.password;
-                document.getElementById('show-password-page').classList.add('active');
+                // 清空輸入框
+                document.getElementById('download-password-input').value = '';
+                document.getElementById('download-password-error').style.display = 'none';
+
+                alert('下載密碼已重新發送到您的信箱');
 
             } catch (error) {
-                console.error('Error regenerating password:', error);
-                alert('重新生成密碼失敗，請稍後再試');
+                console.error('Error resending download password:', error);
+                alert('重新發送密碼失敗，請稍後再試');
             }
-        }
-
-        function closeShowPasswordPage() {
-            document.getElementById('show-password-page').classList.remove('active');
-            currentDownloadProject = null;
-        }
-
-        async function downloadWithNewPassword() {
-            const password = document.getElementById('new-password').textContent;
-            const downloadUrl = `/api/download/${currentDownloadProject.id}?password=${encodeURIComponent(password)}`;
-
-            closeShowPasswordPage();
-
-            // 使用隱藏的 iframe 觸發下載
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = downloadUrl;
-            document.body.appendChild(iframe);
-
-            setTimeout(() => {
-                if (iframe.parentNode) {
-                    document.body.removeChild(iframe);
-                }
-            }, 3000);
         }
 
         // ========== 批量操作功能 ==========
@@ -877,33 +884,50 @@
             processBulkDownloadNext();
         }
 
-        function processBulkDownloadNext() {
+        async function processBulkDownloadNext() {
             if (bulkDownloadQueue.length === 0) {
                 // 所有專案處理完畢
+                document.getElementById('download-password-section').style.display = 'none';
+                document.getElementById('email-sent-notice').style.display = 'none';
                 alert(`批量下載完成！成功下載 ${bulkDownloadCount} 個專案。`);
                 bulkDownloadCount = 0;
+                currentDownloadProject = null;
                 return;
             }
 
             // 取出下一個要下載的專案
             const nextProject = bulkDownloadQueue.shift();
 
-            // 設置當前下載專案並顯示密碼輸入頁面
+            // 設置當前下載專案
             currentDownloadProject = {
                 id: nextProject.id,
                 name: nextProject.name,
                 isBulkDownload: true // 標記為批量下載
             };
 
-            // 更新密碼頁面的標題和提示訊息
-            document.getElementById('password-page-title').textContent = `🔐 下載「${nextProject.name}」`;
-            const passwordHint = document.querySelector('.password-hint');
-            passwordHint.textContent = `批量下載進度：已完成 ${bulkDownloadCount}，剩餘 ${bulkDownloadQueue.length + 1} 個\n密碼已透過郵件發送給您（6位數字）`;
+            // 發送密碼郵件
+            try {
+                const response = await fetch(`/api/regenerate-download-password/${nextProject.id}`, {
+                    method: 'POST'
+                });
 
-            document.getElementById('password-page').classList.add('active');
-            document.getElementById('password-input').value = '';
-            document.getElementById('password-error').style.display = 'none';
-            document.getElementById('password-input').focus();
+                if (!response.ok) {
+                    throw new Error('發送密碼郵件失敗');
+                }
+
+                // 顯示下載密碼輸入區域
+                showDownloadPasswordSection(nextProject.name, true);
+
+                // 顯示郵件已發送提示
+                document.getElementById('email-sent-notice').style.display = 'block';
+                document.getElementById('download-user-email').textContent = userEmail;
+
+            } catch (error) {
+                console.error('Error sending download password:', error);
+                alert(`專案「${nextProject.name}」發送密碼失敗，已跳過`);
+                // 繼續下一個
+                processBulkDownloadNext();
+            }
         }
 
         async function bulkDelete() {

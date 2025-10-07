@@ -1322,20 +1322,25 @@ async def preview_website(site_id: str, db: Session = Depends(get_db)):
 @app.post("/api/regenerate-download-password/{project_id}", tags=["Website Generation"])
 async def regenerate_download_password(project_id: str, db: Session = Depends(get_db)):
     """
-    重新生成下載密碼（當使用者遺失密碼時）
+    重新生成下載密碼並發送郵件給使用者
 
     Args:
         project_id: 專案 ID
         db: 資料庫 session
 
     Returns:
-        新的下載密碼
+        成功訊息
     """
     try:
         project = db.query(Project).filter(Project.id == project_id).first()
 
         if not project:
             raise HTTPException(status_code=404, detail="專案不存在")
+
+        # 取得使用者 email
+        user = db.query(User).filter(User.id == project.user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="使用者不存在")
 
         # 生成新密碼
         import random
@@ -1347,10 +1352,18 @@ async def regenerate_download_password(project_id: str, db: Session = Depends(ge
 
         logger.info(f"Download password regenerated for project: {project_id}")
 
+        # 發送下載密碼郵件
+        try:
+            await email_service.send_download_password_email(user.email, project.project_name, new_password, project.site_id)
+            logger.info(f"Download password email sent to: {user.email}")
+        except Exception as email_error:
+            logger.error(f"Failed to send download password email: {email_error}")
+            # 即使郵件發送失敗，也要告知使用者密碼（開發模式）
+            logger.warning(f"[DEV MODE] Download password for {user.email}: {new_password}")
+
         return {
             "success": True,
-            "password": new_password,
-            "message": "下載密碼已重新生成"
+            "message": "下載密碼已發送到您的信箱"
         }
 
     except HTTPException:

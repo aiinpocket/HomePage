@@ -199,10 +199,7 @@ async def send_completion_email(project: Project, db: Session):
             logger.warning(f"No email found for project {project.id}")
             return
 
-        # 從 project 取得下載密碼
-        download_password = project.download_password
-
-        subject = f"✅ 您的網站 \"{project.project_name}\" 已生成完成 - 下載密碼：{download_password}"
+        subject = f"✅ 您的網站 \"{project.project_name}\" 已生成完成！"
 
         html_body = f"""
         <html>
@@ -234,12 +231,10 @@ async def send_completion_email(project: Project, db: Session):
                         <li>前往 <a href="https://aiinpocket.com/generator/dashboard.html" style="color: #155724; font-weight: bold;">我的作品頁面</a></li>
                         <li>使用本信箱登入（若尚未登入）</li>
                         <li>找到您的專案並點擊「📥 下載」按鈕</li>
-                        <li>在彈出視窗中輸入上方的 <strong>6位數密碼</strong></li>
+                        <li>系統會發送 <strong>下載密碼</strong> 到您的信箱</li>
+                        <li>收到密碼後，在下載頁面輸入 <strong>6位數密碼</strong></li>
                         <li>點擊「確認下載」即可下載 ZIP 檔案</li>
                     </ol>
-                    <p style="margin: 10px 0 0 0; color: #856404; background: #fff3cd; padding: 10px; border-radius: 5px;">
-                        <strong>💡 提示：</strong>如果忘記密碼或密碼已使用，可在「我的作品」頁面點擊「重新取得密碼」按鈕
-                    </p>
                 </div>
 
                 <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
@@ -254,9 +249,9 @@ async def send_completion_email(project: Project, db: Session):
                 <div style="background: #e7f3ff; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0;">
                     <p style="margin: 0;"><strong>🔐 安全提示：</strong></p>
                     <ul style="margin: 10px 0;">
-                        <li>下載密碼為 <strong>一次性使用</strong>，下載後即失效</li>
-                        <li>如需重新下載，請在「我的作品」中點擊「🔄 重新取得密碼」按鈕</li>
-                        <li>新密碼將直接顯示在頁面上，無需重新收信</li>
+                        <li>點擊下載時，系統會發送 <strong>一次性密碼</strong> 到您的信箱</li>
+                        <li>每次下載都需要重新取得密碼，確保您的作品安全</li>
+                        <li>密碼使用後即失效，需重新取得</li>
                         <li>請妥善保管您的帳號，避免作品被他人存取</li>
                     </ul>
                 </div>

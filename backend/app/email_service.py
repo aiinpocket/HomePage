@@ -88,6 +88,89 @@ class EmailService:
 
         await self._send_email(recipient_email, subject, html_body)
 
+    async def send_download_password_email(
+        self,
+        recipient_email: str,
+        project_name: str,
+        download_password: str,
+        site_id: str
+    ):
+        """發送下載密碼郵件"""
+
+        subject = f"🔐 您的網站下載密碼 - {project_name}"
+
+        preview_url = f"https://aiinpocket.com/preview/{site_id}"
+
+        html_body = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+        .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+        .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+        .password-box {{ background: #0a0e27; color: #7FFF00; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding: 20px; text-align: center; border-radius: 10px; margin: 30px 0; font-family: 'Courier New', monospace; }}
+        .warning {{ background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }}
+        .info-box {{ background: white; padding: 20px; border-left: 4px solid #667eea; margin: 20px 0; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 網站下載密碼</h1>
+            <p>AiInPocket 口袋智慧</p>
+        </div>
+        <div class="content">
+            <h2>您好！</h2>
+            <p>您請求下載網站「<strong>{project_name}</strong>」。請使用以下密碼進行下載：</p>
+
+            <div class="password-box">
+                {download_password}
+            </div>
+
+            <div class="warning">
+                <strong>⚠️ 重要提示：</strong>
+                <ul style="margin: 10px 0;">
+                    <li>此密碼 <strong>僅能使用一次</strong></li>
+                    <li>下載後密碼將立即失效</li>
+                    <li>如需重新下載，請在「我的作品」中重新取得密碼</li>
+                    <li>請勿分享此密碼給任何人</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>📥 下載步驟</h3>
+                <ol>
+                    <li>前往「我的作品」頁面</li>
+                    <li>點擊專案的「下載」按鈕</li>
+                    <li>輸入上方的 6 位數密碼</li>
+                    <li>開始下載您的網站檔案</li>
+                </ol>
+                <p><strong>預覽網址：</strong><br><a href="{preview_url}">{preview_url}</a></p>
+            </div>
+
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+            <p><strong>如果您沒有請求下載，請忽略此郵件。</strong></p>
+
+            <p style="margin-top: 30px;">
+                <strong>需要協助？</strong><br>
+                Email: support@aiinpocket.com<br>
+                網站: https://aiinpocket.com
+            </p>
+
+            <p style="color: #666; font-size: 14px; margin-top: 30px;">
+                © 2025 AiInPocket. 讓智慧觸手可及。
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+        await self._send_email(recipient_email, subject, html_body)
+
     async def send_generation_complete_email(
         self,
         recipient_email: str,
