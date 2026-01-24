@@ -886,6 +886,19 @@ body {
     opacity: 0.6;
 }
 
+.placeholder-number {
+    font-size: 6rem;
+    font-weight: 100;
+    color: rgba(135, 206, 235, 0.15);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: -5px;
+    transition: var(--transition);
+}
+
+.portfolio-card:hover .placeholder-number {
+    color: rgba(135, 206, 235, 0.3);
+}
+
 .portfolio-content {
     padding: 2rem;
 }

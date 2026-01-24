@@ -32,7 +32,7 @@ class AIChatBot {
             <div id="ai-chat-container" class="ai-chat-container">
                 <!-- 聊天按鈕 -->
                 <button id="chat-toggle-btn" class="chat-toggle-btn">
-                    <span class="chat-icon">[AI]</span>
+                    <span class="chat-icon">?</span>
                     <span class="chat-dot"></span>
                 </button>
 
@@ -41,13 +41,13 @@ class AIChatBot {
                     <!-- 標題列 -->
                     <div class="chat-header">
                         <div class="chat-header-info">
-                            <span class="chat-bot-avatar">[AI]</span>
+                            <span class="chat-bot-avatar">助</span>
                             <div>
-                                <h3>AI 小助手</h3>
-                                <p class="chat-status">隨時為您服務</p>
+                                <h3>智慧助理</h3>
+                                <p class="chat-status">有什麼可以幫您？</p>
                             </div>
                         </div>
-                        <button id="chat-close-btn" class="chat-close-btn">✕</button>
+                        <button id="chat-close-btn" class="chat-close-btn">×</button>
                     </div>
 
                     <!-- 訊息區域 -->
@@ -98,40 +98,44 @@ class AIChatBot {
                 }
 
                 .chat-toggle-btn {
-                    width: 60px;
-                    height: 60px;
+                    width: 56px;
+                    height: 56px;
                     border-radius: 50%;
-                    background: linear-gradient(135deg, #87CEEB, #7FFF00);
-                    border: none;
+                    background: rgba(20, 30, 50, 0.9);
+                    border: 1px solid rgba(135, 206, 235, 0.3);
                     cursor: pointer;
-                    box-shadow: 0 5px 25px rgba(127, 255, 0, 0.4);
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
                     transition: all 0.3s ease;
                     position: relative;
+                    backdrop-filter: blur(10px);
                 }
 
                 .chat-toggle-btn:hover {
-                    transform: scale(1.1);
-                    box-shadow: 0 8px 30px rgba(127, 255, 0, 0.6);
+                    transform: translateY(-2px);
+                    border-color: rgba(135, 206, 235, 0.6);
+                    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
                 }
 
                 .chat-icon {
-                    font-size: 28px;
+                    font-size: 20px;
+                    color: #87CEEB;
+                    font-weight: 300;
                 }
 
                 .chat-dot {
                     position: absolute;
-                    top: 8px;
-                    right: 8px;
-                    width: 12px;
-                    height: 12px;
+                    top: 10px;
+                    right: 10px;
+                    width: 8px;
+                    height: 8px;
                     background: #7FFF00;
                     border-radius: 50%;
-                    animation: pulse-dot 2s ease-in-out infinite;
+                    animation: pulse-dot 3s ease-in-out infinite;
                 }
 
                 @keyframes pulse-dot {
-                    0%, 100% { transform: scale(1); opacity: 1; }
-                    50% { transform: scale(1.3); opacity: 0.7; }
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.4; }
                 }
 
                 .chat-window {
@@ -167,8 +171,8 @@ class AIChatBot {
 
                 .chat-header {
                     padding: 1.2rem;
-                    background: linear-gradient(135deg, rgba(135, 206, 235, 0.2), rgba(127, 255, 0, 0.2));
-                    border-bottom: 1px solid rgba(135, 206, 235, 0.3);
+                    background: rgba(15, 25, 50, 0.8);
+                    border-bottom: 1px solid rgba(135, 206, 235, 0.15);
                     border-radius: 20px 20px 0 0;
                     display: flex;
                     justify-content: space-between;
@@ -182,7 +186,17 @@ class AIChatBot {
                 }
 
                 .chat-bot-avatar {
-                    font-size: 2rem;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    background: rgba(135, 206, 235, 0.1);
+                    border: 1px solid rgba(135, 206, 235, 0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1rem;
+                    color: #87CEEB;
+                    margin-right: 12px;
                 }
 
                 .chat-header h3 {
