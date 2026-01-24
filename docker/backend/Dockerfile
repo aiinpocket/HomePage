@@ -12,5 +12,9 @@ COPY app/ ./app/
 # 設定環境變數
 ENV PYTHONUNBUFFERED=1
 
+# Cloud Run 使用 PORT 環境變數
+ENV PORT=8080
+EXPOSE 8080
+
 # 啟動
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD exec uvicorn app.main:app --host 0.0.0.0 --port $PORT

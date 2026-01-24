@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 發送 API 請求
-            const response = await fetch('/api/contact', {
+            const response = await fetch(`${window.API_BASE_URL}/api/contact`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

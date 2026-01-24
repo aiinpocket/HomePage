@@ -75,7 +75,7 @@ class EasterEggSystem {
     // 觸發 Logo 點擊彩蛋
     async triggerLogoClickEasterEgg() {
         try {
-            const response = await fetch('/api/easter-egg/click_logo_10', {
+            const response = await fetch(`${window.API_BASE_URL}/api/easter-egg/click_logo_10`, {
                 method: 'POST'
             });
             const data = await response.json();
@@ -479,7 +479,7 @@ class EasterEggSystem {
         localStorage.setItem('explorer_badge_claimed', 'true');
 
         try {
-            const response = await fetch('/api/easter-egg/explorer', {
+            const response = await fetch(`${window.API_BASE_URL}/api/easter-egg/explorer`, {
                 method: 'POST'
             });
             const data = await response.json();
@@ -649,7 +649,7 @@ class EasterEggSystem {
         this.matrixEffect();
 
         try {
-            const response = await fetch('/api/easter-egg/konami', {
+            const response = await fetch(`${window.API_BASE_URL}/api/easter-egg/konami`, {
                 method: 'POST'
             });
             const data = await response.json();
