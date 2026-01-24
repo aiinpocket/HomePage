@@ -961,11 +961,14 @@ body {
     margin-bottom: 2rem;
     display: flex;
     align-items: center;
+    align-items: center;
     gap: 1rem;
 }
 
 .category-icon {
     font-size: 2.5rem;
+    margin-right: 1rem;
+    color: var(--primary-green);
 }
 
 .tech-grid {
@@ -993,8 +996,15 @@ body {
 }
 
 .tech-icon {
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin-bottom: 1rem;
+    display: block;
+    transition: var(--transition);
+}
+
+.tech-item:hover .tech-icon {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 10px var(--glow-green));
 }
 
 .tech-item h3 {
