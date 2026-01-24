@@ -1096,7 +1096,19 @@ body {
 
 .value-icon {
     font-size: 3rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-green);
+}
+
+.value-icon svg {
+    stroke: var(--primary-green);
+    transition: var(--transition);
+}
+
+.value-item:hover .value-icon svg {
+    stroke: var(--primary-blue);
+    filter: drop-shadow(0 0 10px var(--glow-green));
+    transform: scale(1.1);
 }
 
 .value-item h3 {
@@ -1149,6 +1161,22 @@ body {
     justify-content: center;
     font-size: 2.5rem;
     color: var(--primary-blue);
+    transition: var(--transition);
+}
+
+.member-avatar svg {
+    stroke: var(--primary-blue);
+    transition: var(--transition);
+}
+
+.team-member:hover .member-avatar {
+    border-color: var(--primary-green);
+    background: linear-gradient(135deg, rgba(127, 255, 0, 0.3), rgba(135, 206, 235, 0.2));
+}
+
+.team-member:hover .member-avatar svg {
+    stroke: var(--primary-green);
+    filter: drop-shadow(0 0 8px var(--glow-green));
 }
 
 .member-name {
