@@ -1,36 +1,66 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q36269212J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q36269212J');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiInPocket | 口袋智慧 - 將未來科技裝進你的口袋</title>
-    <meta name="description" content="AiInPocket 提供 AI 解決方案、雲端架構與 DevOps 自動化服務">
+    <title>AiInPocket 口袋智慧 | AI 解決方案、雲端架構與 DevOps 自動化服務</title>
+    <meta name="description" content="AiInPocket 口袋智慧提供專業的 AI 人工智慧解決方案、雲端架構設計、DevOps 自動化服務。將未來科技裝進你的口袋，讓智慧觸手可及。">
+    <meta name="keywords" content="AI,人工智慧,雲端架構,DevOps,Kubernetes,GPT,LLM,自動化,台灣,科技公司">
+    <meta name="author" content="AiInPocket">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://aiinpocket.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aiinpocket.com/">
+    <meta property="og:title" content="AiInPocket 口袋智慧 | AI × 雲端 × DevOps">
+    <meta property="og:description" content="將未來科技裝進你的口袋。AiInPocket 提供專業 AI 解決方案、雲端架構與 DevOps 自動化服務。">
+    <meta property="og:image" content="https://aiinpocket.com/images/og-image.png">
+    <meta property="og:locale" content="zh_TW">
+    <meta property="og:site_name" content="AiInPocket 口袋智慧">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AiInPocket 口袋智慧 | AI × 雲端 × DevOps">
+    <meta name="twitter:description" content="將未來科技裝進你的口袋。專業 AI 解決方案、雲端架構與 DevOps 自動化服務。">
+    <meta name="twitter:image" content="https://aiinpocket.com/images/twitter-card.png">
+
     <link rel="stylesheet" href="../shared/css/styles.css">
 </head>
 <body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">跳至主要內容</a>
+
     <!-- 粒子背景容器 -->
-    <canvas id="particles-canvas"></canvas>
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
     <!-- 導航列 -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="主要導航">
         <div class="nav-container">
-            <div class="nav-logo" id="logo-secret">
+            <a href="index.html" class="nav-logo" id="logo-secret" aria-label="AiInPocket 首頁">
                 <span class="logo-text">AiInPocket</span>
                 <span class="logo-subtext">口袋智慧</span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="active" data-i18n="nav.home">首頁</a></li>
-                <li><a href="portfolio.html" data-i18n="nav.portfolio">作品集</a></li>
-                <li><a href="tech-stack.html" data-i18n="nav.techStack">技術棧</a></li>
-                <li><a href="about.html" data-i18n="nav.about">關於我們</a></li>
-                <li><a href="contact.html" data-i18n="nav.contact">聯絡我們</a></li>
-                <li><a href="../generator/index.html" class="nav-cta" data-i18n="nav.generator">AI 生成器</a></li>
+            </a>
+            <ul class="nav-menu" id="nav-menu" role="menubar">
+                <li role="none"><a href="index.html" class="active" role="menuitem" aria-current="page" data-i18n="nav.home">首頁</a></li>
+                <li role="none"><a href="portfolio.html" role="menuitem" data-i18n="nav.portfolio">作品集</a></li>
+                <li role="none"><a href="tech-stack.html" role="menuitem" data-i18n="nav.techStack">技術棧</a></li>
+                <li role="none"><a href="about.html" role="menuitem" data-i18n="nav.about">關於我們</a></li>
+                <li role="none"><a href="contact.html" role="menuitem" data-i18n="nav.contact">聯絡我們</a></li>
             </ul>
-            <div class="nav-toggle" id="nav-toggle">
+            <button class="nav-toggle" id="nav-toggle" aria-label="開啟選單" aria-expanded="false" aria-controls="nav-menu">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
         </div>
     </nav>
 
@@ -49,7 +79,7 @@
     </div>
 
     <!-- 主要內容 -->
-    <main class="main-content">
+    <main class="main-content" id="main-content">
         <!-- Hero 區塊 -->
         <section class="hero-section" id="home">
             <div class="container">
@@ -225,15 +255,55 @@
     </footer>
 
     <!-- 彩蛋彈窗 -->
-    <div id="easter-egg-modal" class="modal">
-        <div class="modal-overlay" id="modal-overlay"></div>
-        <div class="modal-content">
-            <h2 class="modal-title" data-i18n="home.easterEgg.title">[彩蛋觸發！]</h2>
-            <p class="modal-text" data-i18n="home.easterEgg.text">你發現了隱藏的魔法咒語！</p>
-            <div class="magic-text">AI is in your pocket now!</div>
-            <button class="btn btn-primary modal-close" id="modal-close" data-i18n="home.easterEgg.close">關閉</button>
+    <div id="easter-egg-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-text" aria-hidden="true">
+        <div class="modal-overlay" id="modal-overlay" aria-hidden="true"></div>
+        <div class="modal-content" role="document">
+            <h2 id="modal-title" class="modal-title" data-i18n="home.easterEgg.title">[彩蛋觸發！]</h2>
+            <p id="modal-text" class="modal-text" data-i18n="home.easterEgg.text">你發現了隱藏的魔法咒語！</p>
+            <div class="magic-text" aria-live="polite">AI is in your pocket now!</div>
+            <button class="btn btn-primary modal-close" id="modal-close" aria-label="關閉彩蛋視窗" data-i18n="home.easterEgg.close">關閉</button>
         </div>
     </div>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "AiInPocket 口袋智慧",
+        "alternateName": "AiInPocket",
+        "url": "https://aiinpocket.com",
+        "logo": "https://aiinpocket.com/images/logo.png",
+        "description": "AiInPocket 提供專業的 AI 解決方案、雲端架構設計與 DevOps 自動化服務",
+        "email": "help@aiinpocket.com",
+        "foundingDate": "2019",
+        "sameAs": [
+            "https://github.com/aiinpocket"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "help@aiinpocket.com",
+            "contactType": "customer service",
+            "availableLanguage": ["Chinese", "English", "Japanese"]
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "serviceType": "AI 解決方案",
+        "provider": {
+            "@type": "Organization",
+            "name": "AiInPocket 口袋智慧"
+        },
+        "description": "客製化 AI 模型訓練、LLM 應用整合、智能數據分析、自動化決策系統",
+        "areaServed": {
+            "@type": "Country",
+            "name": "Taiwan"
+        }
+    }
+    </script>
 
     <!-- JavaScript -->
     <script src="../shared/js/devtools-guard.js"></script>

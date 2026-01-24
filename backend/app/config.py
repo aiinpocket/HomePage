@@ -1,5 +1,5 @@
 """
-配置管理模組
+配置管理模組（精簡版）
 """
 from pydantic_settings import BaseSettings
 from typing import List
@@ -8,33 +8,24 @@ from typing import List
 class Settings(BaseSettings):
     """應用配置"""
 
-    # OpenAI 設定
-    OPENAI_API_KEY: str = ""
-    OPENAI_MODEL: str = "gpt-4"
-
     # CORS 設定
-    CORS_ORIGINS: str = "http://localhost:80,http://localhost:3000"
+    CORS_ORIGINS: str = "https://aiinpocket.com,http://localhost:80,http://localhost:3000"
 
     # 應用設定
     APP_NAME: str = "AiInPocket"
-    APP_VERSION: str = "1.0.0"
-    DEBUG: bool = True
-
-    # Rate Limiting
-    RATE_LIMIT_PER_MINUTE: int = 60
-
-    # PostgreSQL
-    DATABASE_URL: str = "postgresql://aiinpocket:aiinpocket_secure_password@postgres:5432/aiinpocket"
+    APP_VERSION: str = "2.0.0"
+    DEBUG: bool = False
 
     # 網站設定
     SITE_URL: str = "https://aiinpocket.com"
-    FRONTEND_PATH: str = "/app/frontend"
 
     # 彩蛋優惠碼設定
     EASTER_EGG_PROMO_CODE: str = "AIINPOCKET2025"
     EASTER_EGG_DISCOUNT: int = 20
+    EXPLORER_PROMO_CODE: str = "EXPLORER2025"
+    EXPLORER_DISCOUNT: int = 15
 
-    # Email 設定
+    # Email 設定（聯絡表單用）
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USER: str = ""
@@ -42,29 +33,7 @@ class Settings(BaseSettings):
     SMTP_FROM: str = "AiInPocket <noreply@aiinpocket.com>"
 
     # Webhook 設定
-    WEBHOOK_URL: str = ""  # 聯絡表單提交後的 webhook URL
-
-    # Redis 設定
-    REDIS_URL: str = "redis://redis:6379/0"
-
-    # 生成網站設定
-    PREVIEW_API_LIMIT: int = 30
-    GENERATED_SITES_PATH: str = "/app/generated_sites"
-    DOWNLOAD_BASE_URL: str = "https://aiinpocket.com/download"
-
-    # 安全設定
-    SECRET_KEY: str = "your-secret-key-here-change-in-production"
-
-    # Rate Limiting
-    RATE_LIMIT_PER_HOUR: int = 1000
-
-    # 檔案上傳設定
-    MAX_UPLOAD_SIZE_MB: int = 10
-
-    # 功能開關
-    ENABLE_AI_CHAT: bool = True
-    ENABLE_AUTH: bool = False
-    ENABLE_EMAIL: bool = False
+    WEBHOOK_URL: str = ""
 
     class Config:
         env_file = ".env"

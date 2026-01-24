@@ -23,8 +23,12 @@ class MainController {
 
         if (navToggle && navMenu) {
             navToggle.addEventListener('click', () => {
+                const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
                 navMenu.classList.toggle('active');
                 navToggle.classList.toggle('active');
+                // 更新 ARIA 狀態
+                navToggle.setAttribute('aria-expanded', !isExpanded);
+                navToggle.setAttribute('aria-label', isExpanded ? '開啟選單' : '關閉選單');
             });
 
             // 點擊導航連結後關閉選單
@@ -32,7 +36,19 @@ class MainController {
                 link.addEventListener('click', () => {
                     navMenu.classList.remove('active');
                     navToggle.classList.remove('active');
+                    navToggle.setAttribute('aria-expanded', 'false');
+                    navToggle.setAttribute('aria-label', '開啟選單');
                 });
+            });
+
+            // ESC 鍵關閉選單
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                    navToggle.classList.remove('active');
+                    navToggle.setAttribute('aria-expanded', 'false');
+                    navToggle.focus();
+                }
             });
         }
 

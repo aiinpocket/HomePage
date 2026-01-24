@@ -1,33 +1,58 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q36269212J"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q36269212J');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>聯絡我們 | AiInPocket</title>
+    <title>聯絡我們 | AiInPocket 口袋智慧 - 免費諮詢 AI 與雲端解決方案</title>
+    <meta name="description" content="與 AiInPocket 開始對話。提供 AI 解決方案、雲端架構、DevOps 工程免費諮詢。Email: help@aiinpocket.com，24 小時內回覆。">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://aiinpocket.com/corporate/contact.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aiinpocket.com/corporate/contact.html">
+    <meta property="og:title" content="聯絡我們 | AiInPocket 口袋智慧">
+    <meta property="og:description" content="與 AiInPocket 開始對話。AI、雲端、DevOps 免費諮詢，24 小時內回覆。">
+    <meta property="og:image" content="https://aiinpocket.com/images/og-image.png">
+    <meta property="og:locale" content="zh_TW">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="聯絡我們 | AiInPocket 口袋智慧">
+    <meta name="twitter:description" content="與 AiInPocket 開始對話。AI、雲端、DevOps 免費諮詢，24 小時內回覆。">
+
     <link rel="stylesheet" href="../shared/css/styles.css">
 </head>
 <body>
-    <canvas id="particles-canvas"></canvas>
+    <a href="#main-content" class="skip-link">跳至主要內容</a>
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="主要導航">
         <div class="nav-container">
-            <div class="nav-logo" id="logo-secret">
+            <a href="index.html" class="nav-logo" id="logo-secret" aria-label="AiInPocket 首頁">
                 <span class="logo-text">AiInPocket</span>
                 <span class="logo-subtext">口袋智慧</span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="index.html" data-i18n="nav.home">首頁</a></li>
-                <li><a href="portfolio.html" data-i18n="nav.portfolio">作品集</a></li>
-                <li><a href="tech-stack.html" data-i18n="nav.techStack">技術棧</a></li>
-                <li><a href="about.html" data-i18n="nav.about">關於我們</a></li>
-                <li><a href="contact.html" class="active" data-i18n="nav.contact">聯絡我們</a></li>
-                <li><a href="../generator/index.html" class="nav-cta" data-i18n="nav.generator">AI 生成器</a></li>
+            </a>
+            <ul class="nav-menu" id="nav-menu" role="menubar">
+                <li role="none"><a href="index.html" role="menuitem" data-i18n="nav.home">首頁</a></li>
+                <li role="none"><a href="portfolio.html" role="menuitem" data-i18n="nav.portfolio">作品集</a></li>
+                <li role="none"><a href="tech-stack.html" role="menuitem" data-i18n="nav.techStack">技術棧</a></li>
+                <li role="none"><a href="about.html" role="menuitem" data-i18n="nav.about">關於我們</a></li>
+                <li role="none"><a href="contact.html" class="active" role="menuitem" aria-current="page" data-i18n="nav.contact">聯絡我們</a></li>
             </ul>
-            <div class="nav-toggle" id="nav-toggle">
+            <button class="nav-toggle" id="nav-toggle" aria-label="開啟選單" aria-expanded="false" aria-controls="nav-menu">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
         </div>
     </nav>
 

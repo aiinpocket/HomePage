@@ -1816,3 +1816,118 @@ body {
         width: 100%;
     }
 }
+
+/* ========================================
+   無障礙 (Accessibility)
+   ======================================== */
+
+/* Skip Link - 跳至主要內容 */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-green);
+    color: var(--dark-bg);
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    z-index: 10000;
+    transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+    top: 10px;
+    outline: 3px solid var(--primary-blue);
+    outline-offset: 2px;
+}
+
+/* Focus 狀態 - 可見的鍵盤焦點 */
+:focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(127, 255, 0, 0.3);
+}
+
+/* 按鈕 Focus */
+.btn:focus-visible {
+    outline: 2px solid var(--primary-blue);
+    outline-offset: 2px;
+    box-shadow: 0 0 15px var(--glow-blue);
+}
+
+/* 導航連結 Focus */
+.nav-menu a:focus-visible {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+}
+
+/* 輸入框 Focus */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 10px var(--glow-green);
+    outline: none;
+}
+
+/* 卡片 Focus */
+.service-card:focus-visible,
+.portfolio-card:focus-visible {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 4px;
+}
+
+/* 螢幕閱讀器專用文字 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* 減少動畫 (prefers-reduced-motion) */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* 高對比度模式 */
+@media (prefers-contrast: high) {
+    :root {
+        --text-muted: #A0D8EF;
+        --card-bg: rgba(0, 0, 0, 0.9);
+    }
+
+    .btn {
+        border: 2px solid currentColor;
+    }
+
+    .service-card,
+    .portfolio-card {
+        border: 2px solid var(--primary-blue);
+    }
+}
