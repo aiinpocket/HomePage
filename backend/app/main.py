@@ -9,6 +9,8 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 import logging
+import httpx
+import os
 
 from .config import settings
 from .easter_eggs import easter_egg_system
@@ -185,6 +187,37 @@ async def secret_garden():
 # 聯絡表單 API
 # ========================================
 
+async def send_line_notification(message: str):
+    """發送 LINE 通知"""
+    token = os.environ.get("LINE_CHANNEL_TOKEN", settings.LINE_CHANNEL_TOKEN)
+    if not token:
+        logger.warning("LINE_CHANNEL_TOKEN not configured")
+        return False
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://api.line.me/v2/bot/message/push",
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {token}"
+                },
+                json={
+                    "to": settings.LINE_GROUP_ID,
+                    "messages": [{"type": "text", "text": message}]
+                }
+            )
+            if response.status_code == 200:
+                logger.info("LINE notification sent successfully")
+                return True
+            else:
+                logger.error(f"LINE API error: {response.status_code} {response.text}")
+                return False
+    except Exception as e:
+        logger.error(f"LINE notification error: {e}")
+        return False
+
+
 @app.post("/api/contact", response_model=ContactResponse, tags=["Contact"])
 async def submit_contact_form(request: ContactRequest):
     """
@@ -194,8 +227,20 @@ async def submit_contact_form(request: ContactRequest):
         # 記錄聯絡表單提交
         logger.info(f"Contact form submitted: {request.name} <{request.email}>")
 
-        # TODO: 實作 Email 發送或 Webhook 通知
-        # 目前先回傳成功訊息
+        # 發送 LINE 通知
+        message = f"""📩 新聯絡表單
+━━━━━━━━━━━━━━
+👤 姓名：{request.name}
+📧 Email：{request.email}
+🏢 公司：{request.company or '未填寫'}
+📋 服務：{request.service}
+━━━━━━━━━━━━━━
+💬 訊息：
+{request.message}
+━━━━━━━━━━━━━━
+🕐 時間：{datetime.now().strftime('%Y-%m-%d %H:%M')}"""
+
+        await send_line_notification(message)
 
         return {
             "success": True,

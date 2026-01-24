@@ -453,7 +453,7 @@ const translations = {
                 item3: '要求刪除資料',
                 item4: '反對處理您的資料',
                 item5: '資料可攜性',
-                contact: '如需行使這些權利，請聯繫：<a href="mailto:privacy@aiinpocket.com">privacy@aiinpocket.com</a>'
+                contact: '如需行使這些權利，請聯繫：<a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>'
             },
             section8: {
                 title: '8. 兒童隱私',
@@ -466,7 +466,7 @@ const translations = {
             section10: {
                 title: '10. 聯絡我們',
                 intro: '如對本隱私權政策有任何疑問，請聯繫：',
-                item1: '<strong>Email：</strong><a href="mailto:privacy@aiinpocket.com">privacy@aiinpocket.com</a>',
+                item1: '<strong>Email：</strong><a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>',
                 item2: '<strong>一般聯繫：</strong><a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>'
             }
         },
@@ -948,7 +948,7 @@ const translations = {
                 item3: 'Request data deletion',
                 item4: 'Object to processing of your data',
                 item5: 'Data portability',
-                contact: 'To exercise these rights, please contact: <a href="mailto:privacy@aiinpocket.com">privacy@aiinpocket.com</a>'
+                contact: 'To exercise these rights, please contact: <a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>'
             },
             section8: {
                 title: '8. Children\'s Privacy',
@@ -961,7 +961,7 @@ const translations = {
             section10: {
                 title: '10. Contact Us',
                 intro: 'If you have any questions about this privacy policy, please contact:',
-                item1: '<strong>Email:</strong> <a href="mailto:privacy@aiinpocket.com">privacy@aiinpocket.com</a>',
+                item1: '<strong>Email:</strong> <a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>',
                 item2: '<strong>General Contact:</strong> <a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>'
             }
         },
@@ -1441,7 +1441,7 @@ const translations = {
                 item3: 'データの削除要求',
                 item4: 'データ処理への異議申し立て',
                 item5: 'データポータビリティ',
-                contact: 'これらの権利を行使するには、<a href="mailto:privacy@aiinpocket.com">privacy@aiinpocket.com</a>までご連絡ください'
+                contact: 'これらの権利を行使するには、<a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>までご連絡ください'
             },
             section8: {
                 title: '8. 子供のプライバシー',
@@ -1454,7 +1454,7 @@ const translations = {
             section10: {
                 title: '10. お問い合わせ',
                 intro: 'このプライバシーポリシーに関してご質問がある場合は、以下までご連絡ください：',
-                item1: '<strong>メール：</strong><a href="mailto:privacy@aiinpocket.com">privacy@aiinpocket.com</a>',
+                item1: '<strong>メール：</strong><a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>',
                 item2: '<strong>一般お問い合わせ：</strong><a href="mailto:help@aiinpocket.com">help@aiinpocket.com</a>'
             }
         },

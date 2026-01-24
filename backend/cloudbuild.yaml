@@ -17,7 +17,7 @@ steps:
       - '${_AR_HOSTNAME}/${PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:${COMMIT_SHA}'
     id: Push
 
-  # Deploy container image to Cloud Run
+  # Deploy container image to Cloud Run with secrets
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     entrypoint: gcloud
     args:
@@ -28,6 +28,7 @@ steps:
       - '--platform=managed'
       - '--image=${_AR_HOSTNAME}/${PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:${COMMIT_SHA}'
       - '--region=${_DEPLOY_REGION}'
+      - '--set-secrets=LINE_CHANNEL_TOKEN=line-channel-token:latest'
       - '--quiet'
     id: Deploy
 

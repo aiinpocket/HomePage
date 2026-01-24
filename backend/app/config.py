@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     # Webhook 設定
     WEBHOOK_URL: str = ""
 
+    # LINE Push API 設定
+    LINE_CHANNEL_TOKEN: str = ""
+    LINE_GROUP_ID: str = "C5c0b9193e54d02a9067b61b87bbce7d8"
+
     class Config:
         env_file = ".env"
         case_sensitive = True
