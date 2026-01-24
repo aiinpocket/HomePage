@@ -1100,15 +1100,35 @@ body {
     color: var(--primary-green);
 }
 
-.value-icon svg {
-    stroke: var(--primary-green);
-    transition: var(--transition);
+/* 簡約風格價值觀 */
+.values-minimal .value-item {
+    text-align: left;
+    border: none;
+    border-left: 3px solid rgba(135, 206, 235, 0.3);
+    border-radius: 0;
+    background: transparent;
+    padding: 1.5rem 2rem;
 }
 
-.value-item:hover .value-icon svg {
-    stroke: var(--primary-blue);
-    filter: drop-shadow(0 0 10px var(--glow-green));
-    transform: scale(1.1);
+.values-minimal .value-item:hover {
+    transform: none;
+    border-left-color: var(--primary-green);
+    box-shadow: none;
+    background: rgba(135, 206, 235, 0.05);
+}
+
+.value-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 200;
+    color: rgba(135, 206, 235, 0.4);
+    margin-bottom: 1rem;
+    font-family: 'Helvetica Neue', sans-serif;
+    letter-spacing: -2px;
+}
+
+.values-minimal .value-item:hover .value-number {
+    color: var(--primary-green);
 }
 
 .value-item h3 {
@@ -1150,33 +1170,44 @@ body {
 }
 
 .member-avatar {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     margin: 0 auto 1.5rem;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(135, 206, 235, 0.3), rgba(127, 255, 0, 0.2));
-    border: 2px solid var(--primary-blue);
+    background: linear-gradient(135deg, #1a2a4a 0%, #0d1529 100%);
+    border: 1px solid rgba(135, 206, 235, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5rem;
-    color: var(--primary-blue);
     transition: var(--transition);
 }
 
-.member-avatar svg {
-    stroke: var(--primary-blue);
-    transition: var(--transition);
+.avatar-initials {
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
 .team-member:hover .member-avatar {
-    border-color: var(--primary-green);
-    background: linear-gradient(135deg, rgba(127, 255, 0, 0.3), rgba(135, 206, 235, 0.2));
+    border-color: rgba(135, 206, 235, 0.5);
 }
 
-.team-member:hover .member-avatar svg {
-    stroke: var(--primary-green);
-    filter: drop-shadow(0 0 8px var(--glow-green));
+.team-member:hover .avatar-initials {
+    color: var(--primary-blue);
+}
+
+/* 簡約團隊樣式 */
+.team-minimal .team-member {
+    background: transparent;
+    border: 1px solid rgba(135, 206, 235, 0.1);
+}
+
+.team-minimal .team-member:hover {
+    transform: translateY(-5px);
+    border-color: rgba(135, 206, 235, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .member-name {
