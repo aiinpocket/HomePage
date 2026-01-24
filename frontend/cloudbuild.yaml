@@ -1,0 +1,56 @@
+steps:
+  # Inject GA Measurement ID from Secret Manager
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        GA_ID=$(gcloud secrets versions access latest --secret=ga-measurement-id --project=$PROJECT_ID)
+        find frontend -name "*.html" -exec sed -i "s/%%GA_MEASUREMENT_ID%%/$${GA_ID}/g" {} \;
+    id: InjectGA
+
+  # Sync frontend files to GCS bucket
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args:
+      - '-m'
+      - 'rsync'
+      - '-r'
+      - '-d'
+      - 'frontend/'
+      - 'gs://${_BUCKET_NAME}/'
+    id: Sync
+
+  # Set Cache-Control for HTML files (1 hour)
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args:
+      - '-m'
+      - 'setmeta'
+      - '-h'
+      - 'Cache-Control:public, max-age=3600'
+      - 'gs://${_BUCKET_NAME}/**/*.html'
+    id: CacheHTML
+
+  # Set Cache-Control for CSS/JS files (1 year)
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args:
+      - '-m'
+      - 'setmeta'
+      - '-h'
+      - 'Cache-Control:public, max-age=31536000'
+      - 'gs://${_BUCKET_NAME}/**/*.css'
+    id: CacheCSS
+
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args:
+      - '-m'
+      - 'setmeta'
+      - '-h'
+      - 'Cache-Control:public, max-age=31536000'
+      - 'gs://${_BUCKET_NAME}/**/*.js'
+    id: CacheJS
+
+substitutions:
+  _BUCKET_NAME: aiinpocket.com
+
+options:
+  logging: CLOUD_LOGGING_ONLY

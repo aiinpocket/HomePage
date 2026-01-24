@@ -236,9 +236,9 @@ const translations = {
                     bio: '10+ 年軟體開發與 DevOps 經驗，專精於雲端架構設計與自動化流程'
                 },
                 member2: {
-                    name: 'AI 研發主管',
-                    role: 'Head of AI Research',
-                    bio: '專注於機器學習與深度學習研究，擅長將學術成果轉化為商業應用'
+                    name: 'AI 應用主管',
+                    role: 'Head of AI Applications',
+                    bio: '專注於 AI 的應用整合，思考如何組合搭配各種 AI 工具與技術，以滿足客戶的實際需求'
                 },
                 member3: {
                     name: '全端工程師',
@@ -246,9 +246,9 @@ const translations = {
                     bio: '精通前後端開發，致力於打造流暢的使用者體驗與高效能系統'
                 },
                 member4: {
-                    name: '資安專家',
-                    role: 'Security Specialist',
-                    bio: '確保系統安全性與合規性，從設計階段就植入安全思維'
+                    name: '品質保證工程師',
+                    role: 'QA Engineer',
+                    bio: '進行大量測試確保產品品質，並設計自動化部署流程中的重點測試項目'
                 }
             },
             timeline: {
@@ -258,16 +258,20 @@ const translations = {
                     desc: 'AiInPocket 成立，專注於 AI 與雲端技術諮詢'
                 },
                 year2: {
-                    title: '業務擴展',
-                    desc: '首個大型企業客戶，團隊擴展至 10 人'
+                    title: 'AI 助手元年',
+                    desc: '結合 GPT-3 技術，為企業打造本地化 AI 小助手'
                 },
                 year3: {
-                    title: '技術突破',
-                    desc: '推出多個 AI 解決方案，獲得業界認可'
+                    title: '普及 AI 應用',
+                    desc: '推出 LINE 自動問答機器人，協助大眾輕鬆接觸 AI'
                 },
                 year4: {
-                    title: '持續創新',
-                    desc: '深耕 LLM 應用，服務超過 50+ 企業客戶'
+                    title: '企業代管服務',
+                    desc: '為中小企業提供 SRE 代管服務，管理 50+ 雲端應用'
+                },
+                year5: {
+                    title: '深化整合',
+                    desc: '協助企業串接金流系統與政府單位自動化申報服務'
                 }
             },
             whyUs: {
@@ -729,9 +733,9 @@ const translations = {
                     bio: '10+ years of software development and DevOps experience, specializing in cloud architecture design and automation'
                 },
                 member2: {
-                    name: 'Head of AI Research',
-                    role: 'Head of AI Research',
-                    bio: 'Focused on machine learning and deep learning research, skilled at translating academic achievements into business applications'
+                    name: 'Head of AI Applications',
+                    role: 'Head of AI Applications',
+                    bio: 'Focused on AI application integration, designing how to combine and orchestrate various AI tools and technologies to meet client needs'
                 },
                 member3: {
                     name: 'Full-Stack Engineer',
@@ -739,9 +743,9 @@ const translations = {
                     bio: 'Proficient in frontend and backend development, dedicated to creating smooth user experiences and high-performance systems'
                 },
                 member4: {
-                    name: 'Security Specialist',
-                    role: 'Security Specialist',
-                    bio: 'Ensures system security and compliance, embedding security thinking from the design phase'
+                    name: 'QA Engineer',
+                    role: 'QA Engineer',
+                    bio: 'Conducts extensive testing to ensure product quality and designs critical test cases for automated deployment pipelines'
                 }
             },
             timeline: {
@@ -751,16 +755,20 @@ const translations = {
                     desc: 'AiInPocket established, focusing on AI and cloud technology consulting'
                 },
                 year2: {
-                    title: 'Business Expansion',
-                    desc: 'First major enterprise client, team expanded to 10 members'
+                    title: 'AI Assistant Era',
+                    desc: 'Leveraged GPT-3 to build localized AI assistants for enterprises'
                 },
                 year3: {
-                    title: 'Technical Breakthrough',
-                    desc: 'Launched multiple AI solutions, gained industry recognition'
+                    title: 'AI for Everyone',
+                    desc: 'Launched LINE chatbot to help the public easily embrace AI'
                 },
                 year4: {
-                    title: 'Continuous Innovation',
-                    desc: 'Deep dive into LLM applications, serving 50+ enterprise clients'
+                    title: 'Managed Services',
+                    desc: 'Providing SRE managed services for SMEs, managing 50+ cloud applications'
+                },
+                year5: {
+                    title: 'Deep Integration',
+                    desc: 'Helping enterprises integrate payment systems and government automated filing'
                 }
             },
             whyUs: {
@@ -1218,9 +1226,9 @@ const translations = {
                     bio: 'ソフトウェア開発とDevOpsの10年以上の経験、クラウドアーキテクチャ設計と自動化に特化'
                 },
                 member2: {
-                    name: 'AI研究責任者',
-                    role: 'Head of AI Research',
-                    bio: '機械学習とディープラーニング研究に注力、学術成果をビジネスアプリケーションに変換することに長けている'
+                    name: 'AI応用責任者',
+                    role: 'Head of AI Applications',
+                    bio: 'AI応用統合に注力、様々なAIツールと技術を組み合わせてクライアントのニーズを満たす方法を設計'
                 },
                 member3: {
                     name: 'フルスタックエンジニア',
@@ -1228,9 +1236,9 @@ const translations = {
                     bio: 'フロントエンドとバックエンド開発に精通、スムーズなユーザーエクスペリエンスと高性能システムの構築に専念'
                 },
                 member4: {
-                    name: 'セキュリティスペシャリスト',
-                    role: 'Security Specialist',
-                    bio: 'システムセキュリティとコンプライアンスを確保、設計段階からセキュリティ思考を組み込む'
+                    name: '品質保証エンジニア',
+                    role: 'QA Engineer',
+                    bio: '大量のテストを実施して製品品質を確保し、自動デプロイパイプラインの重要なテストケースを設計'
                 }
             },
             timeline: {
@@ -1240,16 +1248,20 @@ const translations = {
                     desc: 'AiInPocket設立、AIとクラウド技術コンサルティングに注力'
                 },
                 year2: {
-                    title: 'ビジネス拡大',
-                    desc: '初の大企業クライアント、チーム10人に拡大'
+                    title: 'AIアシスタント元年',
+                    desc: 'GPT-3を活用し、企業向けローカルAIアシスタントを構築'
                 },
                 year3: {
-                    title: '技術的ブレークスルー',
-                    desc: '複数のAIソリューションを展開、業界から認められる'
+                    title: 'AIの普及',
+                    desc: 'LINE自動応答ボットをリリース、一般の方がAIを身近に'
                 },
                 year4: {
-                    title: '継続的イノベーション',
-                    desc: 'LLMアプリケーションに深く取り組み、50社以上の企業クライアントにサービスを提供'
+                    title: 'マネージドサービス',
+                    desc: '中小企業向けSRE代行サービス、50以上のクラウドアプリを管理'
+                },
+                year5: {
+                    title: '深い統合',
+                    desc: '企業の決済システム連携と政府機関への自動申告サービスを支援'
                 }
             },
             whyUs: {
