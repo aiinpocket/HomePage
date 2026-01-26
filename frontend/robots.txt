@@ -21,7 +21,6 @@ Allow: /
 
 # Sitemap 位置
 Sitemap: https://aiinpocket.com/sitemap.xml
-Sitemap: https://aiinpocket.com/corporate/sitemap.xml
 
 # 爬取延遲（秒）- 避免過度負載
 Crawl-delay: 1
