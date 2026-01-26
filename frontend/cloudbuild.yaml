@@ -5,7 +5,7 @@ steps:
     args:
       - '-c'
       - |
-        GA_ID=$(gcloud secrets versions access latest --secret=ga-measurement-id --project=$PROJECT_ID)
+        GA_ID=$(gcloud secrets versions access latest --secret=ga-homepage --project=$PROJECT_ID)
         find frontend -name "*.html" -exec sed -i "s/%%GA_MEASUREMENT_ID%%/$${GA_ID}/g" {} \;
     id: InjectGA
 
