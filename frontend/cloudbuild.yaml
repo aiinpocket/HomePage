@@ -62,6 +62,18 @@ steps:
       - 'gs://${_BUCKET_NAME}/**/*.svg'
     id: CacheSVG
 
+  # Set Cache-Control for PNG files (1 year)
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args:
+      - '-m'
+      - 'setmeta'
+      - '-h'
+      - 'Cache-Control:public, max-age=31536000'
+      - '-h'
+      - 'Content-Type:image/png'
+      - 'gs://${_BUCKET_NAME}/**/*.png'
+    id: CachePNG
+
   # Set Cache-Control for JSON files (1 day)
   - name: 'gcr.io/cloud-builders/gsutil'
     args:
