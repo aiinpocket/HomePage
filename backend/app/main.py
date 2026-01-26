@@ -174,7 +174,7 @@ async def secret_garden():
                 <p>{result['discount']}% OFF</p>
             </div>
             <p style="margin-top: 2rem;">
-                <a href="/corporate/index.html">← 返回首頁</a>
+                <a href="/">← 返回首頁</a>
             </p>
         </div>
     </body>

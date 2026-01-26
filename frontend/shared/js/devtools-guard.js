@@ -54,11 +54,8 @@
             // 延遲跳轉，讓用戶看到訊息
             setTimeout(() => {
                 // 跳轉回首頁
-                if (window.location.pathname.includes('/corporate/') ||
-                    window.location.pathname.includes('/generator/')) {
-                    window.location.href = '/index.html';
-                } else if (window.location.pathname !== '/index.html' &&
-                           window.location.pathname !== '/') {
+                if (window.location.pathname !== '/index.html' &&
+                    window.location.pathname !== '/') {
                     window.location.href = '/';
                 }
             }, 2000);

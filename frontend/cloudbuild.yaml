@@ -7,6 +7,7 @@ steps:
       - |
         GA_ID=$(gcloud secrets versions access latest --secret=ga-homepage --project=$PROJECT_ID)
         find frontend -name "*.html" -exec sed -i "s/%%GA_MEASUREMENT_ID%%/$${GA_ID}/g" {} \;
+        find frontend -name "*.js" -exec sed -i "s/%%GA_MEASUREMENT_ID%%/$${GA_ID}/g" {} \;
     id: InjectGA
 
   # Sync frontend files to GCS bucket

@@ -25,7 +25,7 @@ function showCookieBanner() {
                 <p data-i18n="cookie.description">
                     本網站使用 Cookie 來改善使用體驗，並透過 Google AdSense 展示廣告。
                     繼續瀏覽即表示您同意我們使用 Cookie。
-                    <a href="/corporate/privacy.html" data-i18n="cookie.learnMore">了解更多</a>
+                    <a href="/privacy.html" data-i18n="cookie.learnMore">了解更多</a>
                 </p>
             </div>
             <div class="cookie-buttons">
@@ -73,7 +73,7 @@ function rejectCookies() {
 
 function loadAnalytics() {
     // Google Analytics 4
-    const GA_ID = 'G-XXXXXXXXXX'; // 替換為您的 GA4 ID
+    const GA_ID = '%%GA_MEASUREMENT_ID%%'; // Cloud Build 會替換此值
 
     // 載入 gtag.js
     const script1 = document.createElement('script');
