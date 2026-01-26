@@ -1,0 +1,21 @@
+{
+  "name": "AiInPocket 口袋智慧",
+  "short_name": "AiInPocket",
+  "description": "AI 解決方案、雲端架構與 DevOps 自動化服務",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e27",
+  "theme_color": "#0a0e27",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "technology"],
+  "lang": "zh-TW",
+  "dir": "ltr"
+}
