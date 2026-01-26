@@ -11,10 +11,29 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://aiinpocket-api-191728986826.asia-east1.run.app">
+    <link rel="dns-prefetch" href="https://aiinpocket-api-191728986826.asia-east1.run.app">
     <title>聯絡我們 | AiInPocket 口袋智慧 - 免費諮詢 AI 與雲端解決方案</title>
     <meta name="description" content="與 AiInPocket 開始對話。提供 AI 解決方案、雲端架構、DevOps 工程免費諮詢。Email: help@aiinpocket.com，24 小時內回覆。">
+    <meta name="keywords" content="聯絡AiInPocket,AI諮詢,雲端架構諮詢,DevOps諮詢,免費技術諮詢,台灣AI公司">
+    <meta name="author" content="AiInPocket">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://aiinpocket.com/contact.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <!-- Hreflang for multilingual SEO -->
+    <link rel="alternate" hreflang="zh-TW" href="https://aiinpocket.com/contact.html">
+    <link rel="alternate" hreflang="en" href="https://aiinpocket.com/contact.html?lang=en">
+    <link rel="alternate" hreflang="ja" href="https://aiinpocket.com/contact.html?lang=ja">
+    <link rel="alternate" hreflang="x-default" href="https://aiinpocket.com/contact.html">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -23,11 +42,13 @@
     <meta property="og:description" content="與 AiInPocket 開始對話。AI、雲端、DevOps 免費諮詢，24 小時內回覆。">
     <meta property="og:image" content="https://aiinpocket.com/images/og-image.png">
     <meta property="og:locale" content="zh_TW">
+    <meta property="og:site_name" content="AiInPocket 口袋智慧">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="聯絡我們 | AiInPocket 口袋智慧">
     <meta name="twitter:description" content="與 AiInPocket 開始對話。AI、雲端、DevOps 免費諮詢，24 小時內回覆。">
+    <meta name="twitter:image" content="https://aiinpocket.com/images/og-image.png">
 
     <link rel="stylesheet" href="shared/css/styles.css">
 </head>
@@ -68,7 +89,7 @@
         </div>
     </div>
 
-    <main class="main-content">
+    <main class="main-content" id="main-content">
         <section class="page-header">
             <div class="container">
                 <h1 class="page-title">
@@ -312,6 +333,98 @@
             <button class="btn btn-primary modal-close" id="modal-close" data-i18n="easterEgg.close">關閉</button>
         </div>
     </div>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "name": "聯絡 AiInPocket",
+        "description": "與 AiInPocket 開始對話。提供 AI 解決方案、雲端架構、DevOps 工程免費諮詢。",
+        "url": "https://aiinpocket.com/contact.html",
+        "mainEntity": {
+            "@type": "Organization",
+            "name": "AiInPocket 口袋智慧",
+            "email": "help@aiinpocket.com",
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "email": "help@aiinpocket.com",
+                "contactType": "customer service",
+                "availableLanguage": ["zh-TW", "en", "ja"],
+                "hoursAvailable": {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                }
+            }
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "專案通常需要多久時間？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "依專案複雜度而定，一般的 AI 應用或雲端架構專案約需 2-8 週。我們會在初步評估後提供詳細時程規劃。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "AiInPocket 如何收費？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "我們提供彈性的計費方式，包括專案制、時數制、或長期技術顧問合約。會根據您的需求提供最適合的方案。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "提供哪些技術支援？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "我們提供 7x24 技術支援，包括系統監控、緊急修復、定期維護、以及技術諮詢服務。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "可以客製化解決方案嗎？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "當然！我們專注於提供量身訂製的解決方案，會深入了解您的業務需求並設計最適合的技術架構。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "是否提供教育訓練？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "是的，我們會在專案交付時提供完整的文件與培訓，確保您的團隊能夠順利接手維運。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "如何開始與 AiInPocket 合作？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "只需填寫聯絡表單或直接來信 help@aiinpocket.com，我們會安排免費的初步諮詢，了解您的需求並提供初步建議。"
+                }
+            }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "首頁", "item": "https://aiinpocket.com/"},
+            {"@type": "ListItem", "position": 2, "name": "聯絡我們", "item": "https://aiinpocket.com/contact.html"}
+        ]
+    }
+    </script>
 
     <script src="shared/js/config.js"></script>
     <script src="shared/js/devtools-guard.js"></script>

@@ -1,39 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>https://aiinpocket.com/</loc>
-        <lastmod>2026-01-26</lastmod>
+        <lastmod>2026-01-27</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aiinpocket.com/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://aiinpocket.com/?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://aiinpocket.com/?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://aiinpocket.com/"/>
     </url>
     <url>
         <loc>https://aiinpocket.com/portfolio.html</loc>
-        <lastmod>2026-01-26</lastmod>
+        <lastmod>2026-01-27</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aiinpocket.com/portfolio.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://aiinpocket.com/portfolio.html?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://aiinpocket.com/portfolio.html?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://aiinpocket.com/portfolio.html"/>
     </url>
     <url>
         <loc>https://aiinpocket.com/tech-stack.html</loc>
-        <lastmod>2026-01-26</lastmod>
+        <lastmod>2026-01-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aiinpocket.com/tech-stack.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://aiinpocket.com/tech-stack.html?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://aiinpocket.com/tech-stack.html?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://aiinpocket.com/tech-stack.html"/>
     </url>
     <url>
         <loc>https://aiinpocket.com/about.html</loc>
-        <lastmod>2026-01-26</lastmod>
+        <lastmod>2026-01-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aiinpocket.com/about.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://aiinpocket.com/about.html?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://aiinpocket.com/about.html?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://aiinpocket.com/about.html"/>
     </url>
     <url>
         <loc>https://aiinpocket.com/contact.html</loc>
-        <lastmod>2026-01-26</lastmod>
+        <lastmod>2026-01-27</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
+        <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aiinpocket.com/contact.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://aiinpocket.com/contact.html?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://aiinpocket.com/contact.html?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://aiinpocket.com/contact.html"/>
     </url>
     <url>
         <loc>https://aiinpocket.com/privacy.html</loc>
-        <lastmod>2026-01-26</lastmod>
+        <lastmod>2026-01-27</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
+        <xhtml:link rel="alternate" hreflang="zh-TW" href="https://aiinpocket.com/privacy.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://aiinpocket.com/privacy.html?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="ja" href="https://aiinpocket.com/privacy.html?lang=ja"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://aiinpocket.com/privacy.html"/>
     </url>
 </urlset>

@@ -1,0 +1,15 @@
+/* TEAM */
+Company: AiInPocket 口袋智慧
+Site: https://aiinpocket.com
+Contact: help@aiinpocket.com
+Location: Taiwan
+
+/* THANKS */
+Special thanks to all our clients and partners.
+
+/* SITE */
+Last update: 2026/01/27
+Language: Traditional Chinese (zh-TW), English (en), Japanese (ja)
+Standards: HTML5, CSS3, JavaScript ES6+
+Components: FastAPI, Google Cloud Run, Google Cloud Storage
+Software: Visual Studio Code, WebStorm

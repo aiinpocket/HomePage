@@ -1,0 +1,7 @@
+# AiInPocket Security Policy
+# https://aiinpocket.com/.well-known/security.txt
+
+Contact: mailto:help@aiinpocket.com
+Expires: 2027-01-31T23:59:59.000Z
+Preferred-Languages: zh-TW, en, ja
+Canonical: https://aiinpocket.com/.well-known/security.txt

@@ -11,12 +11,29 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://www.google-analytics.com">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
     <title>AiInPocket 口袋智慧 | AI 解決方案、雲端架構與 DevOps 自動化服務</title>
     <meta name="description" content="AiInPocket 口袋智慧提供專業的 AI 人工智慧解決方案、雲端架構設計、DevOps 自動化服務。將未來科技裝進你的口袋，讓智慧觸手可及。">
     <meta name="keywords" content="AI,人工智慧,雲端架構,DevOps,Kubernetes,GPT,LLM,自動化,台灣,科技公司">
     <meta name="author" content="AiInPocket">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://aiinpocket.com/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    <!-- Hreflang for multilingual SEO -->
+    <link rel="alternate" hreflang="zh-TW" href="https://aiinpocket.com/">
+    <link rel="alternate" hreflang="en" href="https://aiinpocket.com/?lang=en">
+    <link rel="alternate" hreflang="ja" href="https://aiinpocket.com/?lang=ja">
+    <link rel="alternate" hreflang="x-default" href="https://aiinpocket.com/">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -271,12 +288,15 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "AiInPocket 口袋智慧",
-        "alternateName": "AiInPocket",
+        "alternateName": ["AiInPocket", "口袋智慧"],
         "url": "https://aiinpocket.com",
         "logo": "https://aiinpocket.com/images/logo.png",
-        "description": "AiInPocket 提供專業的 AI 解決方案、雲端架構設計與 DevOps 自動化服務",
+        "image": "https://aiinpocket.com/images/og-image.png",
+        "description": "AiInPocket 提供專業的 AI 解決方案、雲端架構設計與 DevOps 自動化服務，將未來科技裝進你的口袋",
         "email": "help@aiinpocket.com",
         "foundingDate": "2019",
+        "slogan": "讓智慧觸手可及",
+        "knowsAbout": ["AI", "人工智慧", "雲端架構", "DevOps", "Kubernetes", "GPT", "LLM"],
         "sameAs": [
             "https://github.com/aiinpocket"
         ],
@@ -284,24 +304,56 @@
             "@type": "ContactPoint",
             "email": "help@aiinpocket.com",
             "contactType": "customer service",
-            "availableLanguage": ["Chinese", "English", "Japanese"]
+            "availableLanguage": ["zh-TW", "en", "ja"]
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "TW"
         }
     }
     </script>
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Service",
-        "serviceType": "AI 解決方案",
-        "provider": {
+        "@type": "WebSite",
+        "name": "AiInPocket 口袋智慧",
+        "alternateName": "AiInPocket",
+        "url": "https://aiinpocket.com",
+        "inLanguage": ["zh-TW", "en", "ja"],
+        "publisher": {
             "@type": "Organization",
             "name": "AiInPocket 口袋智慧"
-        },
-        "description": "客製化 AI 模型訓練、LLM 應用整合、智能數據分析、自動化決策系統",
-        "areaServed": {
-            "@type": "Country",
-            "name": "Taiwan"
         }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "AiInPocket 核心服務",
+        "itemListElement": [
+            {
+                "@type": "Service",
+                "position": 1,
+                "name": "AI 解決方案",
+                "description": "客製化 AI 模型訓練、LLM 應用整合、智能數據分析、自動化決策系統",
+                "provider": {"@type": "Organization", "name": "AiInPocket"}
+            },
+            {
+                "@type": "Service",
+                "position": 2,
+                "name": "雲端架構",
+                "description": "雲原生架構設計、容器化與編排、無伺服器架構、多雲策略",
+                "provider": {"@type": "Organization", "name": "AiInPocket"}
+            },
+            {
+                "@type": "Service",
+                "position": 3,
+                "name": "DevOps 工程",
+                "description": "自動化部署管道、基礎設施即代碼、監控與日誌系統、安全性掃描",
+                "provider": {"@type": "Organization", "name": "AiInPocket"}
+            }
+        ]
     }
     </script>
 
