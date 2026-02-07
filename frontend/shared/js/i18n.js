@@ -125,17 +125,12 @@ const translations = {
                 stat2: '<strong>90%</strong> 漏洞減少',
                 stat3: '<strong>自動化</strong> 修復建議'
             },
-            opensource: {
+            project6: {
+                tag: '開源項目',
                 title: '開源項目',
-                project1: {
-                    title: 'AI 每日分析台股籌碼',
-                    desc: '每日自動分析台灣股市三大法人籌碼動向，提供視覺化報表與趨勢洞察。'
-                },
-                project2: {
-                    title: '智慧流程編排引擎',
-                    badge: '開發中',
-                    desc: '智慧化的工作流程編排引擎，讓複雜的自動化流程變得簡單直覺。'
-                }
+                item1: 'AI 每日分析台股籌碼',
+                item2: '智慧流程編排引擎',
+                badge: '開發中'
             },
             cta: {
                 title: '想要看到您的專案在這裡嗎？',
@@ -636,17 +631,12 @@ const translations = {
                 stat2: '<strong>90%</strong> Vulnerabilities Reduced',
                 stat3: '<strong>Automated</strong> Fix Suggestions'
             },
-            opensource: {
+            project6: {
+                tag: 'Open Source',
                 title: 'Open Source Projects',
-                project1: {
-                    title: 'AI Daily TW Stock Institutional Analysis',
-                    desc: 'Daily automated analysis of Taiwan stock market institutional investor trends, providing visual reports and trend insights.'
-                },
-                project2: {
-                    title: 'Smart Workflow Orchestration Engine',
-                    badge: 'In Development',
-                    desc: 'An intelligent workflow orchestration engine that makes complex automation processes simple and intuitive.'
-                }
+                item1: 'AI Daily TW Stock Institutional Analysis',
+                item2: 'Smart Workflow Orchestration Engine',
+                badge: 'In Development'
             },
             cta: {
                 title: 'Want to See Your Project Here?',
@@ -1141,17 +1131,12 @@ const translations = {
                 stat2: '<strong>90%</strong> 脆弱性削減',
                 stat3: '<strong>自動</strong> 修正提案'
             },
-            opensource: {
+            project6: {
+                tag: 'オープンソース',
                 title: 'オープンソースプロジェクト',
-                project1: {
-                    title: 'AI 台湾株式機関投資家分析（日次）',
-                    desc: '台湾株式市場の機関投資家動向を毎日自動分析し、ビジュアルレポートとトレンドインサイトを提供。'
-                },
-                project2: {
-                    title: 'スマートワークフローオーケストレーションエンジン',
-                    badge: '開発中',
-                    desc: 'インテリジェントなワークフローオーケストレーションエンジン。複雑な自動化プロセスをシンプルで直感的に。'
-                }
+                item1: 'AI 台湾株式機関投資家分析（日次）',
+                item2: 'スマートワークフローオーケストレーションエンジン',
+                badge: '開発中'
             },
             cta: {
                 title: 'あなたのプロジェクトをここに掲載しませんか？',
