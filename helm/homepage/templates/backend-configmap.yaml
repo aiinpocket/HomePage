@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-backend-config
+data:
+  PORT: "8000"
+  APP_NAME: {{ .Values.backend.config.APP_NAME | quote }}
+  APP_VERSION: {{ .Values.backend.config.APP_VERSION | quote }}
+  SITE_URL: {{ .Values.backend.config.SITE_URL | quote }}
+  CORS_ORIGINS: {{ .Values.backend.config.CORS_ORIGINS | quote }}
+  LINE_GROUP_ID: {{ .Values.backend.config.LINE_GROUP_ID | quote }}

@@ -1,0 +1,42 @@
+frontend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/aiinpocket/homepage-frontend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+backend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/aiinpocket/homepage-backend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  config:
+    APP_NAME: AiInPocket
+    APP_VERSION: "2.0.0"
+    SITE_URL: https://aiinpocket.com
+    CORS_ORIGINS: "https://aiinpocket.com,http://localhost:80"
+    LINE_GROUP_ID: ""
+  secret:
+    LINE_CHANNEL_TOKEN: ""
+
+ingress:
+  host: aiinpocket.com
+  tlsSecretName: cloudflare-origin-cert-aiinpocket
+
+imagePullSecrets:
+  - name: ghcr-secret

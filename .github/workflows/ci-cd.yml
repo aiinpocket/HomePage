@@ -1,0 +1,127 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/homepage-frontend
+  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/homepage-backend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.vars.outputs.sha_short }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check skip
+        id: skip
+        run: |
+          MSG=$(git log -1 --pretty=%B)
+          if echo "$MSG" | grep -q '\[skip ci\]'; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set build variables
+        if: steps.skip.outputs.skip == 'false'
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        if: steps.skip.outputs.skip == 'false'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to ghcr.io
+        if: steps.skip.outputs.skip == 'false'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push frontend
+        if: steps.skip.outputs.skip == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.frontend
+          push: true
+          tags: |
+            ${{ env.FRONTEND_IMAGE }}:${{ steps.vars.outputs.sha_short }}
+            ${{ env.FRONTEND_IMAGE }}:latest
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,scope=frontend,mode=max
+
+      - name: Build and push backend
+        if: steps.skip.outputs.skip == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.BACKEND_IMAGE }}:${{ steps.vars.outputs.sha_short }}
+            ${{ env.BACKEND_IMAGE }}:latest
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,scope=backend,mode=max
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.image_tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Update image tags
+        run: |
+          TAG="${{ needs.build.outputs.image_tag }}"
+          sed -i '/^frontend:/,/^backend:/{s/^  tag: .*/  tag: "'"${TAG}"'"/}' helm/homepage/values-production.yaml
+          sed -i '/^backend:/,$ {s/^  tag: .*/  tag: "'"${TAG}"'"/}' helm/homepage/values-production.yaml
+          echo "Updated image tags to ${TAG}"
+          cat helm/homepage/values-production.yaml
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add helm/homepage/values-production.yaml
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "deploy: update image tags to ${{ needs.build.outputs.image_tag }} [skip ci]"
+          git push
+
+  smoke-test:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for ArgoCD sync
+        run: |
+          echo "Waiting 120s for ArgoCD sync and startup..."
+          sleep 120
+
+      - name: Health check
+        run: |
+          for i in 1 2 3 4 5; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
+              https://aiinpocket.com/health || echo "000")
+            echo "Attempt ${i}: ${STATUS}"
+            [ "${STATUS}" = "200" ] && echo "PASSED" && exit 0
+            sleep 30
+          done
+          echo "::warning::Health check did not return 200 after 5 attempts"

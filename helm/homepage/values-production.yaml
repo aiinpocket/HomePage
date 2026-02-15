@@ -1,0 +1,12 @@
+frontend:
+  replicaCount: 2
+  image:
+    tag: "latest"
+
+backend:
+  replicaCount: 2
+  image:
+    tag: "latest"
+  config:
+    CORS_ORIGINS: "https://aiinpocket.com"
+    LINE_GROUP_ID: "C5c0b9193e54d02a9067b61b87bbce7d8"
