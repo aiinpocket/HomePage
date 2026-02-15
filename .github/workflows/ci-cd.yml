@@ -92,8 +92,8 @@ jobs:
       - name: Update image tags
         run: |
           TAG="${{ needs.build.outputs.image_tag }}"
-          sed -i '/^frontend:/,/^backend:/{s/^  tag: .*/  tag: "'"${TAG}"'"/}' helm/homepage/values-production.yaml
-          sed -i '/^backend:/,$ {s/^  tag: .*/  tag: "'"${TAG}"'"/}' helm/homepage/values-production.yaml
+          sed -i '/^frontend:/,/^backend:/{s/^    tag: .*/    tag: "'"${TAG}"'"/}' helm/homepage/values-production.yaml
+          sed -i '/^backend:/,$ {s/^    tag: .*/    tag: "'"${TAG}"'"/}' helm/homepage/values-production.yaml
           echo "Updated image tags to ${TAG}"
           cat helm/homepage/values-production.yaml
 
